@@ -79,6 +79,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Locale;
 
 public class CalendarMain extends AppCompatActivity {
 
@@ -97,10 +98,10 @@ public class CalendarMain extends AppCompatActivity {
     private ArrayList<Schedule> calendarListDate_pre;
     private Hashtable<Date, ArrayList<Schedule>> calendarListData;
 
-    SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
-    SimpleDateFormat repeatDate = new SimpleDateFormat("yyyy.MM.dd");
-    SimpleDateFormat time = new SimpleDateFormat("hh:mm:ss");
-    SimpleDateFormat datetime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd",Locale.KOREA);
+    SimpleDateFormat repeatDate = new SimpleDateFormat("yyyy.MM.dd",Locale.KOREA);
+    SimpleDateFormat time = new SimpleDateFormat("hh:mm:ss",Locale.KOREA);
+    SimpleDateFormat datetime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss",Locale.KOREA);
 
     private ProgressDialog progressDialog;
     private ProgressDialog progressDialogDot;
@@ -1003,10 +1004,10 @@ public class CalendarMain extends AppCompatActivity {
                                     String startDate = repeatDate[0].replaceAll("\\.", "-");
                                     String endDate = repeatDate[1].replaceAll("\\.", "-");
 
-                                    startMyTask(editDiary,"http://donggunserver.iptime.org/diaryedit.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatText[0], startDate, endDate, schedule.getNum()+"");
+                                    startMyTask(editDiary,"http://13.124.99.123/diaryedit.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatText[0], startDate, endDate, schedule.getNum()+"");
 
                                 } else
-                                    startMyTask(editDiary,"http://donggunserver.iptime.org/diaryedit.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatButton.getText().toString(), null, null, schedule.getNum()+"");
+                                    startMyTask(editDiary,"http://13.124.99.123/diaryedit.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatButton.getText().toString(), null, null, schedule.getNum()+"");
 
                                 //DateClassificationTask dateClassificationTask = new DateClassificationTask();
                                 //dateClassificationTask.execute(id);
@@ -1807,9 +1808,9 @@ public class CalendarMain extends AppCompatActivity {
                                 String[] repeatDate = repeatText[1].split(" - ");
                                 String startDate = repeatDate[0].replaceAll("\\.", "-");
                                 String endDate = repeatDate[1].replaceAll("\\.", "-");
-                                startMyTask(addDiary,"http://donggunserver.iptime.org/diaryinsert.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatText[0], startDate, endDate);
+                                startMyTask(addDiary,"http://13.124.99.123/diaryinsert.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatText[0], startDate, endDate);
                             } else
-                                startMyTask(addDiary,"http://donggunserver.iptime.org/diaryinsert.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatButton.getText().toString(), null, null);
+                                startMyTask(addDiary,"http://13.124.99.123/diaryinsert.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatButton.getText().toString(), null, null);
 
                             //DateClassificationTask dateClassificationTask = new DateClassificationTask();
                             //dateClassificationTask.execute(id);
@@ -2468,7 +2469,7 @@ public class CalendarMain extends AppCompatActivity {
             try {
                 /* 서버연결 */
                 URL url = new URL(
-                        "http://donggunserver.iptime.org/user_diary_schedule_list_delete.php");
+                        "http://13.124.99.123/user_diary_schedule_list_delete.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestMethod("POST");
@@ -2533,7 +2534,7 @@ public class CalendarMain extends AppCompatActivity {
             try {
                 /* 서버연결 */
                 URL url = new URL(
-                        "http://donggunserver.iptime.org/user_diary_schedule_list_load.php");
+                        "http://13.124.99.123/user_diary_schedule_list_load.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestMethod("POST");
@@ -2597,7 +2598,7 @@ public class CalendarMain extends AppCompatActivity {
                     for(int i=0;i<splitlist.length;i++) {
                         String[] splitstring=splitlist[i].split("/");
                         java.util.Date transCompleteDateTime = datetime.parse(splitstring[3]);
-                        if(splitstring[7].equals("0000-00-00")&&splitstring[8].equals("0000-00-00")){
+                        if(splitstring.length<=7){
                             sqlStartDate = null;
                             sqlEndDate = null;
                         }
@@ -2607,7 +2608,7 @@ public class CalendarMain extends AppCompatActivity {
                             sqlStartDate = new java.sql.Date(transStartDate.getTime());
                             sqlEndDate = new java.sql.Date(transEndDate.getTime());
                         }
-                        if(splitstring.length==9)
+                        if(splitstring.length<=9)
                             schedule = new Schedule(Integer.parseInt(splitstring[0]),splitstring[1],splitstring[2],transCompleteDateTime,splitstring[4],splitstring[5],splitstring[6],sqlStartDate,sqlEndDate,null,null);
                         else
                             schedule = new Schedule(Integer.parseInt(splitstring[0]),splitstring[1],splitstring[2],transCompleteDateTime,splitstring[4],splitstring[5],splitstring[6],sqlStartDate,sqlEndDate,splitstring[9],splitstring[10]);
@@ -2654,7 +2655,7 @@ public class CalendarMain extends AppCompatActivity {
 
                 /* 서버연결 */
                 URL url = new URL(
-                            "http://donggunserver.iptime.org/dot_data_calculate_renewal.php");
+                            "http://13.124.99.123/dot_data_calculate_renewal.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestMethod("POST");

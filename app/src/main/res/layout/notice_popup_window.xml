@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#50000000">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:background="#FFFFFF"
+        android:layout_margin="16dp">
+        <TextView
+            android:id="@+id/notice_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            tools:text="닉네임을 입력해주세요."
+            android:layout_marginTop="12dp"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:layout_marginLeft="24dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#FFFFFF"
+            android:layout_marginTop="32dp">
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="#FFFFFF"
+                android:layout_weight="1"/>
+            <TextView
+                android:id="@+id/notice_ok_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="확인"
+                android:textColor="#FF7F00"
+                android:background="#FFFFFF"
+                android:textSize="16sp"
+                android:layout_marginRight="32dp"
+                android:layout_marginBottom="20dp"/>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

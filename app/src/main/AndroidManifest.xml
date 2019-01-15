@@ -63,7 +63,10 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".NotificationReceiver"></activity>
+        <activity android:name=".NotificationReceiver" />
+        <activity android:name=".AnonymousForumActivity_Preview" />
+        <activity android:name=".AnonymousForumActivity_Write" />
+        <activity android:name=".AnonymousForumActivity_View"></activity>
     </application>
 
 </manifest>

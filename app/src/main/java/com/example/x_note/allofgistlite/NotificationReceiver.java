@@ -40,7 +40,7 @@ public class NotificationReceiver extends AppCompatActivity {
             try {
                 /* 서버연결 */
                 URL url = new URL(
-                        "http://donggunserver.iptime.org/push_notification.php");
+                        "http://13.124.99.123/push_notification.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestMethod("POST");

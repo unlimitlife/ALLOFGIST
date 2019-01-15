@@ -56,7 +56,7 @@ public class FavoriteSettingActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         FavoriteRestoreTask favoriteRestoreTask = new FavoriteRestoreTask();
-        startMyTask(favoriteRestoreTask,"http://donggunserver.iptime.org/favoriterestore.php", id);
+        startMyTask(favoriteRestoreTask,"http://13.124.99.123/favoriterestore.php", id);
 
         try {
             for (int i = 0; i < itemList.size(); i++) {
@@ -238,7 +238,7 @@ public class FavoriteSettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 FavoriteRestoreTask favoriteRestoreTask = new FavoriteRestoreTask();
-                startMyTask(favoriteRestoreTask,"http://donggunserver.iptime.org/favoriterestore.php", id);
+                startMyTask(favoriteRestoreTask,"http://13.124.99.123/favoriterestore.php", id);
 
                 try {
                     for (int i = 0; i < itemList.size(); i++) {

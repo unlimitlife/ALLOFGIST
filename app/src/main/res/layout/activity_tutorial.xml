@@ -19,7 +19,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginLeft="16dp"
             android:text="Select favorites"
-            android:textSize="40sp"
+            android:textSize="35sp"
             android:textColor="#FF7F00"
             android:textStyle="bold"/>
 

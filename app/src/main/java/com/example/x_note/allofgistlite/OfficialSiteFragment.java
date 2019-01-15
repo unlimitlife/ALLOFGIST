@@ -163,7 +163,7 @@ public class OfficialSiteFragment extends Fragment {
                     buttonCount.put(itemList.get(position).getMsite_name(),!buttonCount.get(itemList.get(position).getMsite_name()));
                     if(buttonCount.get(itemList.get(position).getMsite_name())){
                         FavoriteTask favoriteTask = new FavoriteTask();
-                        favoriteTask.execute("http://donggunserver.iptime.org/favoriteinsert.php",id,position+"");
+                        favoriteTask.execute("http://13.124.99.123/favoriteinsert.php",id,position+"");
                         SharedPreferences.Editor favoriteEditor = getActivity().getSharedPreferences("FAVORITE_KEYLIST",Context.MODE_PRIVATE).edit();
                         favoriteEditor.putString("KEYLIST_"+id+"_"+position,"OK");
                         favoriteEditor.apply();
@@ -171,7 +171,7 @@ public class OfficialSiteFragment extends Fragment {
                     }
                     else {
                         FavoriteTask favoriteTask = new FavoriteTask();
-                        favoriteTask.execute("http://donggunserver.iptime.org/favoritedelete.php",id,position+"");
+                        favoriteTask.execute("http://13.124.99.123/favoritedelete.php",id,position+"");
                         SharedPreferences.Editor favoriteEditor = getActivity().getSharedPreferences("FAVORITE_KEYLIST",Context.MODE_PRIVATE).edit();
                         favoriteEditor.putString("KEYLIST_"+id+"_"+position,"NONE");
                         favoriteEditor.apply();

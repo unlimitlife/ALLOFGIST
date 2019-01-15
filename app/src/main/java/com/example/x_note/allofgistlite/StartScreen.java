@@ -103,7 +103,7 @@ public class StartScreen extends AppCompatActivity {
             try {
                 /* 서버연결 */
                 URL url = new URL(
-                        "http://donggunserver.iptime.org/login.php");
+                        "http://13.124.99.123/login.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestMethod("POST");
@@ -203,7 +203,7 @@ public class StartScreen extends AppCompatActivity {
             try {
                 /* 서버연결 */
                 URL url = new URL(
-                        "http://donggunserver.iptime.org/tutorialcheck.php");
+                        "http://13.124.99.123/tutorialcheck.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestMethod("POST");
@@ -319,7 +319,7 @@ public class StartScreen extends AppCompatActivity {
             try {
                 /* 서버연결 */
                 URL url = new URL(
-                        "http://donggunserver.iptime.org/favoriteload.php");
+                        "http://13.124.99.123/favoriteload.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestMethod("POST");

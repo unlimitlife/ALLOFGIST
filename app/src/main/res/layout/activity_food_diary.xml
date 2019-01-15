@@ -5,90 +5,119 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FF7F00"
+    android:background="#FFFFFF"
     tools:context=".FoodDiary">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.5"
+        android:background="@drawable/food_diary"
+        android:scaleType="centerCrop"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.5"
-        android:orientation="vertical">
+        android:background="#FF7F00"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:layout_marginLeft="16dp"
-            android:text="Select restaurant"
-            android:textSize="35sp"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"/>
+            android:text="원하는 식당을 눌러보세요."
+            android:textSize="25sp"
+            android:textColor="#FFFFFF"/>
 
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/first_floor"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="#FF7F00">
-        <Button
-            android:id="@+id/first_floor"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="제1학생식당 2층"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/food_diary_roundable_box_design"
-            android:foreground="?android:attr/selectableItemBackground"/>
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="#FF7F00">
-        <Button
-            android:id="@+id/second_floor"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        android:layout_weight="0.35"
+        android:background="#FFFFFF"
+        android:gravity="center_vertical"
+        android:foreground="?android:attr/selectableItemBackground">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/food_select_orange"
+            android:layout_marginLeft="16dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="제1학생식당 1층"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/food_diary_roundable_box_design"
-            android:foreground="?android:attr/selectableItemBackground"/>
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/food_diary_roundable_box_design"/>
 
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#e4e4e4"/>
+    <LinearLayout
+        android:id="@+id/second_floor"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.35"
+        android:background="#FFFFFF"
+        android:gravity="center_vertical"
+        android:foreground="?android:attr/selectableItemBackground">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/food_select_orange"
+            android:layout_marginLeft="16dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="제1학생식당 2층"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/food_diary_roundable_box_design"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#e4e4e4"/>
+
+    <LinearLayout
+        android:id="@+id/second_restaurant"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.35"
+        android:background="#FFFFFF"
+        android:gravity="center_vertical"
+        android:foreground="?android:attr/selectableItemBackground">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/food_select_orange"
+            android:layout_marginLeft="16dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="제2학생식당"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/food_diary_roundable_box_design"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#e4e4e4"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginBottom="16dp"
-        android:background="#FF7F00">
-        <Button
-            android:id="@+id/second_restaurant"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="제2학생식당"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/food_diary_roundable_box_design"
-            android:foreground="?android:attr/selectableItemBackground"/>
-
-    </LinearLayout>
+        android:layout_weight="0.45"
+        android:background="#FFFFFF"/>
 
 </LinearLayout>

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">ALLOFGISTLITE</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -24,12 +24,30 @@
     <string name="edittext_pw_hint"><font size="13">Password</font></string>
 
     <!-- Strings related to edittext in signup screen -->
+    <string name="edittext_nickname_hint_signup"><font size="13">Nickname</font></string>
     <string name="edittext_id_hint_signup"><font size="13">Id</font></string>
     <string name="edittext_pw_hint_signup"><font size="13">Password</font></string>
+    <string name="edittext_pw_check_hint_signup"><font size="13">Password Check</font></string>
     <string name="edittext_email_hint_signup"><font size="13">GIST Email</font></string>
 
     <!-- Strings related to button in tutorial screen -->
     <string name="button_official_text">공\n식</string>
     <string name="button_organization_text">조\n직</string>
     <string name="button_circle_text">동\n아\n리</string>
+
+    <!-- Strings related to menuButton in anonymous forum preview -->
+    <string name="menu_button_home">홈</string>
+    <string name="menu_button_best">인기글</string>
+    <string name="menu_button_overview">전체글</string>
+    <string name="menu_button_search">검색</string>
+    <string name="menu_button_write">글쓰기</string>
+    <string name="devider">"  |  "</string>
+
+    <!-- Strings related to anonymous forum view -->
+    <string name="search_by_nickname">[작성글 검색]</string>
+    <string name="like_button">좋아요</string>
+    <string name="unlike_button">싫어요</string>
+    <string name="comment_button">댓글 달기</string>
+    <string name="none_like_state">가장 먼저 좋아요를 눌러보세요</string>
+    <string name="comment_hint">댓글 입력</string>
 </resources>

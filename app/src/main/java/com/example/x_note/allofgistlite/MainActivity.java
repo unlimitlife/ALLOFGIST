@@ -1,7 +1,6 @@
 package com.example.x_note.allofgistlite;
 
 import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,7 +14,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -87,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout allsiteCategory;
     private RelativeLayout foodDiaryCategory;
     private RelativeLayout favoriteSettingCategory;
+    private RelativeLayout anonymousForumCategory;
 
     //학식 팝업 관련
     private View popupView;
@@ -115,12 +114,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        setData();
 
         //오늘의 일정 불러오기
         Calendar today = Calendar.getInstance();
         Date todaykey = today.getTime();
         int dayNum = today.get(Calendar.DAY_OF_WEEK);
-        scheduleText.setText(today.get(Calendar.MONTH)+"월 "+today.get(Calendar.DAY_OF_MONTH)+"일 "+ day[dayNum - 1]+"요일");
+        scheduleText.setText((today.get(Calendar.MONTH)+1)+"월 "+today.get(Calendar.DAY_OF_MONTH)+"일 "+ day[dayNum - 1]+"요일");
         calendarListDate_pre = new ArrayList<Schedule>();
         calendarListData = new Hashtable<Date, ArrayList<Schedule>>();
         String completedate = date.format(todaykey);
@@ -138,13 +138,19 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+
         favoriteAdapter = new FavoriteAdapter(MainActivity.this,itemList,major_set);
         recyclerView.setAdapter(favoriteAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,RecyclerView.HORIZONTAL,false));
 
+        //recyclerview 스크롤 딱 맞아떨어지게 하는 도구
+        SnapToBlock snapToBlock = new SnapToBlock(4);
+        if(keylist.size()>4)
+            snapToBlock.attachToRecyclerView(recyclerView);
         //if(keylist.isEmpty())
             //startMyTask(new FavoriteLoad(),id);
 
-        startMyTask(new TokenLoadTask(),"http://donggunserver.iptime.org/tokenload.php",id);
+        startMyTask(new TokenLoadTask(),"http://13.124.99.123/tokenload.php",id);
 
     }
 
@@ -170,11 +176,7 @@ public class MainActivity extends AppCompatActivity {
 
         InitialSetting();
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this,RecyclerView.HORIZONTAL,false));
 
-        //recyclerview 스크롤 딱 맞아떨어지게 하는 도구
-        SnapToBlock snapToBlock = new SnapToBlock(4);
-        snapToBlock.attachToRecyclerView(recyclerView);
 
         setData();
 
@@ -214,7 +216,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        anonymousForumCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent anonymousForumActivity = new Intent(MainActivity.this, AnonymousForumActivity_Preview.class);
+                anonymousForumActivity.putExtra("ID",id);
+                startActivity(anonymousForumActivity);
+            }
+        });
 
         //즐겨찾기 불러오기(다시)
         /*reloadFavorite.setOnClickListener(new View.OnClickListener(){
@@ -588,7 +597,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 /* 서버연결 */
                 URL url = new URL(
-                        "http://donggunserver.iptime.org/favoriteload.php");
+                        "http://13.124.99.123/favoriteload.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestMethod("POST");
@@ -666,7 +675,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 /* 서버연결 */
                 URL url = new URL(
-                        "http://donggunserver.iptime.org/user_diary_schedule_list_load.php");
+                        "http://13.124.99.123/user_diary_schedule_list_load.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestMethod("POST");
@@ -732,7 +741,7 @@ public class MainActivity extends AppCompatActivity {
                     for(int i=0;i<splitlist.length;i++) {
                         String[] splitstring=splitlist[i].split("/");
                         java.util.Date transCompleteDateTime = datetime.parse(splitstring[3]);
-                        if(splitstring[7].equals("0000-00-00")&&splitstring[8].equals("0000-00-00")){
+                        if(splitstring.length<=7){
                             sqlStartDate = null;
                             sqlEndDate = null;
                         }
@@ -742,7 +751,7 @@ public class MainActivity extends AppCompatActivity {
                             sqlStartDate = new java.sql.Date(transStartDate.getTime());
                             sqlEndDate = new java.sql.Date(transEndDate.getTime());
                         }
-                        if(splitstring.length==9)
+                        if(splitstring.length<=9)
                             schedule = new Schedule(Integer.parseInt(splitstring[0]),splitstring[1],splitstring[2],transCompleteDateTime,splitstring[4],splitstring[5],splitstring[6],sqlStartDate,sqlEndDate,null,null);
                         else
                             schedule = new Schedule(Integer.parseInt(splitstring[0]),splitstring[1],splitstring[2],transCompleteDateTime,splitstring[4],splitstring[5],splitstring[6],sqlStartDate,sqlEndDate,splitstring[9],splitstring[10]);
@@ -766,7 +775,7 @@ public class MainActivity extends AppCompatActivity {
                 }catch(Exception e){
                     e.printStackTrace();
                 }
-
+/*
                 int i = 0;
                 while(!alarmListData.isEmpty()&&i<alarmListData.size()) {
                     Intent resultIntent = new Intent(MainActivity.this, FoodDiary.class);
@@ -782,7 +791,7 @@ public class MainActivity extends AppCompatActivity {
                     alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
                     alarmManagers.add(alarmManager);
                     i++;
-                }
+                }*/
                 // The stack builder object will contain an artificial back stack for the
                 // started Activity.
                 // This ensures that navigating backward from the Activity leads out of
@@ -814,7 +823,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 /* 서버연결 */
                 URL url = new URL(
-                        "http://donggunserver.iptime.org/push_notification.php");
+                        "http://13.124.99.123/push_notification.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestMethod("POST");
@@ -930,7 +939,7 @@ public class MainActivity extends AppCompatActivity {
                         editor.putString("token",newToken);
                         editor.apply();
 
-                        startMyTask(new TokenToServerTask(),"http://donggunserver.iptime.org/tokeninsert.php",id,newToken);
+                        startMyTask(new TokenToServerTask(),"http://13.124.99.123/tokeninsert.php",id,newToken);
                     }
                 });
             }
@@ -945,7 +954,7 @@ public class MainActivity extends AppCompatActivity {
                         editor.putString("token",newToken);
                         editor.apply();
 
-                        startMyTask(new TokenToServerTask(),"http://donggunserver.iptime.org/tokeninsert.php",id,newToken);
+                        startMyTask(new TokenToServerTask(),"http://13.124.99.123/tokeninsert.php",id,newToken);
                     }
                 });
             }
@@ -1103,6 +1112,7 @@ public class MainActivity extends AppCompatActivity {
         allsiteCategory = (RelativeLayout)findViewById(R.id.category_allsite);
         foodDiaryCategory = (RelativeLayout)findViewById(R.id.category_food_diary);
         favoriteSettingCategory = (RelativeLayout)findViewById(R.id.category_favorite_setting);
+        anonymousForumCategory = (RelativeLayout)findViewById(R.id.category_anonymous_forum);
     }
 
     public void setData(){

@@ -315,9 +315,12 @@ public class SnapToBlock extends SnapHelper {
          */
         int getPositionsToMove(LinearLayoutManager llm, int scroll, int itemSize) {
             int positionsToMove;
-
-            positionsToMove = roundUpToBlockSize(Math.abs(scroll) / itemSize);
-
+            try {
+                positionsToMove = roundUpToBlockSize(Math.abs(scroll) / itemSize);
+            }catch(ArithmeticException e){
+                e.printStackTrace();
+                positionsToMove = 0;
+            }
             if (positionsToMove < mBlocksize) {
                 // Must move at least one block
                 positionsToMove = mBlocksize;
