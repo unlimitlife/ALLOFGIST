@@ -84,12 +84,20 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
     RecyclerView commentList;
     private ArrayList<Comment> forumCommentList;
 
+    private Comment comment;
     EditText commentInput;
     ImageButton commentInputButton;
 
     ScrollView scrollView;
     LinearLayout fullScreen;
     LinearLayout commentInputLayout;
+
+
+    ImageView nextCommentIcon;
+    LinearLayout nextCommentLayout;
+    TextView nextCommentNickname;
+    ImageButton nextCommentCloseButton;
+    View nextCommentLayoutBorderLine;
 
 
     @Override
@@ -238,6 +246,9 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                commentInput.requestFocus();
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(commentInput, InputMethodManager.SHOW_IMPLICIT);
             }
         });
 
@@ -247,17 +258,62 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                 if(commentInput.getText().toString().equals(""))
                     OrangeToast(getApplicationContext(),"댓글을 입력해주세요.");
                 else{
-                    String num = currentForum.getNum()+"";
-                    String depth_input ="0";
-                    String num_group_input ="0";
-                    String id_input=id;
+                    String num = currentForum.getNum() + "";
+                    String id_input = id;
                     String content_input = commentInput.getText().toString();
                     String upload_datetime_input = datetimeFormat.format(Calendar.getInstance().getTime());
-                    startMyTask(new CommentInsertTask(),num,depth_input,num_group_input,id_input,content_input,upload_datetime_input);
+                    if(nextCommentLayout.getVisibility()==View.GONE) {
+                        String depth_input = "0";
+                        String num_group_input = "0";
+                        startMyTask(new CommentInsertTask(),num,depth_input,num_group_input,
+                                id_input,content_input,upload_datetime_input);
+                    }
+                    else if(comment!=null){
+                        comment.setContent(commentInput.getText().toString());
+                        comment.setUpload_datetime(upload_datetime_input);
+
+                        startMyTask(new CommentInsertTask(),comment.getNum()+"",
+                                comment.getDepth()+"",comment.getNum_group()+"",comment.getId(),
+                                comment.getContent(),comment.getUpload_datetime());
+                    }
                 }
             }
         });
 
+        commentList.addOnItemTouchListener(new RecyclerItemClickListener(getApplicationContext(), commentList, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Comment currentComment = forumCommentList.get(position);
+                if(currentComment.getDepth()==0) {
+                    nextCommentIcon.setVisibility(View.VISIBLE);
+                    nextCommentLayout.setVisibility(View.VISIBLE);
+                    nextCommentLayoutBorderLine.setVisibility(View.VISIBLE);
+                    nextCommentNickname.setText(currentComment.getNickname());
+                    commentInput.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(commentInput, InputMethodManager.SHOW_IMPLICIT);
+                    comment = new Comment(currentForum.getNum(),1,currentComment.getNum_group(),id,"default_nickname","default_content","default_upload_datetime");
+                }
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+
+            }
+        }));
+
+        nextCommentCloseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                nextCommentLayout.setVisibility(View.GONE);
+                nextCommentLayoutBorderLine.setVisibility(View.GONE);
+                nextCommentIcon.setVisibility(View.GONE);
+
+                commentInput.requestFocus();
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(commentInput.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+            }
+        });
 
     }
     //스크롤 새로 고침 필요
@@ -271,6 +327,10 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
 
         content.setText(forum.getContent());
         nicknameBottom.setText((forum.getNickname() + " 님의"));
+
+        nextCommentIcon.setVisibility(View.GONE);
+        nextCommentLayout.setVisibility(View.GONE);
+        nextCommentLayoutBorderLine.setVisibility(View.GONE);
 
         if(forum.getUnlikes()==0&&forum.getLikes()==0){
             stateLayout.setVisibility(View.GONE);
@@ -331,7 +391,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ForumCommentListAdapter.CommentHolder commentHolder, int position) {
+        public void onBindViewHolder(@NonNull final ForumCommentListAdapter.CommentHolder commentHolder, int position) {
 
             Comment currentComment = forumCommentList.get(position);
             //원글에 대한 답글일 경우 (depth = 0)
@@ -350,6 +410,12 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                 commentHolder.nextCommentContent.setText(currentComment.getContent());
                 commentHolder.nextCommentUploadDatetime.setText(currentComment.getUpload_datetime());
             }
+            commentHolder.commentMoreButton.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    OrangeToast(getApplicationContext(),commentHolder.commentUploadDatetime.getText().toString());
+                }
+            });
             /*
             Forum convertForum = forumCommentList.get(position);
             forumHolder.title.setText(convertForum.getTitle());
@@ -683,6 +749,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     stringBuffer.append(line+"\n");
 
                 data = stringBuffer.toString();
+                bufferedReader.close(); //
 
             }catch (Exception e){
                 e.printStackTrace();
@@ -765,6 +832,12 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         scrollView = (ScrollView)findViewById(R.id.anonymous_forum_view_scroll_view);
         fullScreen = (LinearLayout)findViewById(R.id.anonymous_forum_view_fullscreen);
         commentInputLayout = (LinearLayout)findViewById(R.id.anonymous_forum_view_comment_input_layout);
+
+        nextCommentIcon = (ImageView)findViewById(R.id.anonymous_forum_view_next_comment_icon);
+        nextCommentLayout = (LinearLayout)findViewById(R.id.anonymous_forum_view_next_comment_layout);
+        nextCommentNickname = (TextView)findViewById(R.id.anonymous_forum_view_next_comment_nickname);
+        nextCommentCloseButton = (ImageButton)findViewById(R.id.anonymous_forum_view_next_comment_close_button);
+        nextCommentLayoutBorderLine = (View)findViewById(R.id.anonymous_forum_view_next_comment_border_line);
     }
 
 

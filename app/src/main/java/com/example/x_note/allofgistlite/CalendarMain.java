@@ -62,6 +62,10 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,6 +83,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Locale;
 
 public class CalendarMain extends AppCompatActivity {
@@ -105,8 +110,8 @@ public class CalendarMain extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
     private ProgressDialog progressDialogDot;
-    private ArrayList<Integer> colors;
-    private Hashtable<CalendarDay, ArrayList<Integer>> dotData;
+    private int colors;
+    private Hashtable<CalendarDay, Integer> dotData;
     private ArrayList<Date> isDot;
 
     private FloatingActionButton gotoToday;
@@ -206,6 +211,11 @@ public class CalendarMain extends AppCompatActivity {
     private String[] dayOfTheWeekCheckBase = {"월", "화", "수", "목", "금", "토", "일"};
     private String WEEK_OF_DAY_TEXT;
 
+    ArrayList<Integer> oneColor = new ArrayList<Integer>();
+    ArrayList<Integer> twoColor = new ArrayList<Integer>();
+    ArrayList<Integer> threeColor = new ArrayList<Integer>();
+    ArrayList<Integer> fourColor = new ArrayList<Integer>();
+    ArrayList<Integer> fiveColor = new ArrayList<Integer>();
 
     @Override
     protected void onResume() {    //일단 응급처치(두개의 popupwindow 순서 바뀌는 문제)
@@ -255,6 +265,35 @@ public class CalendarMain extends AppCompatActivity {
                 new SundayDecorator(),
                 new SaturdayDecorator());
 
+
+        oneColor.add(Color.rgb(255,193,7));
+
+        twoColor.add(Color.rgb(255,193,7));
+        twoColor.add(Color.rgb(255,179,0));
+
+        threeColor.add(Color.rgb(255,193,7));
+        threeColor.add(Color.rgb(255,179,0));
+        threeColor.add(Color.rgb(255,160,0));
+
+        fourColor.add(Color.rgb(255,193,7));
+        fourColor.add(Color.rgb(255,179,0));
+        fourColor.add(Color.rgb(255,160,0));
+        fourColor.add(Color.rgb(255,143,0));
+
+        fiveColor.add(Color.rgb(255,193,7));
+        fiveColor.add(Color.rgb(255,179,0));
+        fiveColor.add(Color.rgb(255,160,0));
+        fiveColor.add(Color.rgb(255,143,0));
+        fiveColor.add(Color.rgb(255,111,0));
+
+
+        /*calendarView.addDecorators(
+                new OneDotDecorator(),
+                new TwoDotDecorator(),
+                new ThreeDotDecorator(),
+                new FourDotDecorator(),
+                new FiveDotDecorator());   */ //  달이 바뀔떄마다 refresh decorator 해줘야 함
+
         //날짜 제목
         textDate = (TextView) findViewById(R.id.date_text);
 
@@ -263,7 +302,7 @@ public class CalendarMain extends AppCompatActivity {
         isDot = new ArrayList<Date>();
 
         //나중에 옯겨야함 month selected로
-        dotData = new Hashtable<CalendarDay, ArrayList<Integer>> ();
+        dotData = new Hashtable<CalendarDay, Integer> ();
 
         //첫화면에 dot랑 일정표시 작업
         SettingCalendarScreen();
@@ -1089,6 +1128,7 @@ public class CalendarMain extends AppCompatActivity {
                         isDot.add(date.parse(date1.getYear() + "-" + (date1.getMonth() + 1) + "-" + 1));
                         EventDotTask eventDotTask = new EventDotTask();
                         startMyTask(eventDotTask, id, date1.getYear() + "", (date1.getMonth() + 1) + "");
+
                     }
                 }catch(Exception e) {
                     e.printStackTrace();
@@ -1872,14 +1912,20 @@ public class CalendarMain extends AppCompatActivity {
 
     public void UpdateCalendarScreen() {
         isDot = new ArrayList<Date>();
+        calendarView.removeDecorators();
+        calendarView.addDecorators(
+                new OneDayDecorator(),
+                new SundayDecorator(),
+                new SaturdayDecorator());
         EventDotTask updateEventDotTask = new EventDotTask();
         ScheduleLoadTask updateScheduleLoadTask = new ScheduleLoadTask();
         try {
             calendarListAdapter.calendarAdapterData.clear();
             calendarListAdapter.notifyDataSetChanged();
+            isDot.add(date.parse(calendarView.getSelectedDate().getYear() + "-" + (calendarView.getSelectedDate().getMonth() + 1) + "-" + "1"));
             startMyTask(updateEventDotTask, id, calendarView.getSelectedDate().getYear() + "", (calendarView.getSelectedDate().getMonth() + 1) + "");
             startMyTask(updateScheduleLoadTask, id, calendarView.getSelectedDate().getYear() + "-" + (calendarView.getSelectedDate().getMonth() + 1) + "-" + (calendarView.getSelectedDate().getDay()));
-        }catch(NullPointerException e){
+        }catch(Exception e){
             Calendar calendar = Calendar.getInstance();
             calendarListAdapter.calendarAdapterData.clear();
             calendarListAdapter.notifyDataSetChanged();
@@ -2065,6 +2111,28 @@ public class CalendarMain extends AppCompatActivity {
         }
     }
 
+    public class DotDecorator implements DayViewDecorator {
+
+        private ArrayList<Integer> color;
+        private CalendarDay date;
+
+        public DotDecorator(ArrayList<Integer> color,CalendarDay date){
+            this.color = color;
+            this.date = date;
+        }
+
+        @Override
+        public boolean shouldDecorate(CalendarDay day) {
+            return (day.equals(date)&&date!=null);
+        }
+
+        @Override
+        public void decorate(DayViewFacade view) {
+            if(color!=null)
+                view.addSpan(new CustomMultipleDotSpan(3, color));
+        }
+    }
+
     public class OneDotDecorator implements DayViewDecorator {
 
         private ArrayList<Integer> color;
@@ -2077,7 +2145,7 @@ public class CalendarMain extends AppCompatActivity {
         @Override
         public boolean shouldDecorate(CalendarDay day) {
             try {
-                return (dotData.get(day).size() == 1);
+                return (dotData.get(day) == 1);
             }catch(Exception e){
                 e.printStackTrace();
                 return false;
@@ -2103,7 +2171,7 @@ public class CalendarMain extends AppCompatActivity {
         @Override
         public boolean shouldDecorate(CalendarDay day) {
             try {
-                return (dotData.get(day).size() == 2);
+                return (dotData.get(day) == 2);
             }catch(Exception e){
                 e.printStackTrace();
                 return false;
@@ -2130,7 +2198,7 @@ public class CalendarMain extends AppCompatActivity {
         @Override
         public boolean shouldDecorate(CalendarDay day) {
             try {
-                return (dotData.get(day).size() == 3);
+                return (dotData.get(day) == 3);
             }catch(Exception e){
                 e.printStackTrace();
                 return false;
@@ -2158,7 +2226,7 @@ public class CalendarMain extends AppCompatActivity {
         @Override
         public boolean shouldDecorate(CalendarDay day) {
             try {
-                return (dotData.get(day).size() == 4);
+                return (dotData.get(day) == 4);
             }catch(Exception e){
                 e.printStackTrace();
                 return false;
@@ -2187,7 +2255,7 @@ public class CalendarMain extends AppCompatActivity {
         @Override
         public boolean shouldDecorate(CalendarDay day) {
             try {
-                return (dotData.get(day).size() >= 5);
+                return (dotData.get(day) >= 5);
             }catch(Exception e){
                 e.printStackTrace();
                 return false;
@@ -2230,6 +2298,7 @@ public class CalendarMain extends AppCompatActivity {
 
             }
         }
+
     }
 
     public void setAddSchedulePopup(View view) {
@@ -2634,22 +2703,24 @@ public class CalendarMain extends AppCompatActivity {
     }
 
 
-    public class EventDotTask extends AsyncTask<String, Integer, String> {
+    public class EventDotTask extends AsyncTask<String, Integer, JSONObject> {
+
+        JSONObject jsonObject = null;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialogDot = progressDialogDot.show(CalendarMain.this, "일정을 불러오는 중입니다...", null, true, true);
+           //progressDialogDot = progressDialogDot.show(CalendarMain.this, "일정을 불러오는 중입니다...", null, true, true);
 
         }
 
 
         @Override
-        protected String doInBackground(String... params) {
+        protected JSONObject doInBackground(String... params) {
 
+            String data = "";
             try {
                 /* 인풋 파라메터값 생성 */
-                String data = "";
                 String param = "id=" + params[0] + "&complete_date=" + params[1]+"-"+params[2]+"-"+1;
                 Log.e("POST", param);
 
@@ -2685,86 +2756,76 @@ public class CalendarMain extends AppCompatActivity {
                     buff.append(line + "\n");
                 }
 
-                data = buff.toString().trim();
+                data = buff.toString();
+                in.close();
+
 
                 /* 서버에서 응답 */
                 Log.e("RECV DATA", data);
 
-                return data;
-
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            return null;
+            try{
+                jsonObject = new JSONObject(data);
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+            return jsonObject;
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            progressDialogDot.dismiss();
-            if(result==null){
+        protected void onPostExecute(JSONObject jsonObject) {
+            //progressDialogDot.dismiss();
+
+            if(jsonObject==null){
 
             }else{
-                String[] resultSplit = result.split("\n");
-                for(int i=0; i< resultSplit.length;i++){
-                    String[] calendarDotSplit = resultSplit[i].split("/");
+                for(Iterator<String> dateKey = jsonObject.keys(); dateKey.hasNext();){
                     try {
-                        Date calendarDate = date.parse(calendarDotSplit[0]);
+                        String dateKeystr = dateKey.next();
+                        Date calendarDate = date.parse(dateKeystr);
+                        SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTime(calendarDate);
                         CalendarDay calendarDay = CalendarDay.from(calendar);
-                        switch (Integer.parseInt(calendarDotSplit[1])){
+                        View view = calendarView.getChildAt(Integer.parseInt(dayFormat.format(calendarDate)));
+                        int dot_NUM = Integer.parseInt(jsonObject.getString(dateKeystr));
+                        switch (dot_NUM){
                             case 0:
-                                colors = new ArrayList<Integer>();
                                 break;
                             case 1:
-                                colors = new ArrayList<Integer>();
-                                colors.add(Color.BLACK);
+                                calendarView.addDecorator(new DotDecorator(oneColor,calendarDay));
                                 break;
                             case 2:
-                                colors = new ArrayList<Integer>();
-                                colors.add(Color.BLACK);
-                                colors.add(Color.BLACK);
+                                calendarView.addDecorator(new DotDecorator(twoColor,calendarDay));
                                 break;
                             case 3:
-                                colors = new ArrayList<Integer>();
-                                colors.add(Color.BLACK);
-                                colors.add(Color.BLACK);
-                                colors.add(Color.BLACK);
+                                calendarView.addDecorator(new DotDecorator(threeColor,calendarDay));
                                 break;
                             case 4:
-                                colors = new ArrayList<Integer>();
-                                colors.add(Color.BLACK);
-                                colors.add(Color.BLACK);
-                                colors.add(Color.BLACK);
-                                colors.add(Color.BLACK);
+                                calendarView.addDecorator(new DotDecorator(fourColor,calendarDay));
                                 break;
                             default:
-                                colors = new ArrayList<Integer>();
-                                colors.add(Color.BLACK);
-                                colors.add(Color.BLACK);
-                                colors.add(Color.BLACK);
-                                colors.add(Color.BLACK);
-                                colors.add(Color.BLACK);
+                                calendarView.addDecorator(new DotDecorator(fiveColor,calendarDay));
                                 break;
                         }
-                        dotData.put(calendarDay,colors);
+                        /*if(dot_NUM>0&&dot_NUM<5)
+                            dotData.put(calendarDay,dot_NUM);
+                        else if (dot_NUM>=5)
+                            dotData.put(calendarDay,5);*/
 
-                    }catch(ParseException e) {
+                    }catch(Exception e) {
                         e.printStackTrace();
                     }
 
                 }
-
-                calendarView.addDecorators(
+                /*calendarView.addDecorators(
                         new OneDotDecorator(),
                         new TwoDotDecorator(),
                         new ThreeDotDecorator(),
                         new FourDotDecorator(),
-                        new FiveDotDecorator());
+                        new FiveDotDecorator());*/
 
             }
 

@@ -141,7 +141,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#FFFFFF"
-                    android:textSize="12sp"
+                    android:textSize="13sp"
                     android:textColor="#a3a3a3"
                     android:fontFamily="@font/noto_sans"
                     android:includeFontPadding="false"

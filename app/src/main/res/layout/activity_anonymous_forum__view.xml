@@ -409,6 +409,54 @@
             android:layout_height="0.5dp"
             android:background="#FF7F00"/>
         <LinearLayout
+            android:id="@+id/anonymous_forum_view_next_comment_layout"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:background="#FFFFFF">
+            <TextView
+                android:id="@+id/anonymous_forum_view_next_comment_nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:layout_marginStart="8dp"
+                android:background="#FFFFFF"
+                android:textColor="#000000"
+                android:textSize="15sp"
+                android:fontFamily="@font/noto_sans"
+                android:includeFontPadding="false"
+                tools:text="이동건"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:background="#FFFFFF"
+                android:textColor="#585858"
+                android:fontFamily="@font/noto_sans"
+                android:includeFontPadding="false"
+                android:textSize="13sp"
+                android:text="에게 답글"
+                tools:text="에게 답글"
+                />
+            <ImageButton
+                android:id="@+id/anonymous_forum_view_next_comment_close_button"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:background="#FFFFFF"
+                android:src="@drawable/clear_back_gray"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="16dp"/>
+
+        </LinearLayout>
+        <View
+            android:id="@+id/anonymous_forum_view_next_comment_border_line"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#e4e4e4" />
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#FFFFFF"
@@ -416,6 +464,14 @@
             android:gravity="center_vertical"
             android:paddingTop="8dp"
             android:paddingBottom="8dp">
+
+            <ImageView
+                android:id="@+id/anonymous_forum_view_next_comment_icon"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:background="#FFFFFF"
+                android:src="@drawable/right_under_arrow_gray"
+                android:layout_marginStart="16dp"/>
             <EditText
                 android:id="@+id/anonymous_forum_view_comment_input"
                 android:layout_width="0dp"
