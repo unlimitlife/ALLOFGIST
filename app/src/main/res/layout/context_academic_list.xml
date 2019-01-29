@@ -11,6 +11,8 @@
         android:textSize="15sp"
         android:gravity="center"
         android:textStyle="bold"
+        android:fontFamily="@font/noto_sans"
+        android:includeFontPadding="false"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="3dp"
         android:layout_marginBottom="3dp"
@@ -22,5 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_margin="3dp"
+        android:fontFamily="@font/noto_sans"
+        android:includeFontPadding="false"
         android:textSize="15sp"/>
 </LinearLayout>

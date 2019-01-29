@@ -29,6 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:text="일정"
+            android:fontFamily="@font/noto_sans"
+            android:includeFontPadding="false"
             android:textSize="18sp"
             android:textColor="#FFFFFF"
             android:layout_centerInParent="true"
@@ -53,6 +55,8 @@
             android:layout_margin="16dp"
             android:layout_gravity="center"
             android:inputType="text"
+            android:fontFamily="@font/noto_sans"
+            android:includeFontPadding="false"
             android:hint="일정을 입력하세요."/>
     </LinearLayout>
     <LinearLayout
@@ -66,6 +70,8 @@
             android:paddingLeft="16dp"
             android:gravity="center_vertical"
             android:text="완료일"
+            android:fontFamily="@font/noto_sans"
+            android:includeFontPadding="false"
             android:textSize="16sp"/>
         <Button
             android:id="@+id/datebutton"

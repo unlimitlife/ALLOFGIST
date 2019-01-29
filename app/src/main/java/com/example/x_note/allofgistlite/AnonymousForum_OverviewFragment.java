@@ -13,8 +13,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,7 +52,6 @@ public class AnonymousForum_OverviewFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -67,19 +69,6 @@ public class AnonymousForum_OverviewFragment extends Fragment {
         startMyTask(new ForumLoadTask(),"");
 
 
-        contentList.addOnItemTouchListener(
-                new RecyclerItemClickListener(getContext(), contentList, new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        startMyTask(new ViewsUploadTask(),position+"",forumList.get(position).getNum()+"");
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-
-                    }
-                })
-        );
 
         return rootView;
 
@@ -91,8 +80,16 @@ public class AnonymousForum_OverviewFragment extends Fragment {
         ForumHolder forumHolder;
         private Context context;
 
-        public ForumListAdapter(Context context) {
+        private ForumListAdapter(Context context) {
             this.context = context;
+            if(contentList.getLayoutManager() instanceof LinearLayoutManager){
+                final LinearLayoutManager linearLayoutManager = (LinearLayoutManager)contentList.getLayoutManager();
+                contentList.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+                    @Override
+                    public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                    }
+                });
+            }
         }
 
         @Override
@@ -106,7 +103,7 @@ public class AnonymousForum_OverviewFragment extends Fragment {
 
             View view = null;
 
-            view = LayoutInflater.from(getContext()).inflate(R.layout.recyclerviewitem_anonymous_forum_overview_preview, parent, false);
+            view = LayoutInflater.from(getContext()).inflate(R.layout.recyclerviewitem_anonymous_forum_preview, parent, false);
 
             forumHolder = new ForumHolder(view);
 
@@ -126,6 +123,11 @@ public class AnonymousForum_OverviewFragment extends Fragment {
             forumHolder.unlikes.setText(("싫어요 "+convertForum.getUnlikes()));
             Calendar calendar = Calendar.getInstance();
 
+            if(convertForum.getLikes()>=10)
+                forumHolder.bestIcon.setVisibility(View.VISIBLE);
+            else
+                forumHolder.bestIcon.setVisibility(View.GONE);
+
             if(!dateFormat.format(convertForum.getUpload_datetime()).equals(dateFormat.format(calendar.getTimeInMillis())))
                 forumHolder.uploadTime.setText(monthdayformat.format(convertForum.getUpload_datetime()));
             else
@@ -135,7 +137,7 @@ public class AnonymousForum_OverviewFragment extends Fragment {
 
 
 
-        public class ForumHolder extends RecyclerView.ViewHolder{
+        private class ForumHolder extends RecyclerView.ViewHolder{
 
             TextView title;
             TextView commentNumber;
@@ -144,8 +146,9 @@ public class AnonymousForum_OverviewFragment extends Fragment {
             TextView likes;
             TextView unlikes;
             TextView uploadTime;
+            ImageView bestIcon;
 
-            public ForumHolder(View view){
+            private ForumHolder(View view){
                 super(view);
                 title = (TextView)view.findViewById(R.id.title_content_preview);
                 commentNumber = (TextView)view.findViewById(R.id.comment_number_preview);
@@ -154,6 +157,7 @@ public class AnonymousForum_OverviewFragment extends Fragment {
                 likes = (TextView)view.findViewById(R.id.likes_number_preview);
                 unlikes = (TextView)view.findViewById(R.id.unlikes_number_preview);
                 uploadTime = (TextView)view.findViewById(R.id.upload_time_preview);
+                bestIcon = (ImageView)view.findViewById(R.id.best_icon_preview);
             }
 
         }
@@ -235,24 +239,42 @@ public class AnonymousForum_OverviewFragment extends Fragment {
                 RecyclerView.LayoutManager layoutManager =
                         new LinearLayoutManager(getContext());
                 contentList.setLayoutManager(layoutManager);
+
+
+                contentList.addOnItemTouchListener(
+                        new RecyclerItemClickListener(getContext(), contentList, new RecyclerItemClickListener.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+                                startMyTask(new ViewsUploadTask(),position+"",forumList.get(position).getNum()+"");
+                            }
+
+                            @Override
+                            public void onLongItemClick(View view, int position) {
+
+                            }
+                        })
+                );
+
             }catch (Exception e){
                 e.printStackTrace();
                 OrangeToast(getContext(),"게시판 업로드 에러!");
             }
+
         }
     }
 
-    class ViewsUploadTask extends AsyncTask<String,Void,String>{
+    class ViewsUploadTask extends AsyncTask<String,Void,JSONArray>{
 
+        JSONArray jsonArray = null;
         @Override
-        protected String doInBackground(String... strings) {
+        protected JSONArray doInBackground(String... strings) {
 
             String data = "";
 
             try{
                 String forumPosition = strings[0];
                 String forumNum = strings[1];
-                String params = "num="+forumNum;
+                String params = "num="+forumNum+"&forumPosition="+forumPosition;
                 URL serverUrl = new URL("http://13.124.99.123/views_upload.php");
                 HttpURLConnection httpURLConnection = (HttpURLConnection)serverUrl.openConnection();
 
@@ -291,32 +313,49 @@ public class AnonymousForum_OverviewFragment extends Fragment {
 
                 Log.e("RECV data",data);
 
-                return data+"/"+forumPosition;
-
-
             }catch (Exception e){
                 e.printStackTrace();
             }
-            return data;
+            try{
+                jsonArray = new JSONArray(data);
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+            return jsonArray;
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            if(result.equals("")){
+        protected void onPostExecute(JSONArray jsonArray) {
+            if(jsonArray.length()==0){
                 Log.e("Views","upload views fail!");
+                OrangeToast(getContext(),"게시글 불러오기를 실패하였습니다.");
             }
             else{
-                String[] splitResult = result.split("/");
-                if(splitResult[0].equals("OK")) {
-                    int lastViews = forumList.get(Integer.parseInt(splitResult[1])).getViews();
-                    forumList.get(Integer.parseInt(splitResult[1])).setViews(lastViews+1);
+                try {
+                    JSONObject jsonObject = jsonArray.getJSONObject(0);
+                    int forumPosition = Integer.parseInt(jsonObject.getString("forumPosition"));
+                    Forum uploadForum = new Forum(Integer.parseInt(jsonObject.getString("num")),
+                            jsonObject.getString("id"),
+                            jsonObject.getString("title"),
+                            jsonObject.getString("content"),
+                            jsonObject.getString("nickname"),
+                            datetimeFormat.parse(jsonObject.getString("upload_datetime")),
+                            Integer.parseInt(jsonObject.getString("views")),
+                            Integer.parseInt(jsonObject.getString("likes")),
+                            Integer.parseInt(jsonObject.getString("unlikes")),
+                            Integer.parseInt(jsonObject.getString("comments")),
+                            jsonObject.getString("like_select"),
+                            jsonObject.getString("unlike_select"));
+                    forumList.set(forumPosition,uploadForum);
+
                     Intent AnonymousForumView = new Intent(getActivity(),AnonymousForumActivity_View.class);
-                    AnonymousForumView.putExtra("ForumLoadData",forumList.get(Integer.parseInt(splitResult[1])));
+                    AnonymousForumView.putExtra("ForumLoadData",forumList.get(forumPosition));
                     AnonymousForumView.putExtra("ID",id);
                     startActivity(AnonymousForumView);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    OrangeToast(getContext(),"게시글 불러오기를 실패하였습니다.");
                 }
-                else
-                    OrangeToast(getContext(),"Error number : "+splitResult[0]);
             }
         }
     }

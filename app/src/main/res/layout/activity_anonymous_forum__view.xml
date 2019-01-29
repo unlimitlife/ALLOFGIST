@@ -10,6 +10,49 @@
     android:orientation="vertical"
     tools:context=".AnonymousForumActivity_View">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#FF7F00">
+
+        <ImageButton
+            android:id="@+id/anonymous_forum_view_back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="8dp"
+            android:background="#FF7F00"
+            android:src="@drawable/left_arrow_white" />
+
+        <TextView
+            android:id="@+id/anonymous_forum_view_title_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_toStartOf="@+id/anonymous_forum_view_more_button"
+            android:layout_toEndOf="@id/anonymous_forum_view_back_button"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:lines="1"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:fontFamily="@font/noto_sans"
+            android:includeFontPadding="false"
+            tools:text="title of content" />
+
+        <ImageButton
+            android:id="@+id/anonymous_forum_view_more_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"
+            android:background="#FF7F00"
+            android:src="@drawable/more_vert_white" />
+    </RelativeLayout>
     <ScrollView
         android:id="@+id/anonymous_forum_view_scroll_view"
         android:layout_width="match_parent"
@@ -22,49 +65,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="#FF7F00">
-
-                <ImageButton
-                    android:id="@+id/anonymous_forum_view_back_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="8dp"
-                    android:background="#FF7F00"
-                    android:src="@drawable/left_arrow_white" />
-
-                <TextView
-                    android:id="@+id/anonymous_forum_view_title_top"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_toStartOf="@+id/anonymous_forum_view_more_button"
-                    android:layout_toEndOf="@id/anonymous_forum_view_back_button"
-                    android:ellipsize="end"
-                    android:gravity="center"
-                    android:lines="1"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/noto_sans"
-                    android:includeFontPadding="false"
-                    tools:text="title of content" />
-
-                <ImageButton
-                    android:id="@+id/anonymous_forum_view_more_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="8dp"
-                    android:background="#FF7F00"
-                    android:src="@drawable/more_vert_white" />
-            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -392,11 +392,10 @@
                     android:id="@+id/anonymous_forum_view_comment_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#FFFFFF" />
+                    android:background="#FFFFFF"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
     <LinearLayout
         android:id="@+id/anonymous_forum_view_comment_input_layout"
         android:layout_width="match_parent"
@@ -498,6 +497,6 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"/>
 
-    </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

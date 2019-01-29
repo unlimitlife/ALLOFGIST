@@ -1,6 +1,7 @@
 package com.example.x_note.allofgistlite;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -220,7 +221,10 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         nicknameSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent searchActivity = new Intent(AnonymousForumActivity_View.this,AnonymousForumActivity_Search.class);
+                searchActivity.putExtra("ID",id);
+                searchActivity.putExtra("NICKNAME",currentForum.getNickname());
+                startActivity(searchActivity);
             }
         });
 
@@ -228,7 +232,8 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                startMyTask(new LikeUploadTask(),(currentForum.getNum()+""),id,((likeClick%2)+""));
+                if(unlikeClick%2==0)
+                    startMyTask(new LikeUploadTask(),(currentForum.getNum()+""),id,((likeClick%2)+""));
 
             }
         });
@@ -237,6 +242,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                if(likeClick%2==0)
                 startMyTask(new UnlikeUploadTask(),(currentForum.getNum()+""),id,((unlikeClick%2)+""));
 
             }
@@ -780,6 +786,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                             jsonObject.getString("upload_datetime"));
                     forumCommentList.add(currentComment);
                 }
+                commentList.setNestedScrollingEnabled(false);
                 commentList.setAdapter(new ForumCommentListAdapter(getApplicationContext()));
                 RecyclerView.LayoutManager layoutManager =
                         new LinearLayoutManager(AnonymousForumActivity_View.this);

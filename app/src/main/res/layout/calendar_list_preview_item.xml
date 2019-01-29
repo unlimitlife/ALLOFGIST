@@ -35,6 +35,8 @@
             android:layout_marginBottom="8dp"
             tool:text="내용 없음"
             android:textColor="#000000"
+            android:fontFamily="@font/noto_sans"
+            android:includeFontPadding="false"
             android:textSize="12sp"
             android:background="#FFFFFF"/>
     </LinearLayout>

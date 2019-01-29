@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/search_all"
+        android:title="@string/all_search" />
+    <item
+        android:id="@+id/search_title"
+        android:title="@string/title_search"/>
+    <item
+        android:id="@+id/search_content"
+        android:title="@string/content_search"/>
+    <item
+        android:id="@+id/search_writer"
+        android:title="@string/writer_search"/>
+    <item
+        android:id="@+id/search_title_with_content"
+        android:title="@string/title_with_content_search"/>
+</menu>

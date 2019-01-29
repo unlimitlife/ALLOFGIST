@@ -1,16 +1,25 @@
 package com.example.x_note.allofgistlite;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.ColorSpace;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Scroller;
 import android.widget.TextView;
+
+import java.lang.reflect.Field;
 
 public class AnonymousForumActivity_Preview extends AppCompatActivity {
 
@@ -26,8 +35,7 @@ public class AnonymousForumActivity_Preview extends AppCompatActivity {
     private Fragment OverviewFragment;
     private Fragment BestviewFragment;
 
-    private ViewPager fmViewPager;
-
+    private NonSwipeableViewPager fmViewPager;
 
 
     @Override
@@ -51,6 +59,7 @@ public class AnonymousForumActivity_Preview extends AppCompatActivity {
 
         fmViewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
         fmViewPager.setOffscreenPageLimit(1);
+        fmViewPager.setPagingEnabled(false);
 
 
 
@@ -68,12 +77,14 @@ public class AnonymousForumActivity_Preview extends AppCompatActivity {
                     buttonBest.setSelected(true);
                     imageViewBest.setSelected(true);
                     textViewBest.setText(R.string.menu_button_overview);
+                    textViewBest.setTextColor(Color.WHITE);
                     bestButtonClick++;
                     fmViewPager.setCurrentItem(1);
                 }
                 else{
                     buttonBest.setSelected(false);
                     imageViewBest.setSelected(false);
+                    textViewBest.setTextColor(Color.parseColor("#585858"));
                     textViewBest.setText(R.string.menu_button_best);
                     bestButtonClick++;
                     fmViewPager.setCurrentItem(0);
@@ -84,6 +95,9 @@ public class AnonymousForumActivity_Preview extends AppCompatActivity {
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent searchAtivity = new Intent(AnonymousForumActivity_Preview.this, AnonymousForumActivity_Search.class);
+                searchAtivity.putExtra("ID",id);
+                startActivity(searchAtivity);
 
             }
         });
@@ -136,7 +150,7 @@ public class AnonymousForumActivity_Preview extends AppCompatActivity {
         textViewBest = (TextView)findViewById(R.id.button_best_textview);
         imageViewBest = (ImageView)findViewById(R.id.button_best_imageview);
 
-        fmViewPager = (ViewPager)findViewById(R.id.anonymous_forum_preview_switch_layout);
+        fmViewPager = (NonSwipeableViewPager) findViewById(R.id.anonymous_forum_preview_switch_layout);
 
     }
 

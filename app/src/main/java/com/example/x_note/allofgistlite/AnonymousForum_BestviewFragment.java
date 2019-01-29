@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,20 +70,6 @@ public class AnonymousForum_BestviewFragment extends Fragment {
         startMyTask(new ForumLoadTask(),"");
 
 
-        contentList.addOnItemTouchListener(
-                new RecyclerItemClickListener(getContext(), contentList, new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        startMyTask(new AnonymousForum_BestviewFragment.ViewsUploadTask(),position+"",forumList.get(position).getNum()+"");
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-
-                    }
-                })
-        );
-
         return rootView;
 
     }
@@ -108,7 +95,7 @@ public class AnonymousForum_BestviewFragment extends Fragment {
 
             View view = null;
 
-            view = LayoutInflater.from(getContext()).inflate(R.layout.recyclerviewitem_anonymous_forum_bestview_preview, parent, false);
+            view = LayoutInflater.from(getContext()).inflate(R.layout.recyclerviewitem_anonymous_forum_preview, parent, false);
 
             forumHolder = new ForumListAdapter.ForumHolder(view);
 
@@ -137,7 +124,7 @@ public class AnonymousForum_BestviewFragment extends Fragment {
 
 
 
-        public class ForumHolder extends RecyclerView.ViewHolder{
+        private class ForumHolder extends RecyclerView.ViewHolder{
 
             TextView title;
             TextView commentNumber;
@@ -147,19 +134,18 @@ public class AnonymousForum_BestviewFragment extends Fragment {
             TextView unlikes;
             TextView uploadTime;
 
-            public ForumHolder(View view){
+            private ForumHolder(View view){
                 super(view);
-                title = (TextView)view.findViewById(R.id.title_content_bestview);
-                commentNumber = (TextView)view.findViewById(R.id.comment_number_bestview);
-                nickname = (TextView)view.findViewById(R.id.nickname_bestview);
-                views = (TextView)view.findViewById(R.id.views_number_bestview);
-                likes = (TextView)view.findViewById(R.id.likes_number_bestview);
-                unlikes = (TextView)view.findViewById(R.id.unlikes_number_bestview);
-                uploadTime = (TextView)view.findViewById(R.id.upload_time_bestview);
+                title = (TextView)view.findViewById(R.id.title_content_preview);
+                commentNumber = (TextView)view.findViewById(R.id.comment_number_preview);
+                nickname = (TextView)view.findViewById(R.id.nickname_preview);
+                views = (TextView)view.findViewById(R.id.views_number_preview);
+                likes = (TextView)view.findViewById(R.id.likes_number_preview);
+                unlikes = (TextView)view.findViewById(R.id.unlikes_number_preview);
+                uploadTime = (TextView)view.findViewById(R.id.upload_time_preview);
             }
 
         }
-
     }
 
 
@@ -237,24 +223,40 @@ public class AnonymousForum_BestviewFragment extends Fragment {
                 RecyclerView.LayoutManager layoutManager =
                         new LinearLayoutManager(getContext());
                 contentList.setLayoutManager(layoutManager);
+
+
+                contentList.addOnItemTouchListener(
+                        new RecyclerItemClickListener(getContext(), contentList, new RecyclerItemClickListener.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+                                startMyTask(new AnonymousForum_BestviewFragment.ViewsUploadTask(),position+"",forumList.get(position).getNum()+"");
+                            }
+
+                            @Override
+                            public void onLongItemClick(View view, int position) {
+
+                            }
+                        })
+                );
+
             }catch (Exception e){
                 e.printStackTrace();
                 OrangeToast(getContext(),"게시판 업로드 에러!");
             }
         }
     }
+    class ViewsUploadTask extends AsyncTask<String,Void,JSONArray>{
 
-    class ViewsUploadTask extends AsyncTask<String,Void,String>{
-
+        JSONArray jsonArray = null;
         @Override
-        protected String doInBackground(String... strings) {
+        protected JSONArray doInBackground(String... strings) {
 
             String data = "";
 
             try{
                 String forumPosition = strings[0];
                 String forumNum = strings[1];
-                String params = "num="+forumNum;
+                String params = "num="+forumNum+"&forumPosition="+forumPosition;
                 URL serverUrl = new URL("http://13.124.99.123/views_upload.php");
                 HttpURLConnection httpURLConnection = (HttpURLConnection)serverUrl.openConnection();
 
@@ -293,32 +295,49 @@ public class AnonymousForum_BestviewFragment extends Fragment {
 
                 Log.e("RECV data",data);
 
-                return data+"/"+forumPosition;
-
-
             }catch (Exception e){
                 e.printStackTrace();
             }
-            return data;
+            try{
+                jsonArray = new JSONArray(data);
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+            return jsonArray;
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            if(result.equals("")){
+        protected void onPostExecute(JSONArray jsonArray) {
+            if(jsonArray.length()==0){
                 Log.e("Views","upload views fail!");
+                OrangeToast(getContext(),"게시글 불러오기를 실패하였습니다.");
             }
             else{
-                String[] splitResult = result.split("/");
-                if(splitResult[0].equals("OK")) {
-                    int lastViews = forumList.get(Integer.parseInt(splitResult[1])).getViews();
-                    forumList.get(Integer.parseInt(splitResult[1])).setViews(lastViews+1);
+                try {
+                    JSONObject jsonObject = jsonArray.getJSONObject(0);
+                    int forumPosition = Integer.parseInt(jsonObject.getString("forumPosition"));
+                    Forum uploadForum = new Forum(Integer.parseInt(jsonObject.getString("num")),
+                            jsonObject.getString("id"),
+                            jsonObject.getString("title"),
+                            jsonObject.getString("content"),
+                            jsonObject.getString("nickname"),
+                            datetimeFormat.parse(jsonObject.getString("upload_datetime")),
+                            Integer.parseInt(jsonObject.getString("views")),
+                            Integer.parseInt(jsonObject.getString("likes")),
+                            Integer.parseInt(jsonObject.getString("unlikes")),
+                            Integer.parseInt(jsonObject.getString("comments")),
+                            jsonObject.getString("like_select"),
+                            jsonObject.getString("unlike_select"));
+                    forumList.set(forumPosition,uploadForum);
+
                     Intent AnonymousForumView = new Intent(getActivity(),AnonymousForumActivity_View.class);
-                    AnonymousForumView.putExtra("ForumLoadData",forumList.get(Integer.parseInt(splitResult[1])));
+                    AnonymousForumView.putExtra("ForumLoadData",forumList.get(forumPosition));
                     AnonymousForumView.putExtra("ID",id);
                     startActivity(AnonymousForumView);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    OrangeToast(getContext(),"게시글 불러오기를 실패하였습니다.");
                 }
-                else
-                    OrangeToast(getContext(),"Error number : "+splitResult[0]);
             }
         }
     }

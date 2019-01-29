@@ -25,6 +25,8 @@
                 android:textSize="35sp"
                 android:textColor="#FF7F00"
                 android:background="#FFFFFF"
+                android:fontFamily="@font/noto_sans"
+                android:includeFontPadding="false"
                 android:textStyle="bold"
                 android:gravity="center"
                 android:layout_gravity="center"/>
@@ -65,6 +67,8 @@
                 android:paddingTop="16dp"
                 android:background="@drawable/chapter_box_color_selector"
                 android:text="@string/button_official_text"
+                android:fontFamily="@font/noto_sans"
+                android:includeFontPadding="false"
                 android:textColor="@drawable/chapter_box_text_color_selector"
                 android:textSize="15sp"/>
             <Button
@@ -76,6 +80,8 @@
                 android:paddingTop="16dp"
                 android:background="@drawable/chapter_box_color_selector"
                 android:text="@string/button_organization_text"
+                android:fontFamily="@font/noto_sans"
+                android:includeFontPadding="false"
                 android:textColor="@drawable/chapter_box_text_color_selector"
                 android:textSize="15sp"/>
             <Button
@@ -87,6 +93,8 @@
                 android:background="@drawable/chapter_box_color_selector"
                 android:gravity="center"
                 android:text="@string/button_circle_text"
+                android:fontFamily="@font/noto_sans"
+                android:includeFontPadding="false"
                 android:textColor="@drawable/chapter_box_text_color_selector"
                 android:textSize="15sp"/>
         </LinearLayout>
@@ -114,6 +122,8 @@
             android:layout_gravity="center"
             android:background="@drawable/orange_round_box_deisgn"
             android:text="complete"
+            android:fontFamily="@font/noto_sans"
+            android:includeFontPadding="false"
             android:textColor="#FFFFFF"/>
     </LinearLayout>
 </LinearLayout>

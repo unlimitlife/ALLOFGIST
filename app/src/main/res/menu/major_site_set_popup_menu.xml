@@ -2,29 +2,29 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/jungijeonja"
-        android:title="전기전자컴퓨터공학부"/>
+        android:title="@string/jungijeonja"/>
     <item
         android:id="@+id/sinsojae"
-        android:title="신소재공학부"/>
+        android:title="@string/sinsojae"/>
     <item
         android:id="@+id/gigae"
-        android:title="기계공학부"/>
+        android:title="@string/gigae"/>
     <item
         android:id="@+id/jiguhwan"
-        android:title="지구·환경공학부"/>
+        android:title="@string/jiguhwan"/>
     <item
         android:id="@+id/sangmeong"
-        android:title="생명과학부"/>
+        android:title="@string/sangmeong"/>
     <item
         android:id="@+id/muligwang"
-        android:title="물리·광과학과"/>
+        android:title="@string/muligwang"/>
     <item
         android:id="@+id/hwahak"
-        android:title="화학과"/>
+        android:title="@string/hwahak"/>
     <item
         android:id="@+id/yunghab"
-        android:title="융합기술원"/>
+        android:title="@string/yunghab"/>
     <item
         android:id="@+id/nonabio"
-        android:title="나노바이오재료전자공학과"/>
+        android:title="@string/nanobio"/>
 </menu>

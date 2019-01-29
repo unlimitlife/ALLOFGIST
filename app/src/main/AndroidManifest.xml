@@ -3,16 +3,13 @@
     package="com.example.x_note.allofgistlite">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.VIBRATE" /> <!-- 진동알람 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <!-- 화면을 깨워주는 알람 -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,7 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".AnonymousForumActivity_Search"></activity>
         <!-- [START fcm_default_icon] -->
         <!--
              Set custom default icon. This is used when no icon is set for incoming notification messages.
@@ -35,9 +32,7 @@
         -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/colorPrimaryDark" />
-        <!-- [END fcm_default_icon] -->
-
+            android:resource="@color/colorPrimaryDark" /> <!-- [END fcm_default_icon] -->
         <activity android:name=".StartScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -66,7 +61,7 @@
         <activity android:name=".NotificationReceiver" />
         <activity android:name=".AnonymousForumActivity_Preview" />
         <activity android:name=".AnonymousForumActivity_Write" />
-        <activity android:name=".AnonymousForumActivity_View"></activity>
+        <activity android:name=".AnonymousForumActivity_View" />
     </application>
 
 </manifest>

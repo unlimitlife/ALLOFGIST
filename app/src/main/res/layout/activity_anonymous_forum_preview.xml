@@ -19,16 +19,18 @@
             android:text="GIST"
             android:textSize="25sp"
             android:textColor="#FFFFFF"
+            android:fontFamily="@font/noto_sans"
+            android:includeFontPadding="false"
             android:layout_centerInParent="true"
             />
     </RelativeLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/anonymous_forum_preview_switch_layout"
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="#FFFFFF"/>
+    <com.example.x_note.allofgistlite.NonSwipeableViewPager
+    android:id="@+id/anonymous_forum_preview_switch_layout"
+    android:layout_weight="1"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:background="#FFFFFF"/>
 
     <View
         android:layout_width="match_parent"
@@ -59,6 +61,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_sans"
                     android:includeFontPadding="false"
+                    android:textColor="#585858"
                     android:text="@string/menu_button_home"/>
             </LinearLayout>
             <LinearLayout
@@ -80,6 +83,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_sans"
+                    android:textColor="#585858"
                     android:includeFontPadding="false"
                     android:text="@string/menu_button_best"/>
             </LinearLayout>
@@ -100,6 +104,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_sans"
+                    android:textColor="#585858"
                     android:includeFontPadding="false"
                     android:text="@string/menu_button_search"/>
             </LinearLayout>
@@ -119,6 +124,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="#585858"
                     android:fontFamily="@font/noto_sans"
                     android:includeFontPadding="false"
                     android:text="@string/menu_button_write"/>

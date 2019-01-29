@@ -16,7 +16,7 @@
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."</string>
-    <string name="email_etc"><![CDATA["@"]]> gist.ac.kr</string>
+    <string name="email_etc">\u0040 gist.ac.kr</string>
     <string name="title_activity_add_schedule">AddSchedule</string>
 
     <!-- Strings related to edittext(id,pw) in start screen -->
@@ -35,6 +35,17 @@
     <string name="button_organization_text">조\n직</string>
     <string name="button_circle_text">동\n아\n리</string>
 
+    <!-- Strings related to major site set popup menu -->
+    <string name="jungijeonja">전기전자컴퓨터공학부</string>
+    <string name="sinsojae">신소재공학부</string>
+    <string name="gigae">기계공학부</string>
+    <string name="jiguhwan">지구·환경공학부</string>
+    <string name="sangmeong">생명과학부</string>
+    <string name="muligwang">물리·광과학과</string>
+    <string name="hwahak">화학과</string>
+    <string name="yunghab">융합기술원</string>
+    <string name="nanobio">나노바이오재료전자공학과</string>
+
     <!-- Strings related to menuButton in anonymous forum preview -->
     <string name="menu_button_home">홈</string>
     <string name="menu_button_best">인기글</string>
@@ -50,4 +61,13 @@
     <string name="comment_button">댓글 달기</string>
     <string name="none_like_state">가장 먼저 좋아요를 눌러보세요</string>
     <string name="comment_hint">댓글 입력</string>
+
+    <!-- Strings related to anonymous forum search classification menu -->
+    <string name="all_search">전체</string>
+    <string name="title_search">제목</string>
+    <string name="content_search">내용</string>
+    <string name="writer_search">글쓴이</string>
+    <string name="title_with_content_search">제목+내용</string>
+
+    <string name="only_best_search">인기글만 검색</string>
 </resources>

@@ -25,6 +25,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:text="원하는 식당을 눌러보세요."
+            android:fontFamily="@font/noto_sans"
+            android:includeFontPadding="false"
             android:textSize="25sp"
             android:textColor="#FFFFFF"/>
 
@@ -46,6 +48,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="제1학생식당 1층"
+            android:fontFamily="@font/noto_sans"
+            android:includeFontPadding="false"
             android:textColor="#000000"
             android:textSize="20sp"
             android:layout_marginLeft="8dp"
@@ -75,6 +79,8 @@
             android:text="제1학생식당 2층"
             android:textColor="#000000"
             android:textSize="20sp"
+            android:fontFamily="@font/noto_sans"
+            android:includeFontPadding="false"
             android:layout_marginLeft="8dp"
             android:background="@drawable/food_diary_roundable_box_design"/>
 
@@ -103,6 +109,8 @@
             android:layout_height="wrap_content"
             android:text="제2학생식당"
             android:textColor="#000000"
+            android:fontFamily="@font/noto_sans"
+            android:includeFontPadding="false"
             android:textSize="20sp"
             android:layout_marginLeft="8dp"
             android:background="@drawable/food_diary_roundable_box_design"/>

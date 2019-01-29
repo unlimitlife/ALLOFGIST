@@ -9,6 +9,8 @@
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/noto_sans"
+        android:includeFontPadding="false"
         android:background="#ffffff"
         app:mcv_showOtherDates="defaults"
         app:mcv_selectionColor="#eeeeee"
@@ -37,6 +39,8 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="16dp"
             android:background="#FFFFFF"
+            android:fontFamily="@font/noto_sans"
+            android:includeFontPadding="false"
             android:gravity="center"
             android:textColor="#000000"
             android:textSize="20sp"
@@ -55,6 +59,8 @@
                 android:foreground="?android:attr/selectableItemBackground"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="8dp"
+                android:fontFamily="@font/noto_sans"
+                android:includeFontPadding="false"
                 android:layout_centerVertical="true"
                 android:text="학사일정"/>
         </RelativeLayout>
@@ -116,6 +122,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/noto_sans"
+                    android:includeFontPadding="false"
                     android:text="오늘"
                     android:elevation="7dp"
                     android:layout_gravity="center"
