@@ -82,14 +82,6 @@ public class AnonymousForum_OverviewFragment extends Fragment {
 
         private ForumListAdapter(Context context) {
             this.context = context;
-            if(contentList.getLayoutManager() instanceof LinearLayoutManager){
-                final LinearLayoutManager linearLayoutManager = (LinearLayoutManager)contentList.getLayoutManager();
-                contentList.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
-                    @Override
-                    public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                    }
-                });
-            }
         }
 
         @Override
@@ -236,9 +228,15 @@ public class AnonymousForum_OverviewFragment extends Fragment {
                     forumList.add(forum);
                 }
                 contentList.setAdapter(new ForumListAdapter(getContext()));
-                RecyclerView.LayoutManager layoutManager =
+                LinearLayoutManager layoutManager =
                         new LinearLayoutManager(getContext());
                 contentList.setLayoutManager(layoutManager);
+                contentList.setOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+                    @Override
+                    public void onLoadMore(int current_page) {
+                        OrangeToast(getActivity(),"Loadmore  page = "+current_page+"first visible item"+this.firstVisibleItem);
+                    }
+                });
 
 
                 contentList.addOnItemTouchListener(
