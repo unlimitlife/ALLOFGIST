@@ -38,7 +38,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
@@ -56,6 +58,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
     TextView nickname;
     TextView upload_datetime;
     SimpleDateFormat datetimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm",Locale.KOREA);
+    SimpleDateFormat datetimeSecFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
     TextView viewsAndComments;
     ImageButton zoomOut;
     ImageButton zoomIn;
@@ -267,7 +270,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     String num = currentForum.getNum() + "";
                     String id_input = id;
                     String content_input = commentInput.getText().toString();
-                    String upload_datetime_input = datetimeFormat.format(Calendar.getInstance().getTime());
+                    String upload_datetime_input = datetimeSecFormat.format(Calendar.getInstance().getTime());
                     if(nextCommentLayout.getVisibility()==View.GONE) {
                         String depth_input = "0";
                         String num_group_input = "0";
@@ -406,7 +409,12 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                 commentHolder.commentLayout.setVisibility(View.VISIBLE);
                 commentHolder.commentNickname.setText(currentComment.getNickname());
                 commentHolder.commentContent.setText(currentComment.getContent());
-                commentHolder.commentUploadDatetime.setText(currentComment.getUpload_datetime());
+                try {
+                    commentHolder.commentUploadDatetime.setText(datetimeFormat.format(datetimeSecFormat.parse(currentComment.getUpload_datetime())));
+                }catch (ParseException e){
+                    e.printStackTrace();
+                    commentHolder.commentUploadDatetime.setText(currentComment.getUpload_datetime());
+                }
             }
             //답글에 대한 답글일 경우 (depth = 1)
             else{
@@ -414,7 +422,12 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                 commentHolder.commentLayout.setVisibility(View.GONE);
                 commentHolder.nextCommentNickname.setText(currentComment.getNickname());
                 commentHolder.nextCommentContent.setText(currentComment.getContent());
-                commentHolder.nextCommentUploadDatetime.setText(currentComment.getUpload_datetime());
+                try {
+                    commentHolder.nextCommentUploadDatetime.setText(datetimeFormat.format(datetimeSecFormat.parse(currentComment.getUpload_datetime())));
+                }catch (ParseException e){
+                    e.printStackTrace();
+                    commentHolder.nextCommentUploadDatetime.setText(currentComment.getUpload_datetime());
+                }
             }
             commentHolder.commentMoreButton.setOnClickListener(new View.OnClickListener(){
                 @Override

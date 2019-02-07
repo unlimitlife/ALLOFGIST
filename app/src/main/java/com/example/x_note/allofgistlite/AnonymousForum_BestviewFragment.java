@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -42,10 +43,12 @@ public class AnonymousForum_BestviewFragment extends Fragment {
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd",Locale.KOREA);
     SimpleDateFormat monthdayformat = new SimpleDateFormat("MM.dd",Locale.KOREA);
 
-
+    SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView contentList;
 
     private ArrayList<Forum> forumList;
+    LinearLayoutManager layoutManager;
+    ForumListAdapter forumListAdapter;
 
 
     public AnonymousForum_BestviewFragment() {
@@ -67,8 +70,51 @@ public class AnonymousForum_BestviewFragment extends Fragment {
         initialSetting(rootView);
 
         forumList = new ArrayList<Forum>();
-        startMyTask(new ForumLoadTask(),"");
+        layoutManager = new LinearLayoutManager(getContext());
+        forumListAdapter = new ForumListAdapter(getContext());
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                forumList = new ArrayList<Forum>();
+                contentList.setOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+                    @Override
+                    public void onLoadMore(int current_page) {
+                        startMyTask(new ForumLoadTask(),current_page+"");
+                    }
+                });
+
+                startMyTask(new ForumLoadTask(),1+"");
+            }
+        });
+
+        swipeRefreshLayout.setColorSchemeResources(
+                R.color.colorPrimaryDark
+        );
+
+        contentList.setOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int current_page) {
+                startMyTask(new ForumLoadTask(),current_page+"");
+            }
+        });
+
+        contentList.addOnItemTouchListener(
+                new RecyclerItemClickListener(getContext(), contentList, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        startMyTask(new ViewsUploadTask(),position+"",forumList.get(position).getNum()+"");
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+
+                    }
+                })
+        );
+
+
+        startMyTask(new ForumLoadTask(),1+"");
 
         return rootView;
 
@@ -107,8 +153,12 @@ public class AnonymousForum_BestviewFragment extends Fragment {
 
             Forum convertForum = forumList.get(position);
             forumHolder.title.setText(convertForum.getTitle());
-            if(convertForum.getComments()>0)
-                forumHolder.commentNumber.setText(("["+convertForum.getComments()+"]"));
+            if(convertForum.getComments()>0) {
+                forumHolder.commentNumber.setText(("[" + convertForum.getComments() + "]"));
+                forumHolder.commentNumber.setVisibility(View.VISIBLE);
+            }
+            else
+                forumHolder.commentNumber.setVisibility(View.GONE);
             forumHolder.nickname.setText(convertForum.getNickname());
             forumHolder.views.setText(("조회 "+convertForum.getViews()));
             forumHolder.likes.setText(("좋아요 "+convertForum.getLikes()));
@@ -149,6 +199,7 @@ public class AnonymousForum_BestviewFragment extends Fragment {
     }
 
 
+
     class ForumLoadTask extends AsyncTask<String,Void,JSONArray> {
 
         JSONArray jsonArray = null;
@@ -156,12 +207,21 @@ public class AnonymousForum_BestviewFragment extends Fragment {
         @Override
         protected JSONArray doInBackground(String... strings) {
             String data ="";
+            String page = strings[0];
+            String postParameter = "page="+page;
             try{
-                URL serverUrl = new URL("http://13.124.99.123/forum_best_load.php");
+                URL serverUrl = new URL("http://13.124.99.123/forumload.php");
                 HttpURLConnection httpURLConnection = (HttpURLConnection)serverUrl.openConnection();
 
                 httpURLConnection.setReadTimeout(5000);
                 httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameter.getBytes("utf-8"));
+                outputStream.flush();
+                outputStream.close();
 
                 int responseStatusCode = httpURLConnection.getResponseCode();
                 Log.d("phptest", "POST response code - " + responseStatusCode);
@@ -199,7 +259,12 @@ public class AnonymousForum_BestviewFragment extends Fragment {
 
         @Override
         protected void onPostExecute(JSONArray jsonArray) {
+            Boolean isFirstPage = false;
             try{
+                if(forumList.isEmpty())
+                    isFirstPage = true;
+                else
+                    isFirstPage = false;
 
                 for (int i = 0; i<jsonArray.length(); i++){
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -219,30 +284,20 @@ public class AnonymousForum_BestviewFragment extends Fragment {
 
                     forumList.add(forum);
                 }
-                contentList.setAdapter(new ForumListAdapter(getContext()));
-                RecyclerView.LayoutManager layoutManager =
-                        new LinearLayoutManager(getContext());
-                contentList.setLayoutManager(layoutManager);
-
-
-                contentList.addOnItemTouchListener(
-                        new RecyclerItemClickListener(getContext(), contentList, new RecyclerItemClickListener.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(View view, int position) {
-                                startMyTask(new AnonymousForum_BestviewFragment.ViewsUploadTask(),position+"",forumList.get(position).getNum()+"");
-                            }
-
-                            @Override
-                            public void onLongItemClick(View view, int position) {
-
-                            }
-                        })
-                );
+                if(isFirstPage) {
+                    contentList.setAdapter(forumListAdapter);
+                    contentList.setLayoutManager(layoutManager);
+                    if(swipeRefreshLayout.isRefreshing())
+                        swipeRefreshLayout.setRefreshing(false);
+                }
+                else
+                    forumListAdapter.notifyDataSetChanged();
 
             }catch (Exception e){
                 e.printStackTrace();
                 OrangeToast(getContext(),"게시판 업로드 에러!");
             }
+
         }
     }
     class ViewsUploadTask extends AsyncTask<String,Void,JSONArray>{
@@ -369,6 +424,7 @@ public class AnonymousForum_BestviewFragment extends Fragment {
 
 
     public void initialSetting(View rootView){
+        swipeRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.anonymous_forum_preview_swipe_layout);
         contentList = (RecyclerView)rootView.findViewById(R.id.anonymous_forum_preview_content_list);
     }
 }
