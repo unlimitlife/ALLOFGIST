@@ -73,6 +73,12 @@ public class AnonymousForum_BestviewFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getContext());
         forumListAdapter = new ForumListAdapter(getContext());
 
+
+        swipeRefreshLayout.setColorSchemeResources(
+                R.color.colorPrimaryDark
+        );
+
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -87,10 +93,6 @@ public class AnonymousForum_BestviewFragment extends Fragment {
                 startMyTask(new ForumLoadTask(),1+"");
             }
         });
-
-        swipeRefreshLayout.setColorSchemeResources(
-                R.color.colorPrimaryDark
-        );
 
         contentList.setOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
@@ -210,7 +212,7 @@ public class AnonymousForum_BestviewFragment extends Fragment {
             String page = strings[0];
             String postParameter = "page="+page;
             try{
-                URL serverUrl = new URL("http://13.124.99.123/forumload.php");
+                URL serverUrl = new URL("http://13.124.99.123/forum_best_load.php");
                 HttpURLConnection httpURLConnection = (HttpURLConnection)serverUrl.openConnection();
 
                 httpURLConnection.setReadTimeout(5000);

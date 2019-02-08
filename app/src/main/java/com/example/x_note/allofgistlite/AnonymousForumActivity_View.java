@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -92,7 +94,8 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
     EditText commentInput;
     ImageButton commentInputButton;
 
-    ScrollView scrollView;
+    SwipeRefreshLayout swipeRefreshLayout;
+    NestedScrollView scrollView;
     LinearLayout fullScreen;
     LinearLayout commentInputLayout;
 
@@ -145,6 +148,17 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                 break;
             }
         }
+        swipeRefreshLayout.setColorSchemeResources(
+                R.color.colorPrimaryDark
+        );  //밑에 색깔 추가하면 한바퀴 돌떄 마다 색깔 변함
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                forumCommentList = new ArrayList<Comment>();
+                startMyTask(new CommentLoadTask(),currentForum.getNum()+"");
+            }
+        });
 
 //        DataBinding(currentForum);
 
@@ -805,6 +819,9 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                         new LinearLayoutManager(AnonymousForumActivity_View.this);
                 commentList.setLayoutManager(layoutManager);
 
+                if(swipeRefreshLayout.isRefreshing())
+                    swipeRefreshLayout.setRefreshing(false);
+
            }catch (Exception e){
                 e.printStackTrace();
                 OrangeToast(getApplicationContext(),"댓글 데이터 불러오기를 실패하였습니다.");
@@ -849,7 +866,8 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         commentInput = (EditText)findViewById(R.id.anonymous_forum_view_comment_input);
         commentInputButton = (ImageButton)findViewById(R.id.anonymous_forum_view_comment_input_button);
 
-        scrollView = (ScrollView)findViewById(R.id.anonymous_forum_view_scroll_view);
+        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.anonymous_forum_view_swipe_layout);
+        scrollView = (NestedScrollView)findViewById(R.id.anonymous_forum_view_scroll_view);
         fullScreen = (LinearLayout)findViewById(R.id.anonymous_forum_view_fullscreen);
         commentInputLayout = (LinearLayout)findViewById(R.id.anonymous_forum_view_comment_input_layout);
 
