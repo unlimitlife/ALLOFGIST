@@ -565,7 +565,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                                         noticeOk.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                startMyTask(new CommentDeleteTask(),currentComment.getNum_primary()+"");
+                                                startMyTask(new CommentDeleteTask(),currentComment.getNum_primary()+"",currentComment.getNum()+"",currentComment.getDepth()+"",currentComment.getNum_group()+"");
                                                 noticePopupWindow.dismiss();
                                             }
                                         });
@@ -621,7 +621,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                                         noticeOk.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                startMyTask(new CommentDeleteTask(),currentComment.getNum_primary()+"");
+                                                startMyTask(new CommentDeleteTask(),currentComment.getNum_primary()+"",currentComment.getNum()+"",currentComment.getDepth()+"",currentComment.getNum_group()+"");
                                                 noticePopupWindow.dismiss();
                                             }
                                         });
@@ -1211,7 +1211,10 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         protected String doInBackground(String... strings) {
             String data = "";
             String num_primary = strings[0];
-            String postParameter = "num_primary="+num_primary;
+            String num = strings[1];
+            String depth = strings[2];
+            String num_group = strings[3];
+            String postParameter = "num_primary="+num_primary+"&num="+num+"&depth="+depth+"&num_group="+num_group;
             try{
                 URL serverUrl = new URL("http://13.124.99.123/forum_comment_delete.php");
                 HttpURLConnection httpURLConnection = (HttpURLConnection)serverUrl.openConnection();
@@ -1256,9 +1259,6 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            if(result.equals("")){
-                OrangeToast(getApplicationContext(),"서버 접속 에러");
-            }
             if(result.equals("OK")){
                 swipeRefreshLayout.post(new Runnable() {
                     @Override
@@ -1269,6 +1269,9 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     }
                 });
             }
+            else
+                OrangeToast(getApplicationContext(),"서버 접속 에러");
+
         }
     }
 
@@ -1323,9 +1326,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            if(result.equals("")){
-                OrangeToast(getApplicationContext(),"서버 접속 에러");
-            }
+
             if(result.equals("OK")){
                 editmode = false;
                 commentInput.setText("");
@@ -1343,6 +1344,9 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     }
                 });
             }
+            else
+                OrangeToast(getApplicationContext(),"서버 접속 에러");
+
         }
     }
 

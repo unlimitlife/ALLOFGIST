@@ -63,12 +63,12 @@ public class FavoriteSettingActivity extends AppCompatActivity {
                 if(keylist.contains(i)){
                     SharedPreferences.Editor favoriteEditor = getSharedPreferences("FAVORITE_KEYLIST",Context.MODE_PRIVATE).edit();
                     favoriteEditor.putString("KEYLIST_"+id+"_"+i,"OK");
-                    favoriteEditor.apply();
+                    favoriteEditor.commit();
                 }
                 else{
                     SharedPreferences.Editor favoriteEditor = getSharedPreferences("FAVORITE_KEYLIST",Context.MODE_PRIVATE).edit();
                     favoriteEditor.putString("KEYLIST_"+id+"_"+i,"NONE");
-                    favoriteEditor.apply();
+                    favoriteEditor.commit();
                 }
 
             }
@@ -245,12 +245,12 @@ public class FavoriteSettingActivity extends AppCompatActivity {
                         if(keylist.contains(i)){
                             SharedPreferences.Editor favoriteEditor = getSharedPreferences("FAVORITE_KEYLIST",Context.MODE_PRIVATE).edit();
                             favoriteEditor.putString("KEYLIST_"+id+"_"+i,"OK");
-                            favoriteEditor.apply();
+                            favoriteEditor.commit();
                         }
                         else{
                             SharedPreferences.Editor favoriteEditor = getSharedPreferences("FAVORITE_KEYLIST",Context.MODE_PRIVATE).edit();
                             favoriteEditor.putString("KEYLIST_"+id+"_"+i,"NONE");
-                            favoriteEditor.apply();
+                            favoriteEditor.commit();
                         }
 
                     }

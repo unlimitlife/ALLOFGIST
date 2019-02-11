@@ -153,7 +153,7 @@ public class CircleSiteFragment extends Fragment {
                         favoriteTask.execute("http://13.124.99.123/favoriteinsert.php",id,(position+21)+"");
                         SharedPreferences.Editor favoriteEditor = getActivity().getSharedPreferences("FAVORITE_KEYLIST",Context.MODE_PRIVATE).edit();
                         favoriteEditor.putString("KEYLIST_"+id+"_"+(position+21),"OK");
-                        favoriteEditor.apply();
+                        favoriteEditor.commit();
                         view.setBackgroundResource(R.drawable.item_selected_state);
                     }
                     else {
@@ -161,7 +161,7 @@ public class CircleSiteFragment extends Fragment {
                         favoriteTask.execute("http://13.124.99.123/favoritedelete.php",id,(position+21)+"");
                         SharedPreferences.Editor favoriteEditor = getActivity().getSharedPreferences("FAVORITE_KEYLIST",Context.MODE_PRIVATE).edit();
                         favoriteEditor.putString("KEYLIST_"+id+"_"+(position+21),"NONE");
-                        favoriteEditor.apply();
+                        favoriteEditor.commit();
                         view.setBackgroundResource(R.drawable.item_unselected_state);
                     }
                 }
