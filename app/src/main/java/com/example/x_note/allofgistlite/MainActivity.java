@@ -145,10 +145,10 @@ public class MainActivity extends AppCompatActivity {
 
         //recyclerview 스크롤 딱 맞아떨어지게 하는 도구
         SnapToBlock snapToBlock = new SnapToBlock(4);
-        if(keylist.size()>4)
+        if(keylist.size()>4) {
             recyclerView.setOnFlingListener(null);
             snapToBlock.attachToRecyclerView(recyclerView);
-
+        }
         startMyTask(new TokenLoadTask(),"http://13.124.99.123/tokenload.php",id);
 
     }

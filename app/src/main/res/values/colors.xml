@@ -4,4 +4,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="navigationBarColor">#FF7F00</color>
 
+    <color name="base_orange">#FF7F00</color>
+    <color name="weak_orange">#FFFFFF</color>
+
 </resources>

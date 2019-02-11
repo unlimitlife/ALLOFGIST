@@ -7,6 +7,7 @@ import android.graphics.ColorSpace;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import java.lang.reflect.Field;
 public class AnonymousForumActivity_Preview extends AppCompatActivity {
 
     String id;
+    Bundle bundle;
     LinearLayout buttonHome;
     LinearLayout buttonBest;
     ImageView imageViewBest;
@@ -36,6 +38,7 @@ public class AnonymousForumActivity_Preview extends AppCompatActivity {
     private Fragment BestviewFragment;
 
     private NonSwipeableViewPager fmViewPager;
+    PagerAdapter pagerAdapter;
 
 
     @Override
@@ -46,18 +49,17 @@ public class AnonymousForumActivity_Preview extends AppCompatActivity {
         bestButtonClick = 0;
 
         id = getIntent().getStringExtra("ID");
-        Bundle bundle = new Bundle();
+        bundle = new Bundle();
         bundle.putString("ID",id);
 
         OverviewFragment = new AnonymousForum_OverviewFragment();
-        BestviewFragment = new AnonymousForum_BestviewFragment();
-
         OverviewFragment.setArguments(bundle);
+        BestviewFragment = new AnonymousForum_BestviewFragment();
         BestviewFragment.setArguments(bundle);
-
         initialSetting();
 
-        fmViewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
+        pagerAdapter = new PagerAdapter(getSupportFragmentManager());
+        fmViewPager.setAdapter(pagerAdapter);
         fmViewPager.setOffscreenPageLimit(1);
         fmViewPager.setPagingEnabled(false);
 
@@ -79,6 +81,10 @@ public class AnonymousForumActivity_Preview extends AppCompatActivity {
                     textViewBest.setText(R.string.menu_button_overview);
                     textViewBest.setTextColor(Color.WHITE);
                     bestButtonClick++;
+
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.detach(BestviewFragment);
+                    ft.attach(BestviewFragment).commit();
                     fmViewPager.setCurrentItem(1);
                 }
                 else{
@@ -87,6 +93,10 @@ public class AnonymousForumActivity_Preview extends AppCompatActivity {
                     textViewBest.setTextColor(Color.parseColor("#585858"));
                     textViewBest.setText(R.string.menu_button_best);
                     bestButtonClick++;
+
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.detach(OverviewFragment);
+                    ft.attach(OverviewFragment).commit();
                     fmViewPager.setCurrentItem(0);
                 }
             }
@@ -116,10 +126,10 @@ public class AnonymousForumActivity_Preview extends AppCompatActivity {
 
     private class PagerAdapter extends FragmentStatePagerAdapter {
 
-
         public PagerAdapter(FragmentManager fm){
             super(fm);
         }
+
 
         @Override
         public Fragment getItem(int position) {

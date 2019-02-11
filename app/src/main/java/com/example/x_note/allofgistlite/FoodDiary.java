@@ -146,7 +146,6 @@ public class FoodDiary extends AppCompatActivity {
     //1학 학식 사진 열기
     public class SecondRestaurantTask extends AsyncTask<String, Void, String> {
 
-
         @Override
         protected String doInBackground(String... params) {
 

@@ -172,13 +172,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:background="#e4e4e4" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/anonymous_forum_search_list"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:background="#FFFFFF" />
+                android:background="#FFFFFF">
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/anonymous_forum_search_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#FFFFFF" />
+                <ProgressBar
+                    android:id="@+id/anonymous_forum_search_progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminateDrawable="@drawable/ring_progress_dialog"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone"
+                    android:indeterminate="true"/>
+            </FrameLayout>
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>

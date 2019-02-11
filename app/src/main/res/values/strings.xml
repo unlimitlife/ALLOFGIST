@@ -62,6 +62,10 @@
     <string name="none_like_state">가장 먼저 좋아요를 눌러보세요</string>
     <string name="comment_hint">댓글 입력</string>
 
+    <!-- Strings related to anonymous forum write -->
+    <string name="submit_button">등록</string>
+    <string name="edit_button">수정</string>
+
     <!-- Strings related to anonymous forum search classification menu -->
     <string name="all_search">전체</string>
     <string name="title_search">제목</string>
@@ -70,4 +74,15 @@
     <string name="title_with_content_search">제목+내용</string>
 
     <string name="only_best_search">인기글만 검색</string>
+
+    <!-- Strings related to notice popup window -->
+    <string name="cancel">취소</string>
+    <string name="ok">확인</string>
+    <string name="delete_question">삭제하시겠습니까?</string>
+    <string name="edit_question">수정하시겠습니까?</string>
+    <string name="edit_cancel_question">수정을 정말 취소하시겠습니까?</string>
+
+    <!-- Strings related to anonymous forum view more vert menu -->
+    <string name="delete_forum">삭제</string>
+    <string name="edit_forum">수정</string>
 </resources>

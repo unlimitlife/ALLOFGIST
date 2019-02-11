@@ -3,6 +3,7 @@ package com.example.x_note.allofgistlite;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -14,7 +15,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +28,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +40,7 @@ import com.google.gson.JsonObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -40,6 +48,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.Buffer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
@@ -55,6 +64,13 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
     ImageButton backButton;
     ImageButton moreButton;
     TextView topTitle;
+
+    PopupWindow noticePopupWindow;
+    View popupView;
+
+    TextView noticeText;
+    TextView noticeCancel;
+    TextView noticeOk;
 
     TextView title;
     TextView nickname;
@@ -90,7 +106,9 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
     RecyclerView commentList;
     private ArrayList<Comment> forumCommentList;
 
+    private boolean editmode = false;
     private Comment comment;
+    private Comment currentComment;
     EditText commentInput;
     ImageButton commentInputButton;
 
@@ -106,6 +124,33 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
     ImageButton nextCommentCloseButton;
     View nextCommentLayoutBorderLine;
 
+
+    @Override
+    public void onBackPressed() {
+        if(editmode){
+            noticeText.setText(R.string.edit_cancel_question);
+            noticePopupWindow.showAtLocation(popupView, Gravity.CENTER,0,0);
+            noticeOk.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        noticePopupWindow.dismiss();
+                        commentInput.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                commentInput.requestFocus();
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(commentInput.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+                                commentInput.setText("");
+                                editmode = false;
+                            }
+                        });
+                    }
+            });
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
 
     @Override
     protected void onResume() {
@@ -156,9 +201,10 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 forumCommentList = new ArrayList<Comment>();
-                startMyTask(new CommentLoadTask(),currentForum.getNum()+"");
+                startMyTask(new ForumReloadTask(),currentForum.getNum()+"");
             }
         });
+
 
 //        DataBinding(currentForum);
 
@@ -198,10 +244,62 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
             }
         });
 
+        //notice popup window cancel button
+        noticeCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                noticePopupWindow.dismiss();
+            }
+        });
+
         moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(currentForum.getId().equals(id)){
+                    PopupMenu popupMine = new PopupMenu(getApplicationContext(),v);
+                    MenuInflater menuInflater = new MenuInflater(getApplicationContext());
+                    menuInflater.inflate(R.menu.anonymous_forum_view_mine_popup_menu,popupMine.getMenu());
+                    popupMine.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()){
+                                case R.id.mine_delete:
+                                    noticeText.setText(R.string.delete_question);
+                                    noticePopupWindow.showAtLocation(popupView, Gravity.CENTER,0,0);
+                                    noticeOk.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            startMyTask(new ForumDeleteTask(),currentForum.getNum()+"");
+                                            noticePopupWindow.dismiss();
+                                        }
+                                    });
+                                    break;
 
+                                case R.id.mine_edit:
+                                    noticeText.setText(R.string.edit_question);
+                                    noticePopupWindow.showAtLocation(popupView,Gravity.CENTER,0,0);
+                                    noticeOk.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+
+                                            Intent AnonymousForumWrite = new Intent(getApplicationContext(),AnonymousForumActivity_Write.class);
+                                            AnonymousForumWrite.putExtra("ForumLoadData",currentForum);
+                                            AnonymousForumWrite.putExtra("ID",id);
+                                            noticePopupWindow.dismiss();
+                                            startActivity(AnonymousForumWrite);
+                                        }
+                                    });
+                                    break;
+                                default :
+                                    break;
+                            }
+                            return false;
+                        }
+                    });
+                    popupMine.show();
+                }else{
+
+                }
             }
         });
 
@@ -281,29 +379,33 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                 if(commentInput.getText().toString().equals(""))
                     OrangeToast(getApplicationContext(),"댓글을 입력해주세요.");
                 else{
-                    String num = currentForum.getNum() + "";
-                    String id_input = id;
-                    String content_input = commentInput.getText().toString();
-                    String upload_datetime_input = datetimeSecFormat.format(Calendar.getInstance().getTime());
-                    if(nextCommentLayout.getVisibility()==View.GONE) {
-                        String depth_input = "0";
-                        String num_group_input = "0";
-                        startMyTask(new CommentInsertTask(),num,depth_input,num_group_input,
-                                id_input,content_input,upload_datetime_input);
+                    if(editmode){
+                        startMyTask(new CommentEditTask(),currentComment.getNum_primary()+"",commentInput.getText().toString());
                     }
-                    else if(comment!=null){
-                        comment.setContent(commentInput.getText().toString());
-                        comment.setUpload_datetime(upload_datetime_input);
+                    else {
+                        String num = currentForum.getNum() + "";
+                        String id_input = id;
+                        String content_input = commentInput.getText().toString();
+                        String upload_datetime_input = datetimeSecFormat.format(Calendar.getInstance().getTime());
+                        if (nextCommentLayout.getVisibility() == View.GONE) {
+                            String depth_input = "0";
+                            String num_group_input = "0";
+                            startMyTask(new CommentInsertTask(), num, depth_input, num_group_input,
+                                    id_input, content_input, upload_datetime_input);
+                        } else if (comment != null) {
+                            comment.setContent(commentInput.getText().toString());
+                            comment.setUpload_datetime(upload_datetime_input);
 
-                        startMyTask(new CommentInsertTask(),comment.getNum()+"",
-                                comment.getDepth()+"",comment.getNum_group()+"",comment.getId(),
-                                comment.getContent(),comment.getUpload_datetime());
+                            startMyTask(new CommentInsertTask(), comment.getNum() + "",
+                                    comment.getDepth() + "", comment.getNum_group() + "", comment.getId(),
+                                    comment.getContent(), comment.getUpload_datetime());
+                        }
                     }
                 }
             }
         });
 
-        commentList.addOnItemTouchListener(new RecyclerItemClickListener(getApplicationContext(), commentList, new RecyclerItemClickListener.OnItemClickListener() {
+        /*commentList.addOnItemTouchListener(new RecyclerItemClickListener(getApplicationContext(), commentList, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 Comment currentComment = forumCommentList.get(position);
@@ -323,7 +425,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
             public void onLongItemClick(View view, int position) {
 
             }
-        }));
+        }));*/
 
         nextCommentCloseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -414,9 +516,9 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull final ForumCommentListAdapter.CommentHolder commentHolder, int position) {
+        public void onBindViewHolder(@NonNull final ForumCommentListAdapter.CommentHolder commentHolder, final int position) {
 
-            Comment currentComment = forumCommentList.get(position);
+            currentComment = forumCommentList.get(position);
             //원글에 대한 답글일 경우 (depth = 0)
             if(currentComment.getDepth()==0){
                 commentHolder.nextCommentLayout.setVisibility(View.GONE);
@@ -443,10 +545,133 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     commentHolder.nextCommentUploadDatetime.setText(currentComment.getUpload_datetime());
                 }
             }
+
             commentHolder.commentMoreButton.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    OrangeToast(getApplicationContext(),commentHolder.commentUploadDatetime.getText().toString());
+                    currentComment = forumCommentList.get(position);
+                    if(currentComment.getId().equals(id))
+                    {
+                        PopupMenu popupCommentMine = new PopupMenu(getApplicationContext(),v);
+                        MenuInflater menuInflater = new MenuInflater(getApplicationContext());
+                        menuInflater.inflate(R.menu.anonymous_forum_view_mine_popup_menu,popupCommentMine.getMenu());
+                        popupCommentMine.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                switch (item.getItemId()){
+                                    case R.id.mine_delete:
+                                        noticeText.setText(R.string.delete_question);
+                                        noticePopupWindow.showAtLocation(popupView, Gravity.CENTER,0,0);
+                                        noticeOk.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                startMyTask(new CommentDeleteTask(),currentComment.getNum_primary()+"");
+                                                noticePopupWindow.dismiss();
+                                            }
+                                        });
+                                        break;
+
+                                    case R.id.mine_edit:
+                                        noticeText.setText(R.string.edit_question);
+                                        noticePopupWindow.showAtLocation(popupView,Gravity.CENTER,0,0);
+                                        noticeOk.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                noticePopupWindow.dismiss();
+                                                commentInput.post(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        commentInput.requestFocus();
+                                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                        imm.showSoftInput(commentInput, InputMethodManager.SHOW_IMPLICIT);
+                                                        commentInput.setText(currentComment.getContent());
+                                                        editmode = true;
+                                                    }
+                                                });
+                                            }
+                                        });
+                                        break;
+                                    default :
+                                        break;
+                                }
+                                return false;
+                            }
+                        });
+                        popupCommentMine.show();
+                    }
+                }
+            });
+
+            commentHolder.nextCommentMoreButton.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    currentComment = forumCommentList.get(position);
+                    if(currentComment.getId().equals(id))
+                    {
+                        PopupMenu popupCommentMine = new PopupMenu(getApplicationContext(),v);
+                        MenuInflater menuInflater = new MenuInflater(getApplicationContext());
+                        menuInflater.inflate(R.menu.anonymous_forum_view_mine_popup_menu,popupCommentMine.getMenu());
+                        popupCommentMine.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                switch (item.getItemId()){
+                                    case R.id.mine_delete:
+                                        noticeText.setText(R.string.delete_question);
+                                        noticePopupWindow.showAtLocation(popupView, Gravity.CENTER,0,0);
+                                        noticeOk.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                startMyTask(new CommentDeleteTask(),currentComment.getNum_primary()+"");
+                                                noticePopupWindow.dismiss();
+                                            }
+                                        });
+                                        break;
+
+                                    case R.id.mine_edit:
+                                        noticeText.setText(R.string.edit_question);
+                                        noticePopupWindow.showAtLocation(popupView,Gravity.CENTER,0,0);
+                                        noticeOk.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                noticePopupWindow.dismiss();
+                                                commentInput.post(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        commentInput.requestFocus();
+                                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                        imm.showSoftInput(commentInput, InputMethodManager.SHOW_IMPLICIT);
+                                                        commentInput.setText(currentComment.getContent());
+                                                        editmode = true;
+                                                    }
+                                                });
+                                            }
+                                        });
+                                        break;
+                                    default :
+                                        break;
+                                }
+                                return false;
+                            }
+                        });
+                        popupCommentMine.show();
+                    }
+                }
+            });
+
+            commentHolder.commentLayout.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Comment currentComment = forumCommentList.get(position);
+                    if(currentComment.getDepth()==0) {
+                        nextCommentIcon.setVisibility(View.VISIBLE);
+                        nextCommentLayout.setVisibility(View.VISIBLE);
+                        nextCommentLayoutBorderLine.setVisibility(View.VISIBLE);
+                        nextCommentNickname.setText(currentComment.getNickname());
+                        commentInput.requestFocus();
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(commentInput, InputMethodManager.SHOW_IMPLICIT);
+                        comment = new Comment(currentForum.getNum(),1,currentComment.getNum_group(),id,"default_nickname","default_content","default_upload_datetime");
+                    }
                 }
             });
             /*
@@ -469,7 +694,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
 
 
 
-        public class CommentHolder extends RecyclerView.ViewHolder{
+        public class CommentHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
 
             LinearLayout commentLayout;
@@ -500,6 +725,10 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                 nextCommentUploadDatetime = (TextView)view.findViewById(R.id.anonymous_forum_next_comment_uplaod_datetime);
             }
 
+            @Override
+            public void onClick(View v) {
+
+            }
         }
 
     }
@@ -804,7 +1033,8 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    Comment currentComment = new Comment(Integer.parseInt(jsonObject.getString("num")),
+                    Comment currentComment = new Comment(Integer.parseInt(jsonObject.getString("num_primary")),
+                            Integer.parseInt(jsonObject.getString("num")),
                             Integer.parseInt(jsonObject.getString("depth")),
                             Integer.parseInt(jsonObject.getString("num_group")),
                             jsonObject.getString("id"),
@@ -829,6 +1059,292 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         }
     }
 
+    class ForumDeleteTask extends AsyncTask<String, Void, String>{
+        @Override
+        protected String doInBackground(String... strings) {
+            String data = "";
+            String num = strings[0];
+            String postParameter = "num="+num;
+            try{
+                URL serverUrl = new URL("http://13.124.99.123/forum_delete.php");
+                HttpURLConnection httpURLConnection = (HttpURLConnection)serverUrl.openConnection();
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameter.getBytes("utf-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d("ForumDeleteTask","POST response code - "+responseStatusCode);
+
+                InputStream inputStream;
+                BufferedReader bufferedReader;
+
+                if(responseStatusCode== HttpURLConnection.HTTP_OK){
+                    inputStream = httpURLConnection.getInputStream();
+                }else{
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+                bufferedReader = new BufferedReader(new InputStreamReader(inputStream),8*1024);
+
+                String line = null;
+                StringBuffer stringBuffer = new StringBuffer();
+
+                while((line = bufferedReader.readLine())!=null){
+                    stringBuffer.append(line);
+                }
+
+                data = stringBuffer.toString();
+                bufferedReader.close();
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if(result.equals("")){
+                OrangeToast(getApplicationContext(),"서버 접속 에러");
+            }
+            if(result.equals("OK")){
+                finish();
+            }
+        }
+    }
+
+    class ForumReloadTask extends AsyncTask<String,Void,JSONArray> {
+
+        JSONArray jsonArray = null;
+        @Override
+        protected JSONArray doInBackground(String... strings) {
+            String data ="";
+            String num = strings[0];
+            String postParameter = "num="+num;
+            try{
+                URL serverUrl = new URL("http://13.124.99.123/forum_current_load.php");
+                HttpURLConnection httpURLConnection = (HttpURLConnection)serverUrl.openConnection();
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameter.getBytes("utf-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d("phptest", "POST response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == httpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                String line = null;
+                StringBuffer stringBuffer = new StringBuffer();
+                while ((line = bufferedReader.readLine()) != null) {
+                    stringBuffer.append(line+"\n");
+                }
+
+                data = stringBuffer.toString();
+                bufferedReader.close();
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            try{
+                jsonArray =  new JSONArray(data);
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+            return jsonArray;
+        }
+
+        @Override
+        protected void onPostExecute(JSONArray jsonArray) {
+            try{
+                for (int i = 0; i<jsonArray.length(); i++){
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                    Forum forum = new Forum(Integer.parseInt(jsonObject.getString("num")),
+                            jsonObject.getString("id"),
+                            jsonObject.getString("title"),
+                            jsonObject.getString("content"),
+                            jsonObject.getString("nickname"),
+                            datetimeFormat.parse(jsonObject.getString("upload_datetime")),
+                            Integer.parseInt(jsonObject.getString("views")),
+                            Integer.parseInt(jsonObject.getString("likes")),
+                            Integer.parseInt(jsonObject.getString("unlikes")),
+                            Integer.parseInt(jsonObject.getString("comments")),
+                            jsonObject.getString("like_select"),
+                            jsonObject.getString("unlike_select"));
+
+                    currentForum = forum;
+                }
+                if(swipeRefreshLayout.isRefreshing())
+                    startMyTask(new CommentLoadTask(),currentForum.getNum()+"");
+
+            }catch (Exception e){
+                e.printStackTrace();
+                OrangeToast(getApplicationContext(),"게시판 업로드 에러!");
+            }
+
+        }
+    }
+
+    class CommentDeleteTask extends AsyncTask<String, Void, String>{
+        @Override
+        protected String doInBackground(String... strings) {
+            String data = "";
+            String num_primary = strings[0];
+            String postParameter = "num_primary="+num_primary;
+            try{
+                URL serverUrl = new URL("http://13.124.99.123/forum_comment_delete.php");
+                HttpURLConnection httpURLConnection = (HttpURLConnection)serverUrl.openConnection();
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameter.getBytes("utf-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d("ForumDeleteTask","POST response code - "+responseStatusCode);
+
+                InputStream inputStream;
+                BufferedReader bufferedReader;
+
+                if(responseStatusCode== HttpURLConnection.HTTP_OK){
+                    inputStream = httpURLConnection.getInputStream();
+                }else{
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+                bufferedReader = new BufferedReader(new InputStreamReader(inputStream),8*1024);
+
+                String line = null;
+                StringBuffer stringBuffer = new StringBuffer();
+
+                while((line = bufferedReader.readLine())!=null){
+                    stringBuffer.append(line);
+                }
+
+                data = stringBuffer.toString();
+                bufferedReader.close();
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if(result.equals("")){
+                OrangeToast(getApplicationContext(),"서버 접속 에러");
+            }
+            if(result.equals("OK")){
+                swipeRefreshLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(true);
+                        forumCommentList = new ArrayList<Comment>();
+                        startMyTask(new ForumReloadTask(),currentForum.getNum()+"");
+                    }
+                });
+            }
+        }
+    }
+
+    class CommentEditTask extends AsyncTask<String, Void, String>{
+        @Override
+        protected String doInBackground(String... strings) {
+            String data = "";
+            String num_primary = strings[0];
+            String content =  strings[1];
+            String postParameter = "num_primary="+num_primary+"&content="+content;
+            try{
+                URL serverUrl = new URL("http://13.124.99.123/forum_comment_edit.php");
+                HttpURLConnection httpURLConnection = (HttpURLConnection)serverUrl.openConnection();
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameter.getBytes("utf-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d("ForumDeleteTask","POST response code - "+responseStatusCode);
+
+                InputStream inputStream;
+                BufferedReader bufferedReader;
+
+                if(responseStatusCode== HttpURLConnection.HTTP_OK){
+                    inputStream = httpURLConnection.getInputStream();
+                }else{
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+                bufferedReader = new BufferedReader(new InputStreamReader(inputStream),8*1024);
+
+                String line = null;
+                StringBuffer stringBuffer = new StringBuffer();
+
+                while((line = bufferedReader.readLine())!=null){
+                    stringBuffer.append(line);
+                }
+
+                data = stringBuffer.toString();
+                bufferedReader.close();
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if(result.equals("")){
+                OrangeToast(getApplicationContext(),"서버 접속 에러");
+            }
+            if(result.equals("OK")){
+                editmode = false;
+                commentInput.setText("");
+
+                commentInput.requestFocus();
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(commentInput.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+                swipeRefreshLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(true);
+                        forumCommentList = new ArrayList<Comment>();
+                        startMyTask(new ForumReloadTask(),currentForum.getNum()+"");
+                    }
+                });
+            }
+        }
+    }
 
     public void InitialSetting(){
         backButton = (ImageButton)findViewById(R.id.anonymous_forum_view_back_button);
@@ -876,6 +1392,14 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         nextCommentNickname = (TextView)findViewById(R.id.anonymous_forum_view_next_comment_nickname);
         nextCommentCloseButton = (ImageButton)findViewById(R.id.anonymous_forum_view_next_comment_close_button);
         nextCommentLayoutBorderLine = (View)findViewById(R.id.anonymous_forum_view_next_comment_border_line);
+
+        popupView = getLayoutInflater().inflate(R.layout.notice_plus_cancel_popup_window,null);
+        noticePopupWindow = new PopupWindow(popupView, RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT,true);
+
+        noticeText = (TextView)popupView.findViewById(R.id.notice_plus_text);
+        noticeOk = (TextView)popupView.findViewById(R.id.notice_plus_ok_textview);
+        noticeCancel = (TextView)popupView.findViewById(R.id.notice_plus_cancel_textview);
+        noticePopupWindow.setBackgroundDrawable(new ColorDrawable(Color.argb(80,0,0,0)));
     }
 
 

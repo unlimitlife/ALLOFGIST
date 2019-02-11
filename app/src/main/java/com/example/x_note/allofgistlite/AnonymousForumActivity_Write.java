@@ -1,5 +1,6 @@
 package com.example.x_note.allofgistlite;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -17,6 +18,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -45,8 +47,37 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
     View popupView;
     TextView noticeTextView;
     TextView okTextView;
+    private Forum currentForum;
+    private boolean editmode = false;
 
     SimpleDateFormat datetimeformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.KOREA);
+
+    PopupWindow noticePopupWindow;
+    TextView noticeText;
+    TextView noticeCancel;
+    TextView noticeOk;
+
+    @Override
+    public void onBackPressed() {
+        if(editmode){
+            noticeText.setText(R.string.edit_cancel_question);
+            noticePopupWindow.showAtLocation(popupView, Gravity.CENTER,0,0);
+            noticeOk.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editmode = false;
+                    finish();
+                }
+            });
+            noticeCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    noticePopupWindow.dismiss();
+                }
+            });
+        }else
+            super.onBackPressed();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +87,26 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
         initialSetting();
 
         id = getIntent().getStringExtra("ID");
+        try{
+            currentForum = getIntent().getExtras().getParcelable("ForumLoadData");
+            if(currentForum.getNickname().equals("익명"))
+                selectNicknameButton.setChecked(false);
+            else
+                selectNicknameButton.setChecked(true);
+            nicknameTextView.setText(currentForum.getNickname());
+            titleEditText.setText(currentForum.getTitle());
+            contentEditText.setText(currentForum.getContent());
+            submitButton.setText(R.string.edit_button);
+            editmode = true;
+        }catch(NullPointerException e){
+            e.printStackTrace();
+            selectNicknameButton.setChecked(false);
+            nicknameTextView.setText("익명");
+            titleEditText.setText("");
+            contentEditText.setText("");
+            submitButton.setText(R.string.submit_button);
+            editmode = false;
+        }
 
         backButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -74,6 +125,7 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
                     nicknameTextView.setText("익명");
             }
         });
+
         popupView = getLayoutInflater().inflate(R.layout.notice_popup_window,null);
         popupWindow = new PopupWindow(popupView,RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT,true);
         noticeTextView = (TextView)popupView.findViewById(R.id.notice_text);
@@ -84,10 +136,8 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(titleEditText.getText().toString().isEmpty()) {
-
                     noticeTextView.setText("제목을 입력해주세요.");
                     popupWindow.showAtLocation(popupView,Gravity.CENTER,0,0);
-
                     okTextView.setOnClickListener(new View.OnClickListener(){
                         @Override
                         public void onClick(View v) {
@@ -96,11 +146,10 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
                     });
 
                 }
-                else if(contentEditText.getText().toString().isEmpty()){
 
+                else if(contentEditText.getText().toString().isEmpty()){
                     noticeTextView.setText("내용을 입력해주세요.");
                     popupWindow.showAtLocation(popupView,Gravity.CENTER,0,0);
-
                     okTextView.setOnClickListener(new View.OnClickListener(){
                         @Override
                         public void onClick(View v) {
@@ -108,6 +157,7 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
                         }
                     });
                 }
+
                 else {
                     Forum forum = new Forum(
                             id,
@@ -115,16 +165,20 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
                             contentEditText.getText().toString(),
                             nicknameTextView.getText().toString(),
                             new Date(Calendar.getInstance().getTimeInMillis()));
+                    try{
+                        if(editmode) {
+                            forum.setUpload_datetime(currentForum.getUpload_datetime());
+                            startMyTask(new ForumEditTask(), forum.getId(), forum.getTitle(), forum.getContent(), forum.getNickname(), currentForum.getNum() + "");
+                        }
+                    }catch (NullPointerException e){
+                        e.printStackTrace();
+                        forum.setUpload_datetime(new Date(Calendar.getInstance().getTimeInMillis()));
+                        startMyTask(new ForumInsertTask(),forum.getId(),forum.getTitle(),forum.getContent(),forum.getNickname(),datetimeformat.format(forum.getUpload_datetime()));
+                    }
 
-                    startMyTask(new ForumInsertTask(),forum.getId(),forum.getTitle(),forum.getContent(),forum.getNickname(),datetimeformat.format(forum.getUpload_datetime()));
-
-                    finish();
                 }
             }
         });
-
-
-
     }
 
     public void initialSetting(){
@@ -134,6 +188,14 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
         titleEditText = (EditText)findViewById(R.id.write_title);
         contentEditText = (EditText)findViewById(R.id.write_content);
         nicknameTextView = (TextView)findViewById(R.id.nickname_textview);
+
+        popupView = getLayoutInflater().inflate(R.layout.notice_plus_cancel_popup_window,null);
+        noticePopupWindow = new PopupWindow(popupView, RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT,true);
+
+        noticeText = (TextView)popupView.findViewById(R.id.notice_plus_text);
+        noticeOk = (TextView)popupView.findViewById(R.id.notice_plus_ok_textview);
+        noticeCancel = (TextView)popupView.findViewById(R.id.notice_plus_cancel_textview);
+        noticePopupWindow.setBackgroundDrawable(new ColorDrawable(Color.argb(80,0,0,0)));
     }
 
 
@@ -149,7 +211,6 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
             try {
                 URL url = new URL("http://13.124.99.123/nicknameload.php");
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-
 
                 httpURLConnection.setReadTimeout(5000);
                 httpURLConnection.setConnectTimeout(5000);
@@ -198,10 +259,11 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
     }
 
     //DB 입력
-    class ForumInsertTask extends AsyncTask<String,Void,Void>{
+    class ForumInsertTask extends AsyncTask<String,Void,String>{
         @Override
-        protected Void doInBackground(String... strings) {
+        protected String doInBackground(String... strings) {
 
+            String data ="";
             String ID = strings[0];
             String title = strings[1];
             String content = strings[2];
@@ -212,7 +274,7 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
 
 
             try{
-                URL serverUrl = new URL("http://13.124.99.123/foruminsert.php");
+                URL serverUrl = new URL("http://13.124.99.123/forum_insert.php");
                 HttpURLConnection httpURLConnection =  (HttpURLConnection)serverUrl.openConnection();
 
                 httpURLConnection.setReadTimeout(5000);
@@ -237,12 +299,77 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-                StringBuilder sb = new StringBuilder();
+                StringBuffer sb = new StringBuffer();
                 String line = null;
 
                 while((line = bufferedReader.readLine()) != null){
                     sb.append(line);
                 }
+
+                data = sb.toString();
+                bufferedReader.close();
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if(result.equals("OK"))
+                finish();
+            else
+                OrangeToast(getApplicationContext(),"서버에 연결을 실패하였습니다.");
+        }
+    }
+
+    class ForumEditTask extends AsyncTask<String,Void,String>{
+        @Override
+        protected String doInBackground(String... strings) {
+
+            String data = "";
+            String ID = strings[0];
+            String title = strings[1];
+            String content = strings[2];
+            String nickname = strings[3];
+            String num = strings[4];
+
+            String postParameters = "id="+ID+"&title="+title+"&content="+content+"&nickname="+nickname+"&num="+num;
+
+            try{
+                URL serverUrl = new URL("http://13.124.99.123/forum_edit.php");
+                HttpURLConnection httpURLConnection =  (HttpURLConnection)serverUrl.openConnection();
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d("foruminserttest","POST response code - "+responseStatusCode);
+
+                InputStream inputStream;
+                if(responseStatusCode == httpURLConnection.HTTP_OK)
+                    inputStream = httpURLConnection.getInputStream();
+                else
+                    inputStream = httpURLConnection.getErrorStream();
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuffer stringBuffer = new StringBuffer();
+                String line = null;
+
+                while((line = bufferedReader.readLine()) != null){
+                    stringBuffer.append(line);
+                }
+                data = stringBuffer.toString();
 
                 bufferedReader.close();
 
@@ -250,10 +377,27 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
             }catch (Exception e){
                 e.printStackTrace();
             }
-            return null;
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if(result.equals("OK")) {
+                editmode = false;
+                finish();
+            }
+            else
+                OrangeToast(getApplicationContext(),"서버에 연결을 실패하였습니다.");
+
         }
     }
 
+    public void OrangeToast(Context context, String message){
+        Toast toast = Toast.makeText(context,message,Toast.LENGTH_SHORT);
+        View toastView = toast.getView();
+        toastView.setBackgroundResource(R.drawable.orange_toast_design);
+        toast.show();
+    }
 
     //asynctask 병렬처리
     public void startMyTask(AsyncTask asyncTask, String... params){

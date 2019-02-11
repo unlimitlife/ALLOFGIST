@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +41,7 @@ import java.util.Locale;
 public class AnonymousForum_OverviewFragment extends Fragment {
 
     private String id;
+    ProgressBar progressBar;
 
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.KOREA);
     SimpleDateFormat datetimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.KOREA);
@@ -115,6 +117,8 @@ public class AnonymousForum_OverviewFragment extends Fragment {
         );
 
 
+        if(!swipeRefreshLayout.isRefreshing())
+            progressBar.setVisibility(View.VISIBLE);
         startMyTask(new ForumLoadTask(),1+"");
 
         return rootView;
@@ -166,10 +170,7 @@ public class AnonymousForum_OverviewFragment extends Fragment {
             forumHolder.unlikes.setText(("싫어요 "+convertForum.getUnlikes()));
             Calendar calendar = Calendar.getInstance();
 
-            if(convertForum.getLikes()>=10)
-                forumHolder.bestIcon.setVisibility(View.VISIBLE);
-            else
-                forumHolder.bestIcon.setVisibility(View.GONE);
+            forumHolder.bestIcon.setVisibility(View.GONE);
 
             if(!dateFormat.format(convertForum.getUpload_datetime()).equals(dateFormat.format(calendar.getTimeInMillis())))
                 forumHolder.uploadTime.setText(monthdayformat.format(convertForum.getUpload_datetime()));
@@ -213,6 +214,11 @@ public class AnonymousForum_OverviewFragment extends Fragment {
         JSONArray jsonArray = null;
 
         @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
         protected JSONArray doInBackground(String... strings) {
             String data ="";
             String page = strings[0];
@@ -226,6 +232,7 @@ public class AnonymousForum_OverviewFragment extends Fragment {
                 httpURLConnection.setRequestMethod("POST");
                 httpURLConnection.connect();
 
+                Thread.sleep(300);
                 OutputStream outputStream = httpURLConnection.getOutputStream();
                 outputStream.write(postParameter.getBytes("utf-8"));
                 outputStream.flush();
@@ -295,11 +302,16 @@ public class AnonymousForum_OverviewFragment extends Fragment {
                 if(isFirstPage) {
                     contentList.setAdapter(forumListAdapter);
                     contentList.setLayoutManager(layoutManager);
+                    if(progressBar.getVisibility()==View.VISIBLE)
+                        progressBar.setVisibility(View.GONE);
                     if(swipeRefreshLayout.isRefreshing())
                         swipeRefreshLayout.setRefreshing(false);
                 }
-                else
+                else {
+                    if(progressBar.getVisibility()==View.VISIBLE)
+                        progressBar.setVisibility(View.GONE);
                     forumListAdapter.notifyDataSetChanged();
+                }
 
             }catch (Exception e){
                 e.printStackTrace();
@@ -435,5 +447,7 @@ public class AnonymousForum_OverviewFragment extends Fragment {
     public void initialSetting(View rootView){
         swipeRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.anonymous_forum_preview_swipe_layout);
         contentList = (RecyclerView)rootView.findViewById(R.id.anonymous_forum_preview_content_list);
+        progressBar = (ProgressBar)rootView.findViewById(R.id.anonymous_forum_preview_progress_bar);
+        progressBar.setVisibility(View.GONE);
     }
 }

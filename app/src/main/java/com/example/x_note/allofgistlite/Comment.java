@@ -1,6 +1,7 @@
 package com.example.x_note.allofgistlite;
 
 public class Comment {
+    private int num_primary;
     private int num;
     private int depth;
     private int num_group;
@@ -17,6 +18,25 @@ public class Comment {
         this.nickname = nickname;
         this.content = content;
         this.upload_datetime = upload_datetime;
+    }
+
+    public Comment(int num_primary, int num, int depth, int num_group, String id, String nickname, String content, String upload_datetime) {
+        this.num_primary = num_primary;
+        this.num = num;
+        this.depth = depth;
+        this.num_group = num_group;
+        this.id = id;
+        this.nickname = nickname;
+        this.content = content;
+        this.upload_datetime = upload_datetime;
+    }
+
+    public int getNum_primary() {
+        return num_primary;
+    }
+
+    public void setNum_primary(int num_primary) {
+        this.num_primary = num_primary;
     }
 
     public int getNum() {

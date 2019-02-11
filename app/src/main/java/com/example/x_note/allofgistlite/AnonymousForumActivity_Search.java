@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +45,7 @@ import java.util.Locale;
 public class AnonymousForumActivity_Search extends AppCompatActivity {
 
     private String id;
+    ProgressBar progressBar;
 
     ImageButton backButton;
     RelativeLayout searchClassificationLayout;
@@ -198,6 +200,7 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
                     OrangeToast(getApplicationContext(),"검색어를 입력해주세요.");
                 else {
                     forumList = new ArrayList<Forum>();
+                    progressBar.setVisibility(View.VISIBLE);
                     startMyTask(new SearchLoadTask(), condition, onlyBest + "", searchEditText.getText().toString());
                 }
             }
@@ -287,6 +290,7 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
 
     class SearchLoadTask extends AsyncTask<String,Void, JSONArray>{
         JSONArray jsonArray = null;
+
         @Override
         protected JSONArray doInBackground(String... strings) {
             String condition = strings[0];
@@ -364,6 +368,8 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
                     forumList.add(forum);
 
                 }
+                if(progressBar.getVisibility()==View.VISIBLE)
+                    progressBar.setVisibility(View.GONE);
                 searchList.setAdapter(new ForumListAdapter(getApplicationContext()));
                 RecyclerView.LayoutManager layoutManager =
                         new LinearLayoutManager(getApplicationContext());
@@ -391,17 +397,20 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
         }
     }
 
-    class ViewsUploadTask extends AsyncTask<String,Void,String>{
 
+
+    class ViewsUploadTask extends AsyncTask<String,Void,JSONArray>{
+
+        JSONArray jsonArray = null;
         @Override
-        protected String doInBackground(String... strings) {
+        protected JSONArray doInBackground(String... strings) {
 
             String data = "";
 
             try{
                 String forumPosition = strings[0];
                 String forumNum = strings[1];
-                String params = "num="+forumNum;
+                String params = "num="+forumNum+"&forumPosition="+forumPosition;
                 URL serverUrl = new URL("http://13.124.99.123/views_upload.php");
                 HttpURLConnection httpURLConnection = (HttpURLConnection)serverUrl.openConnection();
 
@@ -440,32 +449,49 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
 
                 Log.e("RECV data",data);
 
-                return data+"/"+forumPosition;
-
-
             }catch (Exception e){
                 e.printStackTrace();
             }
-            return data;
+            try{
+                jsonArray = new JSONArray(data);
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+            return jsonArray;
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            if(result.equals("")){
+        protected void onPostExecute(JSONArray jsonArray) {
+            if(jsonArray.length()==0){
                 Log.e("Views","upload views fail!");
+                OrangeToast(getApplicationContext(),"게시글 불러오기를 실패하였습니다.");
             }
             else{
-                String[] splitResult = result.split("/");
-                if(splitResult[0].equals("OK")) {
-                    int lastViews = forumList.get(Integer.parseInt(splitResult[1])).getViews();
-                    forumList.get(Integer.parseInt(splitResult[1])).setViews(lastViews+1);
-                    Intent AnonymousForumView = new Intent(getApplicationContext(),AnonymousForumActivity_View.class);
-                    AnonymousForumView.putExtra("ForumLoadData",forumList.get(Integer.parseInt(splitResult[1])));
+                try {
+                    JSONObject jsonObject = jsonArray.getJSONObject(0);
+                    int forumPosition = Integer.parseInt(jsonObject.getString("forumPosition"));
+                    Forum uploadForum = new Forum(Integer.parseInt(jsonObject.getString("num")),
+                            jsonObject.getString("id"),
+                            jsonObject.getString("title"),
+                            jsonObject.getString("content"),
+                            jsonObject.getString("nickname"),
+                            datetimeFormat.parse(jsonObject.getString("upload_datetime")),
+                            Integer.parseInt(jsonObject.getString("views")),
+                            Integer.parseInt(jsonObject.getString("likes")),
+                            Integer.parseInt(jsonObject.getString("unlikes")),
+                            Integer.parseInt(jsonObject.getString("comments")),
+                            jsonObject.getString("like_select"),
+                            jsonObject.getString("unlike_select"));
+                    forumList.set(forumPosition,uploadForum);
+
+                    Intent AnonymousForumView = new Intent(AnonymousForumActivity_Search.this,AnonymousForumActivity_View.class);
+                    AnonymousForumView.putExtra("ForumLoadData",forumList.get(forumPosition));
                     AnonymousForumView.putExtra("ID",id);
                     startActivity(AnonymousForumView);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    OrangeToast(AnonymousForumActivity_Search.this,"게시글 불러오기를 실패하였습니다.");
                 }
-                else
-                    OrangeToast(getApplicationContext(),"Error number : "+splitResult[0]);
             }
         }
     }
@@ -509,5 +535,8 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
         searchButton = (ImageButton)findViewById(R.id.anonymous_forum_search_button);
 
         searchList = (RecyclerView)findViewById(R.id.anonymous_forum_search_list);
+
+        progressBar = (ProgressBar)findViewById(R.id.anonymous_forum_search_progress_bar);
+        progressBar.setVisibility(View.GONE);
     }
 }

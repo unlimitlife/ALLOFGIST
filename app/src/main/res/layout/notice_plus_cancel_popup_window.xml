@@ -12,11 +12,11 @@
         android:background="#FFFFFF"
         android:layout_margin="16dp">
         <TextView
-            android:id="@+id/notice_text"
+            android:id="@+id/notice_plus_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#FFFFFF"
-            tools:text="닉네임을 입력해주세요."
+            tools:text="삭제하시겠습니까?"
             android:layout_marginTop="12dp"
             android:textColor="#000000"
             android:textSize="16sp"
@@ -35,7 +35,19 @@
                 android:background="#FFFFFF"
                 android:layout_weight="1"/>
             <TextView
-                android:id="@+id/notice_ok_textview"
+                android:id="@+id/notice_plus_cancel_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cancel"
+                android:textColor="#FF7F00"
+                android:background="#FFFFFF"
+                android:textSize="16sp"
+                android:fontFamily="@font/noto_sans"
+                android:includeFontPadding="false"
+                android:layout_marginRight="32dp"
+                android:layout_marginBottom="20dp"/>
+            <TextView
+                android:id="@+id/notice_plus_ok_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/ok"
