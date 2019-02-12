@@ -125,12 +125,15 @@ public class MainActivity extends AppCompatActivity {
         calendarListData = new Hashtable<Date, ArrayList<Schedule>>();
         String completedate = date.format(todaykey);
         ScheduleLoadTask scheduleLoadTask = new ScheduleLoadTask();
-        startMyTask(scheduleLoadTask,id,completedate);
 
         //DB에 저장된 즐겨찾기 key(번호) 저장하는 배열
         keylist = new ArrayList<Integer>();
 
-        SharedPreferences favoritePrefs = getSharedPreferences("FAVORITE_KEYLIST",MODE_PRIVATE);
+        startMyTask(scheduleLoadTask,id,completedate);
+
+
+
+        /*SharedPreferences favoritePrefs = getSharedPreferences("FAVORITE_KEYLIST",MODE_PRIVATE);
         for(int i = 0; i<itemList.size(); i++){
             Boolean isFavorite = (favoritePrefs.getString("KEYLIST_"+id+"_"+i,"NONE") == "OK");
             if(isFavorite) {
@@ -148,7 +151,9 @@ public class MainActivity extends AppCompatActivity {
         if(keylist.size()>4) {
             recyclerView.setOnFlingListener(null);
             snapToBlock.attachToRecyclerView(recyclerView);
-        }
+        }*/
+
+
         startMyTask(new TokenLoadTask(),"http://13.124.99.123/tokenload.php",id);
 
     }
@@ -454,14 +459,19 @@ public class MainActivity extends AppCompatActivity {
             final BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             Site currentsite = mDataBaseset.get(keylist.get(position));
-            BitmapFactory.decodeResource(mContext.getResources(), currentsite.getMsite_imagesource(), options);
-            options.inSampleSize = setSimpleSize(options, REQUEST_WIDTH, REQUEST_HEIGHT);
-            options.inJustDecodeBounds = false;
-            Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), currentsite.getMsite_imagesource(), options);
-            favoritesHolder.mImageView.setBackground(new ShapeDrawable(new OvalShape()));
-            favoritesHolder.mImageView.setClipToOutline(true);
-            favoritesHolder.mImageView.requestLayout();
-            favoritesHolder.mImageView.setImageBitmap(bitmap);
+            if(position==0){
+                favoritesHolder.mImageView.setImageResource(currentsite.getMsite_imagesource());
+            }
+            else {
+                BitmapFactory.decodeResource(mContext.getResources(), currentsite.getMsite_imagesource(), options);
+                options.inSampleSize = setSimpleSize(options, REQUEST_WIDTH, REQUEST_HEIGHT);
+                options.inJustDecodeBounds = false;
+                Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), currentsite.getMsite_imagesource(), options);
+                favoritesHolder.mImageView.setBackground(new ShapeDrawable(new OvalShape()));
+                favoritesHolder.mImageView.setClipToOutline(true);
+                favoritesHolder.mImageView.requestLayout();
+                favoritesHolder.mImageView.setImageBitmap(bitmap);
+            }
             favoritesHolder.mTextView.setText(currentsite.getMsite_name());
 
             //즐겨찾기 접속 기능
@@ -469,7 +479,12 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     final Site site = mDataBaseset.get(keylist.get(favoritesHolder.getAdapterPosition()));
-                    if (site.getMsite_name() == "학과별 사이트") {
+                    if(site.getMsite_name().equals("즐겨찾기 추가")){
+                        Intent FavoriteSettingActivity = new Intent(MainActivity.this, FavoriteSettingActivity.class);
+                        FavoriteSettingActivity.putExtra("ID",id);
+                        startActivity(FavoriteSettingActivity);
+                    }
+                    else if (site.getMsite_name().equals("학과별 사이트")) {
                         PopupMenu popupMj = new PopupMenu(mContext, view);
                         MenuInflater menuInflater = new MenuInflater(mContext);
                         menuInflater.inflate(R.menu.major_site_set_popup_menu, popupMj.getMenu());
@@ -484,7 +499,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                         });
                         popupMj.show();
-                    } else if (site.getMsite_name() == "GIST home") {
+                    } else if (site.getMsite_name().equals("GIST home")){
                         PopupMenu popupIFWB = new PopupMenu(mContext, view);
                         MenuInflater menuInflater = new MenuInflater(mContext);
                         menuInflater.inflate(R.menu.insta_facebook_web_blog_popup_menu, popupIFWB.getMenu());
@@ -509,7 +524,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                         popupIFWB.show();
-                    } else if (site.getMsite_name() == "GIST 신문") {
+                    } else if (site.getMsite_name().equals("GIST 신문")) {
 
                         PopupMenu popupWF = new PopupMenu(mContext, view);
                         MenuInflater menuInflater = new MenuInflater(mContext);
@@ -529,7 +544,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                         popupWF.show();
-                    } else if (site.getMsite_name() == "춤 동아리 막무가내" || site.getMsite_name() == "힙합 동아리 Ignition" || site.getMsite_name() == "노래 동아리 싱송생송" || site.getMsite_name() == "오케스트라 동아리 악동" || site.getMsite_name() == "연극 동아리 지대로" || site.getMsite_name() == "영상편집 동아리 The GIST") {
+                    } else if (site.getMsite_name().equals("춤 동아리 막무가내") || site.getMsite_name().equals("힙합 동아리 Ignition") || site.getMsite_name().equals("노래 동아리 싱송생송") || site.getMsite_name().equals("오케스트라 동아리 악동") || site.getMsite_name().equals("연극 동아리 지대로") || site.getMsite_name().equals("영상편집 동아리 The GIST")) {
 
                         PopupMenu popupYF = new PopupMenu(mContext, view);
                         MenuInflater menuInflater = new MenuInflater(mContext);
@@ -584,17 +599,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public class FavoriteLoad extends AsyncTask<String, Integer, String> {
+    /*public class FavoriteLoad extends AsyncTask<String, Integer, String> {
 
         @Override
         protected String doInBackground(String... params) {
 
-            /* 인풋 파라메터값 생성 */
             String data = "";
             String param = "id=" + params[0]+ "";
             Log.e("POST",param);
             try {
-                /* 서버연결 */
                 URL url = new URL(
                         "http://13.124.99.123/favoriteload.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -603,13 +616,11 @@ public class MainActivity extends AppCompatActivity {
                 conn.setDoInput(true);
                 conn.connect();
 
-                /* 안드로이드 -> 서버 파라메터값 전달 */
                 OutputStream outs = conn.getOutputStream();
                 outs.write(param.getBytes("euc-kr"));
                 outs.flush();
                 outs.close();
 
-                /* 서버 -> 안드로이드 파라메터값 전달 */
                 InputStream is = null;
                 BufferedReader in = null;
                 int responseStatusCode = conn.getResponseCode();
@@ -628,7 +639,6 @@ public class MainActivity extends AppCompatActivity {
 
                 data = buff.toString().trim();
 
-                /* 서버에서 응답 */
                 Log.e("RECV DATA",data);
                 return data;
 
@@ -659,7 +669,10 @@ public class MainActivity extends AppCompatActivity {
             recyclerView.setAdapter(favoriteAdapter);
         }
 
-    }
+    }*/
+
+
+
     //AsyncTask 사용은 가능 but, 두번이상 사용한다는 점에서 적절한 방법은 아님
     public class ScheduleLoadTask extends AsyncTask<String, Integer, String> {
 
@@ -774,6 +787,7 @@ public class MainActivity extends AppCompatActivity {
                 }catch(Exception e){
                     e.printStackTrace();
                 }
+                startMyTask(new FavoriteLoadTask(),id);
 /*
                 int i = 0;
                 while(!alarmListData.isEmpty()&&i<alarmListData.size()) {
@@ -802,6 +816,90 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    class FavoriteLoadTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String data = "";
+            String ID = (String)strings[0];
+
+            String serverUrl = "http://13.124.99.123/favoriteload.php";
+            String postParameters = "id="+ID;
+
+            try{
+                URL url = new URL(serverUrl);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d("phptest","POST response code - "+responseStatusCode);
+
+                InputStream inputStream;
+                if(responseStatusCode == httpURLConnection.HTTP_OK){
+                    inputStream = httpURLConnection.getInputStream();
+                }
+                else{
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream,"UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuffer sb = new StringBuffer();
+                String line = null;
+
+                while((line = bufferedReader.readLine())!=null){
+                    sb.append(line);
+                }
+
+                data = sb.toString();
+                bufferedReader.close();
+
+            }catch (Exception e){
+                Log.d("phptest", "Signup: Error", e);
+            }
+            return data;
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if(s.equals("")) {
+                OrangeToast(getApplicationContext(), "서버 접속을 실패하였습니다.");
+                finish();
+            }
+            else{
+                String[] splitFavorite = s.split(",");
+
+                for (int i=0; i<splitFavorite.length; i++)
+                    keylist.add(Integer.parseInt(splitFavorite[i]));
+                if(keylist.size()>1){
+                    keylist.remove(Integer.valueOf(0));
+                }
+
+                favoriteAdapter = new FavoriteAdapter(MainActivity.this,itemList,major_set);
+                recyclerView.setAdapter(favoriteAdapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.HORIZONTAL,false));
+
+                //recyclerview 스크롤 딱 맞아떨어지게 하는 도구
+                SnapToBlock snapToBlock = new SnapToBlock(4);
+                if(keylist.size()>4) {
+                    recyclerView.setOnFlingListener(null);
+                    snapToBlock.attachToRecyclerView(recyclerView);
+                }
+            }
+        }
+    }
 
     public class PushNotification extends AsyncTask<String, Integer, Integer> {
 
@@ -1116,6 +1214,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void setData(){
         itemList = new ArrayList<Site>();
+        itemList.add(new Site("즐겨찾기 추가",R.drawable.add_orange));
         itemList.add(new Site("GIST home", "https://www.gist.ac.kr/kr/","https://blog.naver.com/gist1993","https://www.facebook.com/GIST.ac.kr/","https://www.instagram.com/gist1993/", R.drawable.home));
         itemList.add(new Site("Gel","https://gel.gist.ac.kr/",R.drawable.gel));
         itemList.add(new Site("Zeus system", "https://zeus.gist.ac.kr", R.drawable.zeus));

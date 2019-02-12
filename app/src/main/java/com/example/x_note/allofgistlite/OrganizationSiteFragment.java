@@ -159,20 +159,34 @@ public class OrganizationSiteFragment extends Fragment {
                 public void onClick(View view) {
                     buttonCount.put(itemList.get(position).getMsite_name(),!buttonCount.get(itemList.get(position).getMsite_name()));
                     if(buttonCount.get(itemList.get(position).getMsite_name())){
-                        FavoriteTask favoriteTask = new FavoriteTask();
+                        /*FavoriteTask favoriteTask = new FavoriteTask();
                         favoriteTask.execute("http://13.124.99.123/favoriteinsert.php",id,(position+15)+"");
                         SharedPreferences.Editor favoriteEditor = getActivity().getSharedPreferences("FAVORITE_KEYLIST",Context.MODE_PRIVATE).edit();
                         favoriteEditor.putString("KEYLIST_"+id+"_"+(position+15),"OK");
                         favoriteEditor.commit();
-                        view.setBackgroundResource(R.drawable.item_selected_state);
+                        view.setBackgroundResource(R.drawable.item_selected_state);*/
+
+                        try {
+                            ((FavoriteSettingActivity) getActivity()).editKeyList("ORGANIZATION", position);
+                            view.setBackgroundResource(R.drawable.item_selected_state);
+                        }catch (NullPointerException e){
+                            e.printStackTrace();
+                        }
+
                     }
                     else {
-                        FavoriteTask favoriteTask = new FavoriteTask();
+                        /*FavoriteTask favoriteTask = new FavoriteTask();
                         favoriteTask.execute("http://13.124.99.123/favoritedelete.php",id,(position+15)+"");
                         SharedPreferences.Editor favoriteEditor = getActivity().getSharedPreferences("FAVORITE_KEYLIST",Context.MODE_PRIVATE).edit();
                         favoriteEditor.putString("KEYLIST_"+id+"_"+(position+15),"NONE");
                         favoriteEditor.commit();
-                        view.setBackgroundResource(R.drawable.item_unselected_state);
+                        view.setBackgroundResource(R.drawable.item_unselected_state);*/
+                        try {
+                            ((FavoriteSettingActivity) getActivity()).editKeyList("ORGANIZATION", position);
+                            view.setBackgroundResource(R.drawable.item_unselected_state);
+                        }catch (NullPointerException e){
+                            e.printStackTrace();
+                        }
                     }
                 }
             });
@@ -203,7 +217,7 @@ public class OrganizationSiteFragment extends Fragment {
 
 
     //즐겨찾기 DB 저장, 삭제
-    class FavoriteTask extends AsyncTask<String, Void, String> {
+    /*class FavoriteTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... strings) {
@@ -259,7 +273,7 @@ public class OrganizationSiteFragment extends Fragment {
                 return new String("Error: "+e.getMessage());
             }
         }
-    }
+    }*/
 
 
 

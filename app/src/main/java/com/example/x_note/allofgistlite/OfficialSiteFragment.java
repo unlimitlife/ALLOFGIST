@@ -66,14 +66,15 @@ public class OfficialSiteFragment extends Fragment {
         //button 클릭 횟수 초기화
         buttonCount = new Hashtable<String, Boolean>();
         for(int i=0;i<itemList.size();i++)
-            buttonCount.put(itemList.get(i).getMsite_name(),false);
+            buttonCount.put(itemList.get(i).getMsite_name(), false);
+
 
         //즐겨찾기 불러올때
         try{
             officialKeylist = getArguments().getIntegerArrayList("OFFICIAL_KEYLIST");
             if(officialKeylist.size()>0){
                 for(int i=0;i<officialKeylist.size();i++)
-                    buttonCount.put(itemList.get(officialKeylist.get(i)).getMsite_name(),true);
+                    buttonCount.put(itemList.get(officialKeylist.get(i)-1).getMsite_name(),true);
             }
         }catch(NullPointerException e){
             e.printStackTrace();
@@ -134,7 +135,6 @@ public class OfficialSiteFragment extends Fragment {
             else
                 siteHolder = (SiteHolder) view.getTag();
 
-
             siteHolder.mTextView.setText(itemList.get(position).getMsite_name());
 
             // 비트맵 동그랗게 사이즈 맞게 줄이는 메소드 이용
@@ -162,20 +162,32 @@ public class OfficialSiteFragment extends Fragment {
                 public void onClick(View view) {
                     buttonCount.put(itemList.get(position).getMsite_name(),!buttonCount.get(itemList.get(position).getMsite_name()));
                     if(buttonCount.get(itemList.get(position).getMsite_name())){
-                        FavoriteTask favoriteTask = new FavoriteTask();
+                        /*FavoriteTask favoriteTask = new FavoriteTask();
                         favoriteTask.execute("http://13.124.99.123/favoriteinsert.php",id,position+"");
                         SharedPreferences.Editor favoriteEditor = getActivity().getSharedPreferences("FAVORITE_KEYLIST",Context.MODE_PRIVATE).edit();
                         favoriteEditor.putString("KEYLIST_"+id+"_"+position,"OK");
                         favoriteEditor.commit();
-                        view.setBackgroundResource(R.drawable.item_selected_state);
+                        view.setBackgroundResource(R.drawable.item_selected_state);*/
+                        try {
+                            ((FavoriteSettingActivity) getActivity()).editKeyList("OFFICIAL", position);
+                            view.setBackgroundResource(R.drawable.item_selected_state);
+                        }catch (NullPointerException e){
+                            e.printStackTrace();
+                        }
                     }
                     else {
-                        FavoriteTask favoriteTask = new FavoriteTask();
+                        /*FavoriteTask favoriteTask = new FavoriteTask();
                         favoriteTask.execute("http://13.124.99.123/favoritedelete.php",id,position+"");
                         SharedPreferences.Editor favoriteEditor = getActivity().getSharedPreferences("FAVORITE_KEYLIST",Context.MODE_PRIVATE).edit();
                         favoriteEditor.putString("KEYLIST_"+id+"_"+position,"NONE");
                         favoriteEditor.commit();
-                        view.setBackgroundResource(R.drawable.item_unselected_state);
+                        view.setBackgroundResource(R.drawable.item_unselected_state);*/
+                        try {
+                            ((FavoriteSettingActivity) getActivity()).editKeyList("OFFICIAL", position);
+                            view.setBackgroundResource(R.drawable.item_unselected_state);
+                        }catch (NullPointerException e){
+                            e.printStackTrace();
+                        }
                     }
                 }
             });
@@ -206,7 +218,7 @@ public class OfficialSiteFragment extends Fragment {
 
 
     //즐겨찾기 DB 저장, 삭제
-    class FavoriteTask extends AsyncTask<String, Void, String> {
+    /*class FavoriteTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... strings) {
@@ -262,7 +274,7 @@ public class OfficialSiteFragment extends Fragment {
                 return new String("Error: "+e.getMessage());
             }
         }
-    }
+    }*/
 
 
 

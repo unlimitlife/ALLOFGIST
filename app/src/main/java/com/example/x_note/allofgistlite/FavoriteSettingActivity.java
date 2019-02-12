@@ -16,6 +16,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -31,7 +32,7 @@ public class FavoriteSettingActivity extends AppCompatActivity {
 
     private List<Site> itemList = null;
 
-    private String id;
+    private String id = "LOGIN_ERROR";
     private ArrayList<Integer> keylist;
 
     private ArrayList<Integer> officialKeylist;
@@ -55,7 +56,8 @@ public class FavoriteSettingActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        FavoriteRestoreTask favoriteRestoreTask = new FavoriteRestoreTask();
+        super.onBackPressed();
+        /*FavoriteRestoreTask favoriteRestoreTask = new FavoriteRestoreTask();
         startMyTask(favoriteRestoreTask,"http://13.124.99.123/favoriterestore.php", id);
 
         try {
@@ -74,7 +76,7 @@ public class FavoriteSettingActivity extends AppCompatActivity {
             }
         }catch(NullPointerException e){
             e.printStackTrace();
-        }
+        }*/
     }
 
     @Override
@@ -82,65 +84,21 @@ public class FavoriteSettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorite_setting);
 
-        setData();
-        Intent intent = getIntent();
-        SharedPreferences loginPrefs = getSharedPreferences("LOGIN_ID",MODE_PRIVATE);
-        id = loginPrefs.getString("ID","LOGIN_ERROR");
+        //setData();
+        id = getIntent().getStringExtra("ID");
         if(id.equals("LOGIN_ERROR")){
             Toast.makeText(FavoriteSettingActivity.this,"로그인 오류!",Toast.LENGTH_LONG).show();
             finish();
         }
-        keylist = intent.getIntegerArrayListExtra("FAVORITE_KEYLIST");
+        //keylist = intent.getIntegerArrayListExtra("FAVORITE_KEYLIST");
 
         officialKeylist = new ArrayList<Integer>();
         organizationKeylist = new ArrayList<Integer>();
         circleKeylist = new ArrayList<Integer>();
 
-        //기존의 즐겨찾기 불러오기
-        try {
-            for (int i = 0; i < keylist.size(); i++) {
-                if (keylist.get(i) < 15)
-                    officialKeylist.add(keylist.get(i));
-                else if (keylist.get(i) >= 15 && keylist.get(i) < 21)
-                    organizationKeylist.add(keylist.get(i) - 15);
-                else if (keylist.get(i) >= 21)
-                    circleKeylist.add(keylist.get(i) - 21);
-            }
-        }catch(NullPointerException e){
-            e.printStackTrace();
-        }
+        keylist = new ArrayList<Integer>();
+        startMyTask(new FavoriteLoadTask(), id);
 
-
-        Bundle bundle = new Bundle();
-        bundle.putString("ID",id);
-        bundle.putIntegerArrayList("OFFICIAL_KEYLIST",officialKeylist);
-        bundle.putIntegerArrayList("ORGANIZATION_KEYLIST",organizationKeylist);
-        bundle.putIntegerArrayList("CIRCLE_KEYLIST",circleKeylist);
-
-        OfficialFragment = new OfficialSiteFragment();
-        OrganizationFragment = new OrganizationSiteFragment();
-        CircleFragment = new CircleSiteFragment();
-        OfficialFragment.setArguments(bundle);
-        OrganizationFragment.setArguments(bundle);
-        CircleFragment.setArguments(bundle);
-
-        fmViewPager = (ViewPager)findViewById(R.id.favorite_setting_switch_layout);
-        fmViewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
-        fmViewPager.setOffscreenPageLimit(2);
-
-        /*itemList = new ArrayList<Site>();
-        setData(itemList);
-
-        //button 클릭 횟수 초기화
-        buttonCount = new Hashtable<String, Boolean>();
-        for(int i=0;i<itemList.size();i++)
-            buttonCount.put(itemList.get(i).getMsite_name(),false);
-
-
-        //GridView 데이터 연결
-        siteList = (GridView) findViewById(R.id.allsites);
-        siteAdapter = new SiteAdapter(getApplicationContext(),itemList);
-        siteList.setAdapter(siteAdapter);*/
 
         //바로가기 버튼
         official = (Button) findViewById(R.id.official_button_favorite_setting);
@@ -182,42 +140,6 @@ public class FavoriteSettingActivity extends AppCompatActivity {
         });
 
 
-        fmViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i1) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                switch(position){
-                    case 0:
-                        official.setSelected(true);
-                        organization.setSelected(false);
-                        circle.setSelected(false);
-                        break;
-                    case 1:
-                        official.setSelected(false);
-                        organization.setSelected(true);
-                        circle.setSelected(false);
-                        break;
-                    case 2:
-                        official.setSelected(false);
-                        organization.setSelected(false);
-                        circle.setSelected(true);
-                        break;
-                    default:
-                        break;
-                }
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-
-            }
-        });
-
         //즐겨찾기 완료 버튼
         completeButton = (Button)findViewById(R.id.favorite_setting_ok_button);
         completeButton.setOnClickListener(new View.OnClickListener() {
@@ -227,7 +149,7 @@ public class FavoriteSettingActivity extends AppCompatActivity {
                     OrangeToast(FavoriteSettingActivity.this,"마지막 즐겨찾기 선택을 누른 후 3초 정도 기다리시면 안전하게 등록이 가능합니다.\n확인하셨다면 다시 한 번 눌러주세요.");
                 }
                 else {
-                    finish();
+                    startMyTask(new FavoriteInsertTask(),id);
                 }
                 nextClick++;
             }
@@ -237,7 +159,8 @@ public class FavoriteSettingActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                FavoriteRestoreTask favoriteRestoreTask = new FavoriteRestoreTask();
+                finish();
+                /*FavoriteRestoreTask favoriteRestoreTask = new FavoriteRestoreTask();
                 startMyTask(favoriteRestoreTask,"http://13.124.99.123/favoriterestore.php", id);
 
                 try {
@@ -256,7 +179,7 @@ public class FavoriteSettingActivity extends AppCompatActivity {
                     }
                 }catch(NullPointerException e){
                     e.printStackTrace();
-                }
+                }*/
             }
         });
 
@@ -291,6 +214,51 @@ public class FavoriteSettingActivity extends AppCompatActivity {
         }
     }
 
+    public void editKeyList(String keylistKinds, int key){
+        switch(keylistKinds){
+            case "OFFICIAL" :
+                if(findKeyPos("OFFICIAL",key)==-1)
+                    keylist.add(key+1);
+                else
+                    keylist.remove(findKeyPos("OFFICIAL",key));
+                break;
+
+            case "ORGANIZATION" :
+                if(findKeyPos("ORGANIZATION",key)==-1)
+                    keylist.add(key+16);
+                else
+                    keylist.remove(findKeyPos("ORGANIZATION",key));
+                break;
+
+            case "CIRCLE" :
+                if(findKeyPos("CIRCLE",key)==-1)
+                    keylist.add(key+22);
+                else
+                    keylist.remove(findKeyPos("CIRCLE",key));
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    public int findKeyPos(String keylistKinds, int key){
+        int pos = -1;
+        switch (keylistKinds){
+            case "OFFICIAL" :
+                pos = keylist.indexOf(key+1);
+                break;
+            case "ORGANIZATION" :
+                pos = keylist.indexOf(key+16);
+                break;
+            case "CIRCLE" :
+                pos = keylist.indexOf(key+22);
+                break;
+            default:
+                break;
+        }
+        return pos;
+    }
 
     public void OrangeToast(Context context, String message){
         Toast toast = Toast.makeText(context,message,Toast.LENGTH_LONG);
@@ -300,6 +268,148 @@ public class FavoriteSettingActivity extends AppCompatActivity {
         toast.show();
     }
 
+
+    //즐겨찾기 DB 불러오기
+    class FavoriteLoadTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String data = "";
+            String ID = (String)strings[0];
+
+            String serverUrl = "http://13.124.99.123/favoriteload.php";
+            String postParameters = "id="+ID;
+
+            try{
+                URL url = new URL(serverUrl);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d("phptest","POST response code - "+responseStatusCode);
+
+                InputStream inputStream;
+                if(responseStatusCode == httpURLConnection.HTTP_OK){
+                    inputStream = httpURLConnection.getInputStream();
+                }
+                else{
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream,"UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuffer sb = new StringBuffer();
+                String line = null;
+
+                while((line = bufferedReader.readLine())!=null){
+                    sb.append(line);
+                }
+
+                data = sb.toString();
+                bufferedReader.close();
+
+            }catch (Exception e){
+                Log.d("phptest", "Signup: Error", e);
+            }
+            return data;
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if(s.equals("")) {
+                OrangeToast(getApplicationContext(), "서버 접속을 실패하였습니다.");
+                finish();
+            }
+            else{
+                String[] splitFavorite = s.split(",");
+
+                for (int i=0; i<splitFavorite.length; i++)
+                    keylist.add(Integer.parseInt(splitFavorite[i]));
+
+                //기존의 즐겨찾기 불러오기
+                try {
+                    for (int i = 0; i < keylist.size(); i++) {
+                        if (keylist.get(i) > 0 && keylist.get(i) < 16)
+                            officialKeylist.add(keylist.get(i));
+                        else if (keylist.get(i) >= 16 && keylist.get(i) < 22)
+                            organizationKeylist.add(keylist.get(i) - 16);
+                        else if (keylist.get(i) >= 22)
+                            circleKeylist.add(keylist.get(i) - 22);
+                        else{
+                            Log.d("FavoriteSettingActivity","default favorite key selected!");
+                        }
+                    }
+                }catch(NullPointerException e){
+                    e.printStackTrace();
+                }
+
+                Bundle bundle = new Bundle();
+                bundle.putString("ID",id);
+                bundle.putIntegerArrayList("OFFICIAL_KEYLIST",officialKeylist);
+                bundle.putIntegerArrayList("ORGANIZATION_KEYLIST",organizationKeylist);
+                bundle.putIntegerArrayList("CIRCLE_KEYLIST",circleKeylist);
+
+                OfficialFragment = new OfficialSiteFragment();
+                OrganizationFragment = new OrganizationSiteFragment();
+                CircleFragment = new CircleSiteFragment();
+                OfficialFragment.setArguments(bundle);
+                OrganizationFragment.setArguments(bundle);
+                CircleFragment.setArguments(bundle);
+
+                fmViewPager = (ViewPager)findViewById(R.id.favorite_setting_switch_layout);
+                fmViewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
+                fmViewPager.setOffscreenPageLimit(2);
+                fmViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int i, float v, int i1) {
+
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+                        switch(position){
+                            case 0:
+                                official.setSelected(true);
+                                organization.setSelected(false);
+                                circle.setSelected(false);
+                                break;
+                            case 1:
+                                official.setSelected(false);
+                                organization.setSelected(true);
+                                circle.setSelected(false);
+                                break;
+                            case 2:
+                                official.setSelected(false);
+                                organization.setSelected(false);
+                                circle.setSelected(true);
+                                break;
+                            default:
+                                break;
+                        }
+
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int i) {
+
+                    }
+                });
+            }
+        }
+    }
+/*
     //즐겨찾기 DB 저장, 삭제
     class FavoriteRestoreTask extends AsyncTask<String, Void, String> {
 
@@ -374,7 +484,88 @@ public class FavoriteSettingActivity extends AppCompatActivity {
             finish();
         }
     }
+*/
+    //즐겨찾기 DB 저장, 삭제
+    class FavoriteInsertTask extends AsyncTask<String, Void, String> {
 
+        @Override
+        protected String doInBackground(String... strings) {
+            String data = "";
+
+            String ID = (String)strings[0];
+            String serverUrl = "http://13.124.99.123/favoriterestore.php";
+            String postParameters;
+
+            String keylistString = "0";
+            try {
+                for (int i = 0; i < keylist.size(); i++) {
+                    if (i == 0)
+                        keylistString = keylist.get(i) + "";
+                    else
+                        keylistString = keylistString + "," + keylist.get(i);
+                }
+                if(keylist.size()==0)
+                    keylistString = "0";
+            }catch (NullPointerException e){
+                e.printStackTrace();
+                keylistString = null;
+            }
+            postParameters = "id="+ID+"&favoritehomepage="+keylistString;
+
+            try{
+                URL url = new URL(serverUrl);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d("phptest","POST response code - "+responseStatusCode);
+
+                InputStream inputStream;
+                if(responseStatusCode == httpURLConnection.HTTP_OK){
+                    inputStream = httpURLConnection.getInputStream();
+                }
+                else{
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream,"UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuffer sb = new StringBuffer();
+                String line = null;
+
+                while((line = bufferedReader.readLine())!=null){
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+                data = sb.toString();
+
+
+            }catch (Exception e){
+                Log.d("phptest", "Signup: Error", e);
+            }
+            return data;
+        }
+
+    @Override
+    protected void onPostExecute(String s) {
+        if(s.equals("OK"))
+            finish();
+        else
+            OrangeToast(getApplicationContext(),"서버 접속을 실패하였습니다.");
+    }
+}
 
     //asynctask 병렬처리
     public void startMyTask(AsyncTask asyncTask, String... params){

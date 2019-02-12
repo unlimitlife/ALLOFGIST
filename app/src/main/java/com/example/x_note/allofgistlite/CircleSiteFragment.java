@@ -149,20 +149,30 @@ public class CircleSiteFragment extends Fragment {
                 public void onClick(View view) {
                     buttonCount.put(itemList.get(position).getMsite_name(),!buttonCount.get(itemList.get(position).getMsite_name()));
                     if(buttonCount.get(itemList.get(position).getMsite_name())){
-                        FavoriteTask favoriteTask = new FavoriteTask();
+                        /*FavoriteTask favoriteTask = new FavoriteTask();
                         favoriteTask.execute("http://13.124.99.123/favoriteinsert.php",id,(position+21)+"");
                         SharedPreferences.Editor favoriteEditor = getActivity().getSharedPreferences("FAVORITE_KEYLIST",Context.MODE_PRIVATE).edit();
                         favoriteEditor.putString("KEYLIST_"+id+"_"+(position+21),"OK");
-                        favoriteEditor.commit();
-                        view.setBackgroundResource(R.drawable.item_selected_state);
+                        favoriteEditor.commit();*/
+                        try {
+                            ((FavoriteSettingActivity) getActivity()).editKeyList("CIRCLE", position);
+                            view.setBackgroundResource(R.drawable.item_selected_state);
+                        }catch (NullPointerException e){
+                            e.printStackTrace();
+                        }
                     }
                     else {
-                        FavoriteTask favoriteTask = new FavoriteTask();
+                        /*FavoriteTask favoriteTask = new FavoriteTask();
                         favoriteTask.execute("http://13.124.99.123/favoritedelete.php",id,(position+21)+"");
                         SharedPreferences.Editor favoriteEditor = getActivity().getSharedPreferences("FAVORITE_KEYLIST",Context.MODE_PRIVATE).edit();
                         favoriteEditor.putString("KEYLIST_"+id+"_"+(position+21),"NONE");
-                        favoriteEditor.commit();
-                        view.setBackgroundResource(R.drawable.item_unselected_state);
+                        favoriteEditor.commit();*/
+                        try {
+                            ((FavoriteSettingActivity) getActivity()).editKeyList("CIRCLE", position);
+                            view.setBackgroundResource(R.drawable.item_unselected_state);
+                        }catch (NullPointerException e){
+                            e.printStackTrace();
+                        }
                     }
                 }
             });
