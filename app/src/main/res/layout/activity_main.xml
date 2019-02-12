@@ -10,6 +10,7 @@
     <!--
     android:background="#75000000"-->
     <RelativeLayout
+        android:id="@+id/top_window_bar"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_alignParentTop="true"
@@ -93,6 +94,20 @@
         </LinearLayout>
     </RelativeLayout>-->
 
+    <cn.trinea.android.view.autoscrollviewpager.AutoScrollViewPager
+        android:id="@+id/advertisement_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/between_advertisement_schedule"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="13dp"
+        android:layout_marginEnd="13dp"
+        android:paddingStart="3dp"
+        android:paddingEnd="3dp"
+        android:paddingTop="0.5dp"
+        android:paddingBottom="0.5dp"
+        android:layout_below="@id/top_window_bar"
+        android:background="@drawable/main_layout_box_design"/>
     <View
         android:id="@+id/between_advertisement_schedule"
         android:layout_width="match_parent"
@@ -124,7 +139,7 @@
             android:textSize="14sp"
             android:fontFamily="@font/noto_sans"
             android:includeFontPadding="false"
-            android:textColor="#000000"
+            android:textColor="#585858"
             android:background="#FFFFFF"/>
 
         <ListView
@@ -161,7 +176,7 @@
             android:text="즐겨찾는 사이트"
             android:textStyle="bold"
             android:textSize="14sp"
-            android:textColor="#000000"
+            android:textColor="#585858"
             android:background="#FFFFFF"/>
         <android.support.v7.widget.RecyclerView
             android:id="@+id/favorite_layout"
@@ -209,7 +224,7 @@
                         android:text="일정관리"
                         android:background="@drawable/category_box_element_color_selector"
                         android:textSize="12sp"
-                        android:textColor="#000000"
+                        android:textColor="#585858"
                         android:textStyle="bold"/>
                 </LinearLayout>
             </RelativeLayout>
@@ -239,7 +254,7 @@
                         android:layout_height="wrap_content"
                         android:text="전체 사이트"
                         android:textSize="12sp"
-                        android:textColor="#000000"
+                        android:textColor="#585858"
                         android:textStyle="bold"
                         android:background="@drawable/category_box_element_color_selector"/>
                 </LinearLayout>
@@ -270,7 +285,7 @@
                         android:layout_height="wrap_content"
                         android:text="식단표"
                         android:textSize="12sp"
-                        android:textColor="#000000"
+                        android:textColor="#585858"
                         android:textStyle="bold"
                         android:background="@drawable/category_box_element_color_selector"/>
                 </LinearLayout>
@@ -315,7 +330,7 @@
                         android:text="익명 게시판"
                         android:background="@drawable/category_box_element_color_selector"
                         android:textSize="12sp"
-                        android:textColor="#000000"
+                        android:textColor="#585858"
                         android:textStyle="bold"/>
                 </LinearLayout>
             </RelativeLayout>
@@ -345,7 +360,7 @@
                         android:layout_height="wrap_content"
                         android:text="즐겨찾기 관리"
                         android:textSize="12sp"
-                        android:textColor="#000000"
+                        android:textColor="#585858"
                         android:textStyle="bold"
                         android:background="@drawable/category_box_element_color_selector"/>
                 </LinearLayout>
@@ -376,11 +391,12 @@
                         android:layout_height="wrap_content"
                         android:text="홍보판"
                         android:textSize="12sp"
-                        android:textColor="#000000"
+                        android:textColor="#585858"
                         android:textStyle="bold"
                         android:background="@drawable/category_box_element_color_selector"/>
                 </LinearLayout>
             </RelativeLayout>
         </TableRow>
     </TableLayout>
+
 </RelativeLayout>

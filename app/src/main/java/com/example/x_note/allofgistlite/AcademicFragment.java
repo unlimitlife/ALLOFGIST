@@ -4,14 +4,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -29,7 +28,7 @@ public class AcademicFragment extends Fragment {
     private Calendar today = Calendar.getInstance();
     int month = today.get(Calendar.MONTH)+1;
     private HashMap<Integer,ArrayList<CalendarContext>> calendarData;
-    ListView context;
+    RecyclerView context;
 
 
     public static AcademicFragment create(int pageNumber) {
@@ -50,10 +49,10 @@ public class AcademicFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.page_academic_list, container, false);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_academic_list, container, false);
 
         MyAsyncTask setdata = new MyAsyncTask();
-        context = (ListView) rootView.findViewById(R.id.calendar_context);
+        context = (RecyclerView) rootView.findViewById(R.id.calendar_context);
 
 
         new MyAsyncTask().execute();
@@ -65,7 +64,53 @@ public class AcademicFragment extends Fragment {
     }
 
 
+    private class AcademicAdapter extends RecyclerView.Adapter<AcademicAdapter.CalendarHolder>{
+        Context mcontext;
+        private ArrayList<CalendarContext> calendarContext;
+        private ArrayList<String> rawData;
+        private HashMap<Integer,ArrayList<String>> data;
 
+        public AcademicAdapter(Context context, ArrayList<CalendarContext> calendarContext) {
+            mcontext = context;
+            this.calendarContext = calendarContext;
+        }
+
+        @NonNull
+        @Override
+        public CalendarHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.calendar_list_item, viewGroup, false);
+
+            CalendarHolder calendarHolder = new CalendarHolder(view);
+            return calendarHolder;
+
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull CalendarHolder calendarHolder, int position) {
+
+            calendarHolder.dateView.setText(calendarContext.get(position).getDate_title());
+            calendarHolder.contextView.setText(calendarContext.get(position).getContext());
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return calendarContext.size();
+        }
+
+        public class CalendarHolder extends RecyclerView.ViewHolder{
+            public TextView contextView;
+            public TextView dateView;
+
+            public CalendarHolder(View view){
+                super(view);
+                contextView = (TextView)view.findViewById(R.id.diary_context_textview);
+                dateView = (TextView)view.findViewById(R.id.diary_compelete_date_textview);
+            }
+        }
+    }
+
+/*
     private class AcademicAdapter extends ArrayAdapter<CalendarContext> {
         private ArrayList<CalendarContext> calendarContext;
         private ArrayList<String> rawData;
@@ -89,7 +134,7 @@ public class AcademicFragment extends Fragment {
 
             if(view == null){
                 LayoutInflater layoutInflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = layoutInflater.inflate(R.layout.context_academic_list,null);
+                view = layoutInflater.inflate(R.layout.calendar_list_item,null);
 
                 holder = new calendarHolder(view);
 
@@ -102,11 +147,12 @@ public class AcademicFragment extends Fragment {
             }
             else
                 holder.dateView.setText(calendarContext.get(position).getDate_title());
+
+            holder.dateView.setText(calendarContext.get(position).getDate_title());
             holder.contextView.setText(calendarContext.get(position).getContext());
             return view;
         }
     }
-
 
 
 
@@ -115,11 +161,11 @@ public class AcademicFragment extends Fragment {
         private TextView contextView;
 
         public calendarHolder(View view){
-            dateView = (TextView) view.findViewById(R.id.dateView);
-            contextView = (TextView) view.findViewById(R.id.contextView);
+            dateView = (TextView) view.findViewById(R.id.diary_compelete_date_textview);
+            contextView = (TextView) view.findViewById(R.id.diary_context_textview);
         }
     }
-
+*/
 
     //크롤링 데이터 수집
     public class MyAsyncTask extends AsyncTask<Integer,Void,HashMap<Integer,ArrayList<CalendarContext>>> {
@@ -217,10 +263,11 @@ public class AcademicFragment extends Fragment {
         protected void onPostExecute(HashMap<Integer, ArrayList<CalendarContext>> integerArrayListHashMap) {
             AcademicAdapter academicAdapter = new AcademicAdapter(getContext(),integerArrayListHashMap.get(mPageNumber+month-1));
             context.setAdapter(academicAdapter);
+            context.setLayoutManager(new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,false));
 
 
             /*  리스트뷰 차일드 수에 맞게 height 조절*/
-            if (academicAdapter == null) {
+            /*if (academicAdapter == null) {
                 // pre-condition
                 return;
             }
@@ -230,6 +277,7 @@ public class AcademicFragment extends Fragment {
             //for (int i = 0; i < academicAdapter.getCount(); i++) {
             for (int i = 0; i <integerArrayListHashMap.get(mPageNumber+month-1).size(); i++) {
                 View listItem = academicAdapter.getView(i, null, context);
+
                 listItem.measure(0, 0);
                 if(addlittle>listItem.getMeasuredHeight())     //원래 이 코드에서 빠져야 하는 부분
                     addlittle = listItem.getMeasuredHeight();   //원래 이 코드에서 빠져야 하는 부분
@@ -240,7 +288,7 @@ public class AcademicFragment extends Fragment {
             //params.height = totalHeight + (context.getDividerHeight() * (academicAdapter.getCount() - 1));
             params.height = totalHeight + (context.getDividerHeight() * (integerArrayListHashMap.get(mPageNumber+month-1).size() - 1));
             context.setLayoutParams(params);
-
+*/
         }
     }
 }

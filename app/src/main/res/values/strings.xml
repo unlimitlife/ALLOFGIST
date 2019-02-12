@@ -35,6 +35,11 @@
     <string name="button_organization_text">조\n직</string>
     <string name="button_circle_text">동\n아\n리</string>
 
+    <!-- Strings related to CalendarMain -->
+    <string name="title_calendar_main">Calendar</string>
+    <!-- Strings related to AcademicCalendarList -->
+    <string name="title_academic_calendar">학사일정</string>
+
     <!-- Strings related to major site set popup menu -->
     <string name="jungijeonja">전기전자컴퓨터공학부</string>
     <string name="sinsojae">신소재공학부</string>

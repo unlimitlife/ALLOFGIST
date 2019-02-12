@@ -1,15 +1,18 @@
 package com.example.x_note.allofgistlite;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
-public class AcademicCalendar extends FragmentActivity {
+public class AcademicCalendarActivity extends FragmentActivity {
 
     private ViewPager mViewPager;
     private PagerAdapter mPagerAdapter;
@@ -18,6 +21,8 @@ public class AcademicCalendar extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_academic_calendar);
+
+        OrangeToast(getApplicationContext(),"좌우로 스와이프하여 달을 이동할 수 있습니다.");
 
         mViewPager = (ViewPager)findViewById(R.id.calenderPager);
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
@@ -48,5 +53,12 @@ public class AcademicCalendar extends FragmentActivity {
             int pageNum = 13-month;
             return pageNum;
         }
+    }
+
+    public void OrangeToast(Context context, String message){
+        Toast toast = Toast.makeText(context,message,Toast.LENGTH_SHORT);
+        View toastView = toast.getView();
+        toastView.setBackgroundResource(R.drawable.orange_toast_design);
+        toast.show();
     }
 }

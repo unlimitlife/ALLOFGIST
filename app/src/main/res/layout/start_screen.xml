@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/idpassword_entire_layout"
         android:layout_centerHorizontal="true"
-        android:text="NO.1 GIST application"
+        android:text="GIST integrated application"
         android:textColor="#FFFFFF"
         android:textSize="12sp"
         android:layout_marginBottom="16dp"

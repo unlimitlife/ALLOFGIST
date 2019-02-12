@@ -13,11 +13,14 @@ import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,11 +60,16 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
+import cn.trinea.android.view.autoscrollviewpager.AutoScrollViewPager;
+
 public class MainActivity extends AppCompatActivity {
 
     private PopupWindow food_diary;
     private Canvas mCanvas;
     private Paint mPaint;
+
+    private AutoScrollViewPager advertisementList;
+    private ArrayList<String> advertisementContentList;
 
     private TextView scheduleText;
     private ListView schedulePreview;
@@ -153,9 +161,6 @@ public class MainActivity extends AppCompatActivity {
             snapToBlock.attachToRecyclerView(recyclerView);
         }*/
 
-
-        startMyTask(new TokenLoadTask(),"http://13.124.99.123/tokenload.php",id);
-
     }
 
     private void unlockScreen() {
@@ -180,9 +185,14 @@ public class MainActivity extends AppCompatActivity {
 
         InitialSetting();
 
-
-
         setData();
+
+        AutoScrollAdapter autoScrollAdapter = new AutoScrollAdapter(getApplicationContext(),advertisementContentList);
+        advertisementList.setAdapter(autoScrollAdapter);
+        advertisementList.setInterval(3000);
+        advertisementList.startAutoScroll();
+
+        startMyTask(new TokenLoadTask(),"http://13.124.99.123/tokenload.php",id);
 
         calendarCategory.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -431,6 +441,42 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String url) {
             openWebPage(url);
+        }
+    }
+
+    public class AutoScrollAdapter extends PagerAdapter{
+        Context context;
+        ArrayList<String> advertisementContentList;
+
+        public AutoScrollAdapter(Context context, ArrayList<String> data) {
+            this.context = context;
+            this.advertisementContentList = data;
+        }
+
+        @NonNull
+        @Override
+        public Object instantiateItem(@NonNull ViewGroup parent, int position) {
+            LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(LAYOUT_INFLATER_SERVICE);
+            View v = layoutInflater.inflate(R.layout.recyclerviewitem_advertisement,parent,false);
+            TextView textView = (TextView)v.findViewById(R.id.advertisement_preview_text);
+            textView.setText(this.advertisementContentList.get(position));
+            parent.addView(v);
+            return v;
+        }
+
+        @Override
+        public void destroyItem(@NonNull ViewGroup parent, int position, @NonNull Object object) {
+            parent.removeView((View)object);
+        }
+
+        @Override
+        public int getCount() {
+            return this.advertisementContentList.size();
+        }
+
+        @Override
+        public boolean isViewFromObject(@NonNull View view, @NonNull Object o) {
+            return view == o;
         }
     }
 
@@ -1185,6 +1231,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void InitialSetting(){
 
+        advertisementList = (AutoScrollViewPager)findViewById(R.id.advertisement_preview);
+
+
         scheduleText = (TextView)findViewById(R.id.schedule_text);
         schedulePreview = (ListView)findViewById(R.id.schedule_preview);
 
@@ -1210,9 +1259,19 @@ public class MainActivity extends AppCompatActivity {
         foodDiaryCategory = (RelativeLayout)findViewById(R.id.category_food_diary);
         favoriteSettingCategory = (RelativeLayout)findViewById(R.id.category_favorite_setting);
         anonymousForumCategory = (RelativeLayout)findViewById(R.id.category_anonymous_forum);
+
     }
 
     public void setData(){
+        advertisementContentList = new ArrayList<String>();
+        advertisementContentList.add("1. 축구하러 갈 사람");
+        advertisementContentList.add("2. 농구하러 갈 사람");
+        advertisementContentList.add("3. 배구하러 갈 사람");
+        advertisementContentList.add("4. 발야구 하러 갈 사람");
+        advertisementContentList.add("5. 배드민턴 하러 갈 사람");
+
+
+
         itemList = new ArrayList<Site>();
         itemList.add(new Site("즐겨찾기 추가",R.drawable.add_orange));
         itemList.add(new Site("GIST home", "https://www.gist.ac.kr/kr/","https://blog.naver.com/gist1993","https://www.facebook.com/GIST.ac.kr/","https://www.instagram.com/gist1993/", R.drawable.home));
