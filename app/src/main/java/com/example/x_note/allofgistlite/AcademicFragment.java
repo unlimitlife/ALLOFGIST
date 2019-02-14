@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
+import javax.net.ssl.HttpsURLConnection;
+
 public class AcademicFragment extends Fragment {
     private int mPageNumber;
     // get currentMonth
@@ -175,13 +177,13 @@ public class AcademicFragment extends Fragment {
             String Address;
             URL url;
             BufferedReader br;
-            HttpURLConnection conn;
+            HttpsURLConnection conn;
             String protocol = "GET";
             HashMap<Integer,ArrayList<CalendarContext>> data = new HashMap<Integer,ArrayList<CalendarContext>>();
             try {
                 Address = "https://www.gist.ac.kr/kr/html/sub05/0501.html";
                 url = new URL(Address);
-                conn = (HttpURLConnection)url.openConnection();
+                conn = (HttpsURLConnection)url.openConnection();
                 conn.setRequestMethod(protocol);
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream(),"UTF-8"));
 

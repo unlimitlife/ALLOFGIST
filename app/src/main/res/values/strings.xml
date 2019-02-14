@@ -16,19 +16,28 @@
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."</string>
-    <string name="email_etc">\u0040 gist.ac.kr</string>
+    <string name="email_etc">\u0040 google.com</string>
     <string name="title_activity_add_schedule">AddSchedule</string>
 
     <!-- Strings related to edittext(id,pw) in start screen -->
     <string name="edittext_id_hint"><font size="13">Id</font></string>
     <string name="edittext_pw_hint"><font size="13">Password</font></string>
 
+    <!-- Strings related to textview in signup screen -->
+    <string name="textview_nickname_signup"><font size="13">Nickname </font></string>
+    <string name="textview_id_signup"><font size="13">Id</font></string>
+    <string name="textview_pw_signup"><font size="13">Password</font></string>
+    <string name="textview_pw_check_signup"><font size="13">Password Check</font></string>
+    <string name="textview_email_signup"><font size="13">Google Email</font></string>
+
     <!-- Strings related to edittext in signup screen -->
-    <string name="edittext_nickname_hint_signup"><font size="13">Nickname</font></string>
-    <string name="edittext_id_hint_signup"><font size="13">Id</font></string>
-    <string name="edittext_pw_hint_signup"><font size="13">Password</font></string>
-    <string name="edittext_pw_check_hint_signup"><font size="13">Password Check</font></string>
-    <string name="edittext_email_hint_signup"><font size="13">GIST Email</font></string>
+    <string name="title_signup">Sign Up</string>
+    <string name="edittext_nickname_hint_signup"><font size="13">익명게시판에서 사용되는 닉네임입니다.</font></string>
+    <string name="edittext_id_hint_signup"><font size="13">아이디를 입력해주세요.</font></string>
+    <string name="edittext_pw_hint_signup"><font size="13">패스워드를 입력해주세요.</font></string>
+    <string name="edittext_pw_check_hint_signup"><font size="13">패스워드를 다시 입력해주세요.</font></string>
+    <string name="edittext_email_hint_signup"><font size="13">이메일을 입력해주세요.</font></string>
+    <string name="button_signup">SIGN UP</string>
 
     <!-- Strings related to button in tutorial screen -->
     <string name="button_official_text">공\n식</string>
@@ -50,6 +59,11 @@
     <string name="hwahak">화학과</string>
     <string name="yunghab">융합기술원</string>
     <string name="nanobio">나노바이오재료전자공학과</string>
+
+    <!-- Strings related to food diary-->
+    <string name="first_restaurant_first_floor">제1학생식당 1층</string>
+    <string name="first_restaurant_second_floor">제1학생식당 2층</string>
+    <string name="second_restaurant">제2학생식당</string>
 
     <!-- Strings related to menuButton in anonymous forum preview -->
     <string name="menu_button_home">홈</string>
@@ -90,4 +104,6 @@
     <!-- Strings related to anonymous forum view more vert menu -->
     <string name="delete_forum">삭제</string>
     <string name="edit_forum">수정</string>
+    <string name="copy_comment">댓글 복사</string>
+    <string name="write_comment">답글 쓰기</string>
 </resources>

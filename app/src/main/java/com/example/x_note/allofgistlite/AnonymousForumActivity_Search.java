@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import javax.net.ssl.HttpsURLConnection;
+
 public class AnonymousForumActivity_Search extends AppCompatActivity {
 
     private String id;
@@ -299,29 +301,29 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
             String data ="";
             String postParameters = "condition="+condition+"&onlyBest="+onlyBest+"&text="+text;
             try{
-                URL serverUrl = new URL("http://13.124.99.123/forum_search_load.php");
-                HttpURLConnection httpURLConnection = (HttpURLConnection)serverUrl.openConnection();
+                URL serverUrl = new URL("http://server.allofgist.com/forum_search_load.php");
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection)serverUrl.openConnection();
 
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameters.getBytes("utf-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("SearchLoadTask","POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
                 BufferedReader bufferedReader;
 
-                if(responseStatusCode== HttpURLConnection.HTTP_OK)
-                    inputStream = httpURLConnection.getInputStream();
+                if(responseStatusCode== httpsURLConnection.HTTP_OK)
+                    inputStream = httpsURLConnection.getInputStream();
                 else
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
 
                 bufferedReader = new BufferedReader(new InputStreamReader(inputStream),8*1024);
                 String line = null;
@@ -411,30 +413,30 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
                 String forumPosition = strings[0];
                 String forumNum = strings[1];
                 String params = "num="+forumNum+"&forumPosition="+forumPosition;
-                URL serverUrl = new URL("http://13.124.99.123/views_upload.php");
-                HttpURLConnection httpURLConnection = (HttpURLConnection)serverUrl.openConnection();
+                URL serverUrl = new URL("https://server.allofgist.com/views_upload.php");
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection)serverUrl.openConnection();
 
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoInput(true);
-                httpURLConnection.connect();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.setDoInput(true);
+                httpsURLConnection.connect();
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(params.getBytes("euc-kr"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("viewsUploadTask","POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
                 BufferedReader bufferedReader;
 
-                if(responseStatusCode == HttpURLConnection.HTTP_OK){
-                    inputStream = httpURLConnection.getInputStream();
+                if(responseStatusCode == httpsURLConnection.HTTP_OK){
+                    inputStream = httpsURLConnection.getInputStream();
                 }else{
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
                 }
 
                 bufferedReader = new BufferedReader(new InputStreamReader(inputStream),8*1024);

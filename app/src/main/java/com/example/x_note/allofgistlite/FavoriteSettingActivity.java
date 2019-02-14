@@ -23,16 +23,18 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class FavoriteSettingActivity extends AppCompatActivity {
 
     private List<Site> itemList = null;
 
     private String id = "LOGIN_ERROR";
+    private String TAG = "FAVORITE_SETTING";
     private ArrayList<Integer> keylist;
 
     private ArrayList<Integer> officialKeylist;
@@ -52,32 +54,6 @@ public class FavoriteSettingActivity extends AppCompatActivity {
     private Button completeButton;
     private ImageButton backButton;
 
-    private int nextClick = 0;
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        /*FavoriteRestoreTask favoriteRestoreTask = new FavoriteRestoreTask();
-        startMyTask(favoriteRestoreTask,"http://13.124.99.123/favoriterestore.php", id);
-
-        try {
-            for (int i = 0; i < itemList.size(); i++) {
-                if(keylist.contains(i)){
-                    SharedPreferences.Editor favoriteEditor = getSharedPreferences("FAVORITE_KEYLIST",Context.MODE_PRIVATE).edit();
-                    favoriteEditor.putString("KEYLIST_"+id+"_"+i,"OK");
-                    favoriteEditor.commit();
-                }
-                else{
-                    SharedPreferences.Editor favoriteEditor = getSharedPreferences("FAVORITE_KEYLIST",Context.MODE_PRIVATE).edit();
-                    favoriteEditor.putString("KEYLIST_"+id+"_"+i,"NONE");
-                    favoriteEditor.commit();
-                }
-
-            }
-        }catch(NullPointerException e){
-            e.printStackTrace();
-        }*/
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,13 +121,7 @@ public class FavoriteSettingActivity extends AppCompatActivity {
         completeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(nextClick==0){
-                    OrangeToast(FavoriteSettingActivity.this,"마지막 즐겨찾기 선택을 누른 후 3초 정도 기다리시면 안전하게 등록이 가능합니다.\n확인하셨다면 다시 한 번 눌러주세요.");
-                }
-                else {
-                    startMyTask(new FavoriteInsertTask(),id);
-                }
-                nextClick++;
+                startMyTask(new FavoriteInsertTask(),id);
             }
         });
 
@@ -161,7 +131,7 @@ public class FavoriteSettingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 finish();
                 /*FavoriteRestoreTask favoriteRestoreTask = new FavoriteRestoreTask();
-                startMyTask(favoriteRestoreTask,"http://13.124.99.123/favoriterestore.php", id);
+                startMyTask(favoriteRestoreTask,"https://server.allofgist.com/favoriterestore.php", id);
 
                 try {
                     for (int i = 0; i < itemList.size(); i++) {
@@ -277,33 +247,33 @@ public class FavoriteSettingActivity extends AppCompatActivity {
             String data = "";
             String ID = (String)strings[0];
 
-            String serverUrl = "http://13.124.99.123/favoriteload.php";
+            String serverUrl = "https://server.allofgist.com/favoriteload.php";
             String postParameters = "id="+ID;
 
             try{
                 URL url = new URL(serverUrl);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
 
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameters.getBytes("UTF-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("phptest","POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
-                if(responseStatusCode == httpURLConnection.HTTP_OK){
-                    inputStream = httpURLConnection.getInputStream();
+                if(responseStatusCode == httpsURLConnection.HTTP_OK){
+                    inputStream = httpsURLConnection.getInputStream();
                 }
                 else{
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
                 }
 
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream,"UTF-8");
@@ -357,6 +327,7 @@ public class FavoriteSettingActivity extends AppCompatActivity {
 
                 Bundle bundle = new Bundle();
                 bundle.putString("ID",id);
+                bundle.putString("TAG",TAG);
                 bundle.putIntegerArrayList("OFFICIAL_KEYLIST",officialKeylist);
                 bundle.putIntegerArrayList("ORGANIZATION_KEYLIST",organizationKeylist);
                 bundle.putIntegerArrayList("CIRCLE_KEYLIST",circleKeylist);
@@ -434,28 +405,28 @@ public class FavoriteSettingActivity extends AppCompatActivity {
 
             try{
                 URL url = new URL(serverUrl);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpsURLConnection httpsURLConnection = (httpsURLConnection) url.openConnection();
 
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameters.getBytes("UTF-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("phptest","POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
-                if(responseStatusCode == httpURLConnection.HTTP_OK){
-                    inputStream = httpURLConnection.getInputStream();
+                if(responseStatusCode == httpsURLConnection.HTTP_OK){
+                    inputStream = httpsURLConnection.getInputStream();
                 }
                 else{
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
                 }
 
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream,"UTF-8");
@@ -493,7 +464,7 @@ public class FavoriteSettingActivity extends AppCompatActivity {
             String data = "";
 
             String ID = (String)strings[0];
-            String serverUrl = "http://13.124.99.123/favoriterestore.php";
+            String serverUrl = "https://server.allofgist.com/favoriterestore.php";
             String postParameters;
 
             String keylistString = "0";
@@ -514,28 +485,28 @@ public class FavoriteSettingActivity extends AppCompatActivity {
 
             try{
                 URL url = new URL(serverUrl);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
 
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameters.getBytes("UTF-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("phptest","POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
-                if(responseStatusCode == httpURLConnection.HTTP_OK){
-                    inputStream = httpURLConnection.getInputStream();
+                if(responseStatusCode == httpsURLConnection.HTTP_OK){
+                    inputStream = httpsURLConnection.getInputStream();
                 }
                 else{
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
                 }
 
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream,"UTF-8");
@@ -558,14 +529,14 @@ public class FavoriteSettingActivity extends AppCompatActivity {
             return data;
         }
 
-    @Override
-    protected void onPostExecute(String s) {
-        if(s.equals("OK"))
-            finish();
-        else
-            OrangeToast(getApplicationContext(),"서버 접속을 실패하였습니다.");
+        @Override
+        protected void onPostExecute(String s) {
+            if(s.equals("OK"))
+                finish();
+            else
+                OrangeToast(getApplicationContext(),"서버 접속을 실패하였습니다.");
+        }
     }
-}
 
     //asynctask 병렬처리
     public void startMyTask(AsyncTask asyncTask, String... params){
@@ -577,49 +548,49 @@ public class FavoriteSettingActivity extends AppCompatActivity {
 
     public void setData(){
         itemList = new ArrayList<Site>();
-        itemList.add(new Site("GIST home", "https://www.gist.ac.kr/kr/","https://blog.naver.com/gist1993","https://www.facebook.com/GIST.ac.kr/","https://www.instagram.com/gist1993/", R.drawable.home));
-        itemList.add(new Site("Gel","https://gel.gist.ac.kr/",R.drawable.gel));
-        itemList.add(new Site("Zeus system", "https://zeus.gist.ac.kr", R.drawable.zeus));
-        itemList.add(new Site("수강 신청 사이트","https://zeus.gist.ac.kr/sys/lecture/lecture_main.do",R.drawable.courseregisteration));
-        itemList.add(new Site("Portal system", "https://portal.gist.ac.kr/intro.jsp", R.drawable.portal));
-        itemList.add(new Site("Email system", "https://mail.gist.ac.kr/loginl?locale=ko_KR", R.drawable.email));
-        itemList.add(new Site("GIST college", "https://college.gist.ac.kr/", R.drawable.college));
-        itemList.add(new Site("GIST library", "https://library.gist.ac.kr/", R.drawable.library));
-        itemList.add(new Site("학내공지", "https://college.gist.ac.kr/main/Sub040203", R.drawable.haknaegongji));
-        itemList.add(new Site("GIST 대학생","https://www.facebook.com/groups/giststudent/",R.drawable.giststudent));
-        itemList.add(new Site("GIST 대나무숲","https://www.facebook.com/GISTIT.ac.kr/",R.drawable.gistdaenamoo));
-        itemList.add(new Site("GIST 대나무숲 제보함","http://fbpage.kr/?pi=128#/submit",R.drawable.gistdaenamoojaeboo));
-        itemList.add(new Site("언어교육센터","https://language.gist.ac.kr/",R.drawable.language));
-        itemList.add(new Site("창업진흥센터", "https://www.facebook.com/gistbi/?ref=py_c", R.drawable.changup));
+        itemList.add(new Site("GIST home", "httpss://www.gist.ac.kr/kr/","httpss://blog.naver.com/gist1993","httpss://www.facebook.com/GIST.ac.kr/","httpss://www.instagram.com/gist1993/", R.drawable.home));
+        itemList.add(new Site("Gel","httpss://gel.gist.ac.kr/",R.drawable.gel));
+        itemList.add(new Site("Zeus system", "httpss://zeus.gist.ac.kr", R.drawable.zeus));
+        itemList.add(new Site("수강 신청 사이트","httpss://zeus.gist.ac.kr/sys/lecture/lecture_main.do",R.drawable.courseregisteration));
+        itemList.add(new Site("Portal system", "httpss://portal.gist.ac.kr/intro.jsp", R.drawable.portal));
+        itemList.add(new Site("Email system", "httpss://mail.gist.ac.kr/loginl?locale=ko_KR", R.drawable.email));
+        itemList.add(new Site("GIST college", "httpss://college.gist.ac.kr/", R.drawable.college));
+        itemList.add(new Site("GIST library", "httpss://library.gist.ac.kr/", R.drawable.library));
+        itemList.add(new Site("학내공지", "httpss://college.gist.ac.kr/main/Sub040203", R.drawable.haknaegongji));
+        itemList.add(new Site("GIST 대학생","httpss://www.facebook.com/groups/giststudent/",R.drawable.giststudent));
+        itemList.add(new Site("GIST 대나무숲","httpss://www.facebook.com/GISTIT.ac.kr/",R.drawable.gistdaenamoo));
+        itemList.add(new Site("GIST 대나무숲 제보함","https://fbpage.kr/?pi=128#/submit",R.drawable.gistdaenamoojaeboo));
+        itemList.add(new Site("언어교육센터","httpss://language.gist.ac.kr/",R.drawable.language));
+        itemList.add(new Site("창업진흥센터", "httpss://www.facebook.com/gistbi/?ref=py_c", R.drawable.changup));
         itemList.add(new Site("학과별 사이트",R.drawable.majorset));
-        itemList.add(new Site("GIST 총학생회", "https://www.facebook.com/gistunion/", R.drawable.gistunion));
-        itemList.add(new Site("GIST 동아리연합회", "https://www.facebook.com/gistclubunite/", R.drawable.clubnight));
-        itemList.add(new Site("GIST 하우스", "https://www.facebook.com/GISTcollegeHOUSE/", R.drawable.gisthouse));
-        itemList.add(new Site("GIST 문화행사위원회", "https://www.facebook.com/Moonhangwe/", R.drawable.moonhangwe));
-        itemList.add(new Site("GIST 신문","http://gistnews.co.kr/", "https://www.facebook.com/GistSinmoon/", R.drawable.gistnews));
-        itemList.add(new Site("GIST 홍보대사", "http://blog.naver.com/PostList.nhn?blogId=gist1993&from=postList&categoryNo=28", R.drawable.gionnare));
-        itemList.add(new Site("춤 동아리 막무가내", "https://www.facebook.com/gistmacmoo/","https://www.youtube.com/channel/UCHG5tpsQEpnVNzNpGgLfWMw", R.drawable.mackmooganae));
-        itemList.add(new Site("힙합 동아리 Ignition", "https://www.facebook.com/GISTignition/","https://www.youtube.com/channel/UCmdXmpzSH7EHwONokx-hYRQ", R.drawable.ignition));
-        itemList.add(new Site("노래 동아리 싱송생송", "https://www.facebook.com/gistsingsong/","https://www.youtube.com/channel/UCLr7P2ZBg2SPK6D_3nTmFXQ", R.drawable.singsongsangsong));
-        itemList.add(new Site("연극 동아리 지대로", "https://www.facebook.com/GIST-%EC%97%B0%EA%B7%B9-%EB%8F%99%EC%95%84%EB%A6%AC-%EC%A7%80%EB%8C%80%EB%A1%9C-587558981293950/","https://www.youtube.com/channel/UC1ZH8qkJ8jl5uNSyYasIYRw", R.drawable.gidaero));
-        itemList.add(new Site("오케스트라 동아리 악동", "https://www.facebook.com/GISTorchestra/","https://www.youtube.com/channel/UCftiqcxbUhfe20Nqxs7ZFGQ", R.drawable.orchestra));
-        itemList.add(new Site("기타 동아리 HOTSIX", "https://www.facebook.com/gisthotsix/", R.drawable.hotsix));
-        itemList.add(new Site("피아노 동아리 GISRI", "https://www.facebook.com/gistgisri/?ref=py_c", R.drawable.gisri));
-        itemList.add(new Site("밴드 Main", "https://www.facebook.com/MAIN-899414343552162/", R.drawable.main));
-        itemList.add(new Site("밴드 도도한 쭈쭈바", "https://www.facebook.com/dozzu/", R.drawable.dozzu));
-        itemList.add(new Site("영화 동아리 Cinergy", "https://www.facebook.com/gistcinergy/", R.drawable.cinergy));
-        itemList.add(new Site("영상편집 동아리 The GIST", "https://www.facebook.com/Gentletist/","https://www.youtube.com/channel/UCMUDHS0SZvQilFe5h6eI9rA/videos", R.drawable.thegist));
-        itemList.add(new Site("문예창작 동아리 사각사각", "https://www.facebook.com/GIST-%EC%82%AC%EA%B0%81%EC%82%AC%EA%B0%81-238788459851229/", R.drawable.sagaksagak));
-        itemList.add(new Site("GIST 고양이 지냥이", "https://www.facebook.com/giscats/", R.drawable.giscat));
-        itemList.add(new Site("요리동아리 이쑤시개", "https://www.facebook.com/%EC%9D%B4%EC%91%A4%EC%8B%9C%EA%B0%9C-%EC%9A%94%EB%A6%AC%ED%95%98%EB%8A%94-GIST%EC%83%9D-272551203239747/?ref=py_c", R.drawable.essosigae));
-        itemList.add(new Site("칵테일 동아리 MixoloGIST", "https://www.facebook.com/Mixologist-1584231725157207", R.drawable.mixologist));
-        itemList.add(new Site("보드게임 동아리 BGM", "https://www.facebook.com/GISTBGM", R.drawable.bgm));
-        itemList.add(new Site("성소수자 모임 speQtrum", "https://www.facebook.com/gistspeqtrum/", R.drawable.speqtrum));
-        itemList.add(new Site("만화 동아리 erutlucbus", "https://www.facebook.com/Erutlucbus/", R.drawable.eru));
-        itemList.add(new Site("천체관측 동아리 SpaceBar", "https://www.facebook.com/GISTspacebar/", R.drawable.spacebar));
-        itemList.add(new Site("전산 동아리 WING", "https://www.facebook.com/GISTWING/", R.drawable.wing));
-        itemList.add(new Site("환경 동아리 온새미로", "https://www.facebook.com/onsaemiro123/", R.drawable.onsaemiro));
-        itemList.add(new Site("축구 동아리 Kickass", "https://www.facebook.com/gistkickass/?ref=br_rs", R.drawable.kickass));
+        itemList.add(new Site("GIST 총학생회", "httpss://www.facebook.com/gistunion/", R.drawable.gistunion));
+        itemList.add(new Site("GIST 동아리연합회", "httpss://www.facebook.com/gistclubunite/", R.drawable.clubnight));
+        itemList.add(new Site("GIST 하우스", "httpss://www.facebook.com/GISTcollegeHOUSE/", R.drawable.gisthouse));
+        itemList.add(new Site("GIST 문화행사위원회", "httpss://www.facebook.com/Moonhangwe/", R.drawable.moonhangwe));
+        itemList.add(new Site("GIST 신문","https://gistnews.co.kr/", "httpss://www.facebook.com/GistSinmoon/", R.drawable.gistnews));
+        itemList.add(new Site("GIST 홍보대사", "https://blog.naver.com/PostList.nhn?blogId=gist1993&from=postList&categoryNo=28", R.drawable.gionnare));
+        itemList.add(new Site("춤 동아리 막무가내", "httpss://www.facebook.com/gistmacmoo/","httpss://www.youtube.com/channel/UCHG5tpsQEpnVNzNpGgLfWMw", R.drawable.mackmooganae));
+        itemList.add(new Site("힙합 동아리 Ignition", "httpss://www.facebook.com/GISTignition/","httpss://www.youtube.com/channel/UCmdXmpzSH7EHwONokx-hYRQ", R.drawable.ignition));
+        itemList.add(new Site("노래 동아리 싱송생송", "httpss://www.facebook.com/gistsingsong/","httpss://www.youtube.com/channel/UCLr7P2ZBg2SPK6D_3nTmFXQ", R.drawable.singsongsangsong));
+        itemList.add(new Site("연극 동아리 지대로", "httpss://www.facebook.com/GIST-%EC%97%B0%EA%B7%B9-%EB%8F%99%EC%95%84%EB%A6%AC-%EC%A7%80%EB%8C%80%EB%A1%9C-587558981293950/","httpss://www.youtube.com/channel/UC1ZH8qkJ8jl5uNSyYasIYRw", R.drawable.gidaero));
+        itemList.add(new Site("오케스트라 동아리 악동", "httpss://www.facebook.com/GISTorchestra/","httpss://www.youtube.com/channel/UCftiqcxbUhfe20Nqxs7ZFGQ", R.drawable.orchestra));
+        itemList.add(new Site("기타 동아리 HOTSIX", "httpss://www.facebook.com/gisthotsix/", R.drawable.hotsix));
+        itemList.add(new Site("피아노 동아리 GISRI", "httpss://www.facebook.com/gistgisri/?ref=py_c", R.drawable.gisri));
+        itemList.add(new Site("밴드 Main", "httpss://www.facebook.com/MAIN-899414343552162/", R.drawable.main));
+        itemList.add(new Site("밴드 도도한 쭈쭈바", "httpss://www.facebook.com/dozzu/", R.drawable.dozzu));
+        itemList.add(new Site("영화 동아리 Cinergy", "httpss://www.facebook.com/gistcinergy/", R.drawable.cinergy));
+        itemList.add(new Site("영상편집 동아리 The GIST", "httpss://www.facebook.com/Gentletist/","httpss://www.youtube.com/channel/UCMUDHS0SZvQilFe5h6eI9rA/videos", R.drawable.thegist));
+        itemList.add(new Site("문예창작 동아리 사각사각", "httpss://www.facebook.com/GIST-%EC%82%AC%EA%B0%81%EC%82%AC%EA%B0%81-238788459851229/", R.drawable.sagaksagak));
+        itemList.add(new Site("GIST 고양이 지냥이", "httpss://www.facebook.com/giscats/", R.drawable.giscat));
+        itemList.add(new Site("요리동아리 이쑤시개", "httpss://www.facebook.com/%EC%9D%B4%EC%91%A4%EC%8B%9C%EA%B0%9C-%EC%9A%94%EB%A6%AC%ED%95%98%EB%8A%94-GIST%EC%83%9D-272551203239747/?ref=py_c", R.drawable.essosigae));
+        itemList.add(new Site("칵테일 동아리 MixoloGIST", "httpss://www.facebook.com/Mixologist-1584231725157207", R.drawable.mixologist));
+        itemList.add(new Site("보드게임 동아리 BGM", "httpss://www.facebook.com/GISTBGM", R.drawable.bgm));
+        itemList.add(new Site("성소수자 모임 speQtrum", "httpss://www.facebook.com/gistspeqtrum/", R.drawable.speqtrum));
+        itemList.add(new Site("만화 동아리 erutlucbus", "httpss://www.facebook.com/Erutlucbus/", R.drawable.eru));
+        itemList.add(new Site("천체관측 동아리 SpaceBar", "httpss://www.facebook.com/GISTspacebar/", R.drawable.spacebar));
+        itemList.add(new Site("전산 동아리 WING", "httpss://www.facebook.com/GISTWING/", R.drawable.wing));
+        itemList.add(new Site("환경 동아리 온새미로", "httpss://www.facebook.com/onsaemiro123/", R.drawable.onsaemiro));
+        itemList.add(new Site("축구 동아리 Kickass", "httpss://www.facebook.com/gistkickass/?ref=br_rs", R.drawable.kickass));
 
     }
 }

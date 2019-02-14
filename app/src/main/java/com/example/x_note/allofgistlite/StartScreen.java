@@ -26,6 +26,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.net.ssl.HttpsURLConnection;
+
 public class StartScreen extends AppCompatActivity {
 
     public EditText login_id, login_pw;
@@ -103,9 +105,9 @@ public class StartScreen extends AppCompatActivity {
             try {
                 /* 서버연결 */
                 URL url = new URL(
-                        "http://13.124.99.123/login.php");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                        "https://server.allofgist.com/login.php");
+                HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+                //conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestMethod("POST");
                 conn.setDoInput(true);
                 conn.connect();
@@ -203,8 +205,8 @@ public class StartScreen extends AppCompatActivity {
             try {
                 /* 서버연결 */
                 URL url = new URL(
-                        "http://13.124.99.123/tutorialcheck.php");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        "https://server.allofgist.com/tutorialcheck.php");
+                HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestMethod("POST");
                 conn.setDoInput(true);
@@ -257,32 +259,17 @@ public class StartScreen extends AppCompatActivity {
 
             // 사용경험이 있는 회원
             if(result==1) {
-
-
-                SharedPreferences.Editor loginEditor = getSharedPreferences("LOGIN_ID",MODE_PRIVATE).edit();
-                loginEditor.clear();
-                loginEditor.putString("ID",id);
-                loginEditor.apply();
-
-                startMyTask(new FavoriteLoad(),id);
-
+                Intent main = new Intent(StartScreen.this, MainActivity.class);
+                main.putExtra("ID",id);
+                OrangeToast(StartScreen.this, "성공적으로 로그인되었습니다!");
+                startActivity(main);
             }
+
 
             //처음인 회원
             else if(result==0){
                 Intent tutorial = new Intent(StartScreen.this,Tutorial.class);
-                SharedPreferences.Editor loginEditor = getSharedPreferences("LOGIN_ID",MODE_PRIVATE).edit();
-                loginEditor.clear();
-                loginEditor.putString("ID",id);
-                loginEditor.apply();
-
-
-                SharedPreferences.Editor favoriteEditor = getSharedPreferences("FAVORITE_KEYLIST",MODE_PRIVATE).edit();
-                favoriteEditor.clear();
-                favoriteEditor.apply();
-
-
-
+                tutorial.putExtra("ID",id);
                 OrangeToast(StartScreen.this,"성공적으로 로그인되었습니다!");
                 startActivity(tutorial);
             }
@@ -301,93 +288,6 @@ public class StartScreen extends AppCompatActivity {
         super.onPause();
         //다음화면으로 갈떄 현재 액티비티를 종료
         finish();
-    }
-    public class FavoriteLoad extends AsyncTask<String, Integer, String> {
-        ProgressDialog progressDialog;
-        @Override
-        protected void onPreExecute() {
-            progressDialog = progressDialog.show(StartScreen.this, "Loading favorites...", null, true, true);
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            /* 인풋 파라메터값 생성 */
-            String data = "";
-            String param = "id=" + params[0]+ "";
-            Log.e("POST",param);
-            try {
-                /* 서버연결 */
-                URL url = new URL(
-                        "http://13.124.99.123/favoriteload.php");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                conn.setRequestMethod("POST");
-                conn.setDoInput(true);
-                conn.connect();
-
-                /* 안드로이드 -> 서버 파라메터값 전달 */
-                OutputStream outs = conn.getOutputStream();
-                outs.write(param.getBytes("euc-kr"));
-                outs.flush();
-                outs.close();
-
-                /* 서버 -> 안드로이드 파라메터값 전달 */
-                InputStream is = null;
-                BufferedReader in = null;
-                int responseStatusCode = conn.getResponseCode();
-                if(responseStatusCode == conn.HTTP_OK)
-                    is = conn.getInputStream();
-                else
-                    is = conn.getErrorStream();
-
-                in = new BufferedReader(new InputStreamReader(is), 8 * 1024);
-                String line = null;
-                StringBuffer buff = new StringBuffer();
-                while ( ( line = in.readLine() ) != null )
-                {
-                    buff.append(line + "\n");
-                }
-
-                data = buff.toString().trim();
-
-                /* 서버에서 응답 */
-                Log.e("RECV DATA",data);
-                return data;
-
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-        @Override
-        protected void onPostExecute(String result) {
-            progressDialog.dismiss();
-
-            if(result.equals("NULL")){}
-            else{
-                String[] splitlist;
-                splitlist=result.split(",");
-
-                //즐겨찾기 DB 불러오기
-                SharedPreferences.Editor favoriteEditor = getSharedPreferences("FAVORITE_KEYLIST",MODE_PRIVATE).edit();
-                favoriteEditor.clear();
-                for(String wo : splitlist) {
-                    favoriteEditor.putString("KEYLIST_"+id+"_"+wo,"OK");
-                }
-                favoriteEditor.apply();
-
-                Intent main = new Intent(StartScreen.this, MainActivity.class);
-                OrangeToast(StartScreen.this,"성공적으로 로그인되었습니다!");
-                startActivity(main);
-            }
-
-        }
-
     }
 
 

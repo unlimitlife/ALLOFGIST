@@ -24,12 +24,13 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class AnonymousForumActivity_Write extends AppCompatActivity {
 
@@ -209,27 +210,27 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
             String postParameters = "id=" + ID;
 
             try {
-                URL url = new URL("http://13.124.99.123/nicknameload.php");
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                URL url = new URL("https://server.allofgist.com/nicknameload.php");
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
 
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameters.getBytes("UTF-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("nicknametest", "POST response code - " + responseStatusCode);
 
                 InputStream inputStream;
-                if (responseStatusCode == httpURLConnection.HTTP_OK)
-                    inputStream = httpURLConnection.getInputStream();
+                if (responseStatusCode == httpsURLConnection.HTTP_OK)
+                    inputStream = httpsURLConnection.getInputStream();
                 else
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
 
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
@@ -274,27 +275,27 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
 
 
             try{
-                URL serverUrl = new URL("http://13.124.99.123/forum_insert.php");
-                HttpURLConnection httpURLConnection =  (HttpURLConnection)serverUrl.openConnection();
+                URL serverUrl = new URL("https://server.allofgist.com/forum_insert.php");
+                HttpsURLConnection httpsURLConnection =  (HttpsURLConnection)serverUrl.openConnection();
 
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameters.getBytes("UTF-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("foruminserttest","POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
-                if(responseStatusCode == httpURLConnection.HTTP_OK)
-                    inputStream = httpURLConnection.getInputStream();
+                if(responseStatusCode == httpsURLConnection.HTTP_OK)
+                    inputStream = httpsURLConnection.getInputStream();
                 else
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
 
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
@@ -338,27 +339,27 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
             String postParameters = "id="+ID+"&title="+title+"&content="+content+"&nickname="+nickname+"&num="+num;
 
             try{
-                URL serverUrl = new URL("http://13.124.99.123/forum_edit.php");
-                HttpURLConnection httpURLConnection =  (HttpURLConnection)serverUrl.openConnection();
+                URL serverUrl = new URL("https://server.allofgist.com/forum_edit.php");
+                HttpsURLConnection httpsURLConnection =  (HttpsURLConnection)serverUrl.openConnection();
 
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameters.getBytes("UTF-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("foruminserttest","POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
-                if(responseStatusCode == httpURLConnection.HTTP_OK)
-                    inputStream = httpURLConnection.getInputStream();
+                if(responseStatusCode == httpsURLConnection.HTTP_OK)
+                    inputStream = httpsURLConnection.getInputStream();
                 else
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
 
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);

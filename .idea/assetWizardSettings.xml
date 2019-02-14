@@ -34,7 +34,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/snap/android-studio/70/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/social/ic_school_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/opt/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/maps/ic_local_cafe_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -55,9 +55,9 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="academic_calendar_gray" />
+                                      <entry key="outputName" value="food_select_orange_2" />
                                       <entry key="theme" value="CUSTOM" />
-                                      <entry key="themeColor" value="b8b8b8" />
+                                      <entry key="themeColor" value="ff7f00" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -95,17 +95,6 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="ffffff" />
-                                              </map>
-                                            </option>
-                                          </PersistentState>
-                                        </value>
-                                      </entry>
-                                      <entry key="clipartAsset">
-                                        <value>
-                                          <PersistentState>
-                                            <option name="values">
-                                              <map>
-                                                <entry key="url" value="jar:file:/snap/android-studio/70/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/content/ic_add_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>

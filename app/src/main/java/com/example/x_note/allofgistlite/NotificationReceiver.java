@@ -11,10 +11,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class NotificationReceiver extends AppCompatActivity {
 
@@ -40,8 +41,8 @@ public class NotificationReceiver extends AppCompatActivity {
             try {
                 /* 서버연결 */
                 URL url = new URL(
-                        "http://13.124.99.123/push_notification.php");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        "https://server.allofgist.com/push_notification.php");
+                HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestMethod("POST");
                 conn.setDoInput(true);

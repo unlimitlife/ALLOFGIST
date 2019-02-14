@@ -439,6 +439,7 @@
                 tools:text="이동건" />
 
             <TextView
+                android:id="@+id/anonymous_forum_view_next_comment_nickname_extra"
                 android:layout_width="0dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
@@ -504,8 +505,8 @@
 
             <ImageButton
                 android:id="@+id/anonymous_forum_view_comment_input_button"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"

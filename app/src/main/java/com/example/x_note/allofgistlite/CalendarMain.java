@@ -55,7 +55,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -66,9 +65,11 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Locale;
 
+import javax.net.ssl.HttpsURLConnection;
+
 public class CalendarMain extends AppCompatActivity {
 
-    private String id;
+    private String id = "LOGIN_ERROR";
     private MaterialCalendarView calendarView;
     private ImageButton watchAcademic;
 
@@ -226,8 +227,7 @@ public class CalendarMain extends AppCompatActivity {
 
         //Intent intent = getIntent();
         //id = intent.getStringExtra("ID");
-        SharedPreferences loginPrefs = getSharedPreferences("LOGIN_ID",MODE_PRIVATE);
-        id = loginPrefs.getString("ID","LOGIN_ERROR");
+        id = getIntent().getStringExtra("ID");
         if(id.equals("LOGIN_ERROR")){
             Toast.makeText(CalendarMain.this,"로그인 오류!",Toast.LENGTH_LONG).show();
             finish();
@@ -1023,10 +1023,10 @@ public class CalendarMain extends AppCompatActivity {
                                     String startDate = repeatDate[0].replaceAll("\\.", "-");
                                     String endDate = repeatDate[1].replaceAll("\\.", "-");
 
-                                    startMyTask(editDiary,"http://13.124.99.123/diaryedit.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatText[0], startDate, endDate, schedule.getNum()+"");
+                                    startMyTask(editDiary,"https://server.allofgist.com/diaryedit.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatText[0], startDate, endDate, schedule.getNum()+"");
 
                                 } else
-                                    startMyTask(editDiary,"http://13.124.99.123/diaryedit.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatButton.getText().toString(), null, null, schedule.getNum()+"");
+                                    startMyTask(editDiary,"https://server.allofgist.com/diaryedit.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatButton.getText().toString(), null, null, schedule.getNum()+"");
 
                                 //DateClassificationTask dateClassificationTask = new DateClassificationTask();
                                 //dateClassificationTask.execute(id);
@@ -1828,9 +1828,9 @@ public class CalendarMain extends AppCompatActivity {
                                 String[] repeatDate = repeatText[1].split(" - ");
                                 String startDate = repeatDate[0].replaceAll("\\.", "-");
                                 String endDate = repeatDate[1].replaceAll("\\.", "-");
-                                startMyTask(addDiary,"http://13.124.99.123/diaryinsert.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatText[0], startDate, endDate);
+                                startMyTask(addDiary,"https://server.allofgist.com/diaryinsert.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatText[0], startDate, endDate);
                             } else
-                                startMyTask(addDiary,"http://13.124.99.123/diaryinsert.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatButton.getText().toString(), null, null);
+                                startMyTask(addDiary,"https://server.allofgist.com/diaryinsert.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatButton.getText().toString(), null, null);
 
                             //DateClassificationTask dateClassificationTask = new DateClassificationTask();
                             //dateClassificationTask.execute(id);
@@ -2384,27 +2384,27 @@ public class CalendarMain extends AppCompatActivity {
 
             try {
                 URL url = new URL(serverUrl);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
 
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameters.getBytes("UTF-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("phptest", "POST response code - " + responseStatusCode);
 
                 InputStream inputStream;
-                if (responseStatusCode == httpURLConnection.HTTP_OK) {
-                    inputStream = httpURLConnection.getInputStream();
+                if (responseStatusCode == httpsURLConnection.HTTP_OK) {
+                    inputStream = httpsURLConnection.getInputStream();
                 } else {
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
                 }
 
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
@@ -2455,27 +2455,27 @@ public class CalendarMain extends AppCompatActivity {
 
             try {
                 URL url = new URL(serverUrl);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
 
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameters.getBytes("UTF-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("phptest", "POST response code - " + responseStatusCode);
 
                 InputStream inputStream;
-                if (responseStatusCode == httpURLConnection.HTTP_OK) {
-                    inputStream = httpURLConnection.getInputStream();
+                if (responseStatusCode == httpsURLConnection.HTTP_OK) {
+                    inputStream = httpsURLConnection.getInputStream();
                 } else {
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
                 }
 
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
@@ -2518,8 +2518,8 @@ public class CalendarMain extends AppCompatActivity {
             try {
                 /* 서버연결 */
                 URL url = new URL(
-                        "http://13.124.99.123/user_diary_schedule_list_delete.php");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        "https://server.allofgist.com/user_diary_schedule_list_delete.php");
+                HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestMethod("POST");
                 conn.setDoInput(true);
@@ -2583,8 +2583,8 @@ public class CalendarMain extends AppCompatActivity {
             try {
                 /* 서버연결 */
                 URL url = new URL(
-                        "http://13.124.99.123/user_diary_schedule_list_load.php");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        "https://server.allofgist.com/user_diary_schedule_list_load.php");
+                HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestMethod("POST");
                 conn.setDoInput(true);
@@ -2706,8 +2706,8 @@ public class CalendarMain extends AppCompatActivity {
 
                 /* 서버연결 */
                 URL url = new URL(
-                            "http://13.124.99.123/dot_data_calculate_renewal.php");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                            "https://server.allofgist.com/dot_data_calculate_renewal.php");
+                HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestMethod("POST");
                 conn.setDoInput(true);

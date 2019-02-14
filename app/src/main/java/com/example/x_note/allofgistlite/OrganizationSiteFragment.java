@@ -48,6 +48,7 @@ public class OrganizationSiteFragment extends Fragment {
     private SiteAdapter siteAdapter;
 
     private String id;
+    private String TAG;
 
     public OrganizationSiteFragment() {
         // Required empty public constructor
@@ -59,6 +60,7 @@ public class OrganizationSiteFragment extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_site, container, false);
 
         id = getArguments().getString("ID");
+        TAG = getArguments().getString("TAG");
 
         itemList = new ArrayList<Site>();
         setData(itemList);
@@ -68,14 +70,16 @@ public class OrganizationSiteFragment extends Fragment {
             buttonCount.put(itemList.get(i).getMsite_name(),false);
 
         //즐겨찾기 불러올때
-        try{
-            organizationKeylist = getArguments().getIntegerArrayList("ORGANIZATION_KEYLIST");
-            if(organizationKeylist.size()>0){
-                for(int i=0;i<organizationKeylist.size();i++)
-                    buttonCount.put(itemList.get(organizationKeylist.get(i)).getMsite_name(),true);
+        if(TAG.equals("FAVORITE_SETTING")) {
+            try {
+                organizationKeylist = getArguments().getIntegerArrayList("ORGANIZATION_KEYLIST");
+                if (organizationKeylist.size() > 0) {
+                    for (int i = 0; i < organizationKeylist.size(); i++)
+                        buttonCount.put(itemList.get(organizationKeylist.get(i)).getMsite_name(), true);
+                }
+            } catch (NullPointerException e) {
+                e.printStackTrace();
             }
-        }catch(NullPointerException e){
-            e.printStackTrace();
         }
 
 
@@ -159,31 +163,39 @@ public class OrganizationSiteFragment extends Fragment {
                 public void onClick(View view) {
                     buttonCount.put(itemList.get(position).getMsite_name(),!buttonCount.get(itemList.get(position).getMsite_name()));
                     if(buttonCount.get(itemList.get(position).getMsite_name())){
-                        /*FavoriteTask favoriteTask = new FavoriteTask();
-                        favoriteTask.execute("http://13.124.99.123/favoriteinsert.php",id,(position+15)+"");
-                        SharedPreferences.Editor favoriteEditor = getActivity().getSharedPreferences("FAVORITE_KEYLIST",Context.MODE_PRIVATE).edit();
-                        favoriteEditor.putString("KEYLIST_"+id+"_"+(position+15),"OK");
-                        favoriteEditor.commit();
-                        view.setBackgroundResource(R.drawable.item_selected_state);*/
 
                         try {
-                            ((FavoriteSettingActivity) getActivity()).editKeyList("ORGANIZATION", position);
-                            view.setBackgroundResource(R.drawable.item_selected_state);
+                            switch(TAG){
+                                case "FAVORITE_SETTING":
+                                    ((FavoriteSettingActivity) getActivity()).editKeyList("ORGANIZATION", position);
+                                    view.setBackgroundResource(R.drawable.item_unselected_state);
+                                    break;
+                                case "TUTORIAL":
+                                    ((Tutorial) getActivity()).editKeyList("ORGANIZATION", position);
+                                    view.setBackgroundResource(R.drawable.item_unselected_state);
+                                    break;
+                                default:
+                                    break;
+                            }
                         }catch (NullPointerException e){
                             e.printStackTrace();
                         }
 
                     }
                     else {
-                        /*FavoriteTask favoriteTask = new FavoriteTask();
-                        favoriteTask.execute("http://13.124.99.123/favoritedelete.php",id,(position+15)+"");
-                        SharedPreferences.Editor favoriteEditor = getActivity().getSharedPreferences("FAVORITE_KEYLIST",Context.MODE_PRIVATE).edit();
-                        favoriteEditor.putString("KEYLIST_"+id+"_"+(position+15),"NONE");
-                        favoriteEditor.commit();
-                        view.setBackgroundResource(R.drawable.item_unselected_state);*/
                         try {
-                            ((FavoriteSettingActivity) getActivity()).editKeyList("ORGANIZATION", position);
-                            view.setBackgroundResource(R.drawable.item_unselected_state);
+                            switch(TAG){
+                                case "FAVORITE_SETTING":
+                                    ((FavoriteSettingActivity) getActivity()).editKeyList("ORGANIZATION", position);
+                                    view.setBackgroundResource(R.drawable.item_selected_state);
+                                    break;
+                                case "TUTORIAL":
+                                    ((Tutorial) getActivity()).editKeyList("ORGANIZATION", position);
+                                    view.setBackgroundResource(R.drawable.item_selected_state);
+                                    break;
+                                default:
+                                    break;
+                            }
                         }catch (NullPointerException e){
                             e.printStackTrace();
                         }
@@ -214,67 +226,6 @@ public class OrganizationSiteFragment extends Fragment {
             mLinearlayout = (LinearLayout) view.findViewById(R.id.clickicon);
         }
     }
-
-
-    //즐겨찾기 DB 저장, 삭제
-    /*class FavoriteTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... strings) {
-            String ID = (String)strings[1];
-            String siteNum = (String)strings[2];
-
-            String serverUrl = (String)strings[0];
-            String postParameters = "id="+ID+"&favoritehomepage="+siteNum;
-
-            try{
-                URL url = new URL(serverUrl);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
-
-
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-                outputStream.write(postParameters.getBytes("UTF-8"));
-                outputStream.flush();
-                outputStream.close();
-
-                int responseStatusCode = httpURLConnection.getResponseCode();
-                Log.d("phptest","POST response code - "+responseStatusCode);
-
-                InputStream inputStream;
-                if(responseStatusCode == httpURLConnection.HTTP_OK){
-                    inputStream = httpURLConnection.getInputStream();
-                }
-                else{
-                    inputStream = httpURLConnection.getErrorStream();
-                }
-
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream,"UTF-8");
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-                StringBuilder sb = new StringBuilder();
-                String line = null;
-
-                while((line = bufferedReader.readLine())!=null){
-                    sb.append(line);
-                }
-
-                bufferedReader.close();
-
-                return sb.toString();
-
-            }catch (Exception e){
-                Log.d("phptest", "Signup: Error", e);
-
-                return new String("Error: "+e.getMessage());
-            }
-        }
-    }*/
-
 
 
 

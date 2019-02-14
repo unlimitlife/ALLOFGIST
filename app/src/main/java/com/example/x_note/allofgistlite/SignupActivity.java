@@ -2,18 +2,21 @@ package com.example.x_note.allofgistlite;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.AsyncTask;
 
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,13 +24,14 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
 
 
 public class SignupActivity extends AppCompatActivity {
 
-    private static String IP_ADDRESS = "13.124.99.123";
+    private static String IP_ADDRESS = "server.allofgist.com";
 
     private EditText mEditTextNickname;
     private EditText mEditTextId;
@@ -35,16 +39,27 @@ public class SignupActivity extends AppCompatActivity {
     private EditText mEditTextPasswordCheck;
     private EditText mEditTextEmailId;
 
+    View popupView;
+    PopupWindow popupWindow;
+    TextView noticeTextView;
+    TextView okTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signup);
+        setContentView(R.layout.activity_sign_up);
 
         mEditTextNickname = (EditText)findViewById(R.id.edittext_nickname);
         mEditTextId = (EditText)findViewById(R.id.editText_ID);
         mEditTextPassword = (EditText)findViewById(R.id.editText_password);
         mEditTextPasswordCheck = (EditText)findViewById(R.id.editText_passwordcheck);
         mEditTextEmailId = (EditText)findViewById(R.id.editText_emailid);
+
+        popupView = getLayoutInflater().inflate(R.layout.notice_popup_window,null);
+        popupWindow = new PopupWindow(popupView, RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT,true);
+        noticeTextView = (TextView)popupView.findViewById(R.id.notice_text);
+        okTextView = (TextView)popupView.findViewById(R.id.notice_ok_textview);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.argb(80,0,0,0)));
 
 
         Button buttonInsert = (Button)findViewById(R.id.button_main_insert);
@@ -93,28 +108,28 @@ public class SignupActivity extends AppCompatActivity {
 
             try{
                 URL url = new URL(serverUrl);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
 
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameters.getBytes("UTF-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("phptest","POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
-                if(responseStatusCode == httpURLConnection.HTTP_OK){
-                    inputStream = httpURLConnection.getInputStream();
+                if(responseStatusCode == httpsURLConnection.HTTP_OK){
+                    inputStream = httpsURLConnection.getInputStream();
                 }
                 else{
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
                 }
 
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream,"UTF-8");
@@ -143,6 +158,13 @@ public class SignupActivity extends AppCompatActivity {
             super.onPostExecute(result);
 
             progressDialog.dismiss();
+            popupWindow.showAtLocation(popupView, Gravity.CENTER,0,0);
+            okTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popupWindow.dismiss();
+                }
+            });
             OrangeToast(SignupActivity.this,"인증 메일 확인을 해주세요.");
             Log.d("phptest","POST response - "+result);
 
@@ -158,28 +180,28 @@ public class SignupActivity extends AppCompatActivity {
             String postParameter = "id="+id+"&mailid="+mailid;
 
             try{
-                URL serverURL = new URL("http://13.124.99.123/IDcheck.php");
-                HttpURLConnection httpURLConnection = (HttpURLConnection)serverURL.openConnection();
+                URL serverURL = new URL("https://server.allofgist.com/IDcheck.php");
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection)serverURL.openConnection();
 
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameter.getBytes("UTF-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("phptest","POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
-                if(responseStatusCode == httpURLConnection.HTTP_OK){
-                    inputStream = httpURLConnection.getInputStream();
+                if(responseStatusCode == httpsURLConnection.HTTP_OK){
+                    inputStream = httpsURLConnection.getInputStream();
                 }
                 else{
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
                 }
 
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream,"UTF-8");
@@ -211,7 +233,7 @@ public class SignupActivity extends AppCompatActivity {
                 String emailId = mEditTextEmailId.getText().toString();
 
                 Signup task = new Signup();
-                startMyTask(task,"http://" + IP_ADDRESS + "/insert.php", nickname,name,password,emailId);
+                startMyTask(task,"https://" + IP_ADDRESS + "/insert.php", nickname,name,password,emailId);
 
                 mEditTextNickname.setText("");
                 mEditTextId.setText("");

@@ -1,5 +1,7 @@
 package com.example.x_note.allofgistlite;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -19,10 +21,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -31,30 +31,25 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.Buffer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class AnonymousForumActivity_View extends AppCompatActivity {
 
@@ -121,34 +116,23 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
     ImageView nextCommentIcon;
     LinearLayout nextCommentLayout;
     TextView nextCommentNickname;
+    TextView nextCommentNicknameExtra;
     ImageButton nextCommentCloseButton;
     View nextCommentLayoutBorderLine;
 
 
     @Override
     public void onBackPressed() {
-        if(editmode){
-            noticeText.setText(R.string.edit_cancel_question);
-            noticePopupWindow.showAtLocation(popupView, Gravity.CENTER,0,0);
-            noticeOk.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        noticePopupWindow.dismiss();
-                        commentInput.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                commentInput.requestFocus();
-                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.hideSoftInputFromWindow(commentInput.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
-                                commentInput.setText("");
-                                editmode = false;
-                            }
-                        });
-                    }
-            });
-        }
+        if(editmode)
+            ShowCancelEditMode();
         else {
-            super.onBackPressed();
+            if(nextCommentLayout.getVisibility()==View.VISIBLE){
+                nextCommentIcon.setVisibility(View.GONE);
+                nextCommentLayout.setVisibility(View.GONE);
+                nextCommentLayoutBorderLine.setVisibility(View.GONE);
+            }
+            else
+                super.onBackPressed();
         }
     }
 
@@ -206,36 +190,6 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         });
 
 
-//        DataBinding(currentForum);
-
-        /*scrollView.setOnTouchListener(new View.OnTouchListener(){
-            private float initialY, finalY;
-
-
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()){
-                    case MotionEvent.ACTION_DOWN :
-                        initialY = event.getY();
-                        commentInput.setHint("initialY : " + initialY);
-                        break;
-                    case MotionEvent.ACTION_UP :
-                        finalY = fullScreen.getHeight() - event.getY();
-                        commentInput.setHint("initialY : " + initialY +"finalY : " + finalY);
-
-                        if(finalY>initialY)
-                            commentInputLayout.setVisibility(View.GONE);
-                        else
-                            commentInputLayout.setVisibility(View.VISIBLE);
-                        break;
-                    case MotionEvent.ACTION_MOVE :
-
-                }
-                return false;
-            }
-        });*/
-
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -255,50 +209,64 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(currentForum.getId().equals(id)){
-                    PopupMenu popupMine = new PopupMenu(getApplicationContext(),v);
-                    MenuInflater menuInflater = new MenuInflater(getApplicationContext());
-                    menuInflater.inflate(R.menu.anonymous_forum_view_mine_popup_menu,popupMine.getMenu());
-                    popupMine.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            switch (item.getItemId()){
-                                case R.id.mine_delete:
-                                    noticeText.setText(R.string.delete_question);
-                                    noticePopupWindow.showAtLocation(popupView, Gravity.CENTER,0,0);
-                                    noticeOk.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            startMyTask(new ForumDeleteTask(),currentForum.getNum()+"");
-                                            noticePopupWindow.dismiss();
-                                        }
-                                    });
-                                    break;
+                if(editmode)
+                    ShowCancelEditMode();
+                else {
+                    if (currentForum.getId().equals(id)) {
+                        PopupMenu popupMine = new PopupMenu(getApplicationContext(), v);
+                        MenuInflater menuInflater = new MenuInflater(getApplicationContext());
+                        menuInflater.inflate(R.menu.anonymous_forum_view_mine_popup_menu, popupMine.getMenu());
+                        popupMine.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                switch (item.getItemId()) {
+                                    case R.id.mine_delete:
+                                        noticeText.setText(R.string.delete_question);
 
-                                case R.id.mine_edit:
-                                    noticeText.setText(R.string.edit_question);
-                                    noticePopupWindow.showAtLocation(popupView,Gravity.CENTER,0,0);
-                                    noticeOk.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
+                                        nextCommentIcon.setVisibility(View.GONE);
+                                        nextCommentLayout.setVisibility(View.GONE);
+                                        nextCommentLayoutBorderLine.setVisibility(View.GONE);
 
-                                            Intent AnonymousForumWrite = new Intent(getApplicationContext(),AnonymousForumActivity_Write.class);
-                                            AnonymousForumWrite.putExtra("ForumLoadData",currentForum);
-                                            AnonymousForumWrite.putExtra("ID",id);
-                                            noticePopupWindow.dismiss();
-                                            startActivity(AnonymousForumWrite);
-                                        }
-                                    });
-                                    break;
-                                default :
-                                    break;
+                                        noticePopupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+                                        noticeOk.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                startMyTask(new ForumDeleteTask(), currentForum.getNum() + "");
+                                                noticePopupWindow.dismiss();
+                                            }
+                                        });
+                                        break;
+
+                                    case R.id.mine_edit:
+                                        noticeText.setText(R.string.edit_question);
+
+                                        nextCommentIcon.setVisibility(View.GONE);
+                                        nextCommentLayout.setVisibility(View.GONE);
+                                        nextCommentLayoutBorderLine.setVisibility(View.GONE);
+
+                                        noticePopupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+                                        noticeOk.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+
+                                                Intent AnonymousForumWrite = new Intent(getApplicationContext(), AnonymousForumActivity_Write.class);
+                                                AnonymousForumWrite.putExtra("ForumLoadData", currentForum);
+                                                AnonymousForumWrite.putExtra("ID", id);
+                                                noticePopupWindow.dismiss();
+                                                startActivity(AnonymousForumWrite);
+                                            }
+                                        });
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                return false;
                             }
-                            return false;
-                        }
-                    });
-                    popupMine.show();
-                }else{
+                        });
+                        popupMine.show();
+                    } else {
 
+                    }
                 }
             }
         });
@@ -306,13 +274,17 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         zoomOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int spValue = pixtosp(getApplicationContext(),content.getTextSize());
-                if(spValue > 15){
-                    content.setTextSize(TypedValue.COMPLEX_UNIT_SP,spValue-3);
-                    zoomOut.setImageDrawable(getDrawable(R.drawable.zoom_out_orange));
-                    zoomIn.setImageDrawable(getDrawable(R.drawable.zoom_in_orange));
-                    if(spValue==18)
-                        zoomOut.setImageDrawable(getDrawable(R.drawable.zoom_out_gray));
+                if(editmode)
+                    ShowCancelEditMode();
+                else {
+                    int spValue = pixtosp(getApplicationContext(), content.getTextSize());
+                    if (spValue > 15) {
+                        content.setTextSize(TypedValue.COMPLEX_UNIT_SP, spValue - 3);
+                        zoomOut.setImageDrawable(getDrawable(R.drawable.zoom_out_orange));
+                        zoomIn.setImageDrawable(getDrawable(R.drawable.zoom_in_orange));
+                        if (spValue == 18)
+                            zoomOut.setImageDrawable(getDrawable(R.drawable.zoom_out_gray));
+                    }
                 }
 
             }
@@ -321,13 +293,17 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         zoomIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int spValue = pixtosp(getApplicationContext(),content.getTextSize());
-                if(spValue < 24){
-                    content.setTextSize(TypedValue.COMPLEX_UNIT_SP,spValue+3);
-                    zoomIn.setImageDrawable(getDrawable(R.drawable.zoom_in_orange));
-                    zoomOut.setImageDrawable(getDrawable(R.drawable.zoom_out_orange));
-                    if(spValue==21)
-                        zoomIn.setImageDrawable(getDrawable(R.drawable.zoom_in_gray));
+                if(editmode)
+                    ShowCancelEditMode();
+                else {
+                    int spValue = pixtosp(getApplicationContext(), content.getTextSize());
+                    if (spValue < 24) {
+                        content.setTextSize(TypedValue.COMPLEX_UNIT_SP, spValue + 3);
+                        zoomIn.setImageDrawable(getDrawable(R.drawable.zoom_in_orange));
+                        zoomOut.setImageDrawable(getDrawable(R.drawable.zoom_out_orange));
+                        if (spValue == 21)
+                            zoomIn.setImageDrawable(getDrawable(R.drawable.zoom_in_gray));
+                    }
                 }
 
             }
@@ -336,19 +312,26 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         nicknameSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent searchActivity = new Intent(AnonymousForumActivity_View.this,AnonymousForumActivity_Search.class);
-                searchActivity.putExtra("ID",id);
-                searchActivity.putExtra("NICKNAME",currentForum.getNickname());
-                startActivity(searchActivity);
+                if(editmode)
+                    ShowCancelEditMode();
+                else {
+                    Intent searchActivity = new Intent(AnonymousForumActivity_View.this, AnonymousForumActivity_Search.class);
+                    searchActivity.putExtra("ID", id);
+                    searchActivity.putExtra("NICKNAME", currentForum.getNickname());
+                    startActivity(searchActivity);
+                }
             }
         });
 
         likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if(unlikeClick%2==0)
-                    startMyTask(new LikeUploadTask(),(currentForum.getNum()+""),id,((likeClick%2)+""));
+                if(editmode)
+                    ShowCancelEditMode();
+                else {
+                    if (unlikeClick % 2 == 0)
+                        startMyTask(new LikeUploadTask(), (currentForum.getNum() + ""), id, ((likeClick % 2) + ""));
+                }
 
             }
         });
@@ -356,9 +339,12 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         unlikeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if(likeClick%2==0)
-                startMyTask(new UnlikeUploadTask(),(currentForum.getNum()+""),id,((unlikeClick%2)+""));
+                if(editmode)
+                    ShowCancelEditMode();
+                else {
+                    if (likeClick % 2 == 0)
+                        startMyTask(new UnlikeUploadTask(), (currentForum.getNum() + ""), id, ((unlikeClick % 2) + ""));
+                }
 
             }
         });
@@ -366,10 +352,17 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         commentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(editmode)
+                    ShowCancelEditMode();
+                else {
+                    nextCommentIcon.setVisibility(View.GONE);
+                    nextCommentLayout.setVisibility(View.GONE);
+                    nextCommentLayoutBorderLine.setVisibility(View.GONE);
 
-                commentInput.requestFocus();
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(commentInput, InputMethodManager.SHOW_IMPLICIT);
+                    commentInput.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(commentInput, InputMethodManager.SHOW_IMPLICIT);
+                }
             }
         });
 
@@ -430,13 +423,17 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         nextCommentCloseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                nextCommentLayout.setVisibility(View.GONE);
-                nextCommentLayoutBorderLine.setVisibility(View.GONE);
-                nextCommentIcon.setVisibility(View.GONE);
+                if(editmode)
+                    ShowCancelEditMode();
+                else {
+                    nextCommentLayout.setVisibility(View.GONE);
+                    nextCommentLayoutBorderLine.setVisibility(View.GONE);
+                    nextCommentIcon.setVisibility(View.GONE);
 
-                commentInput.requestFocus();
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(commentInput.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+                    commentInput.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(commentInput.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+                }
             }
         });
 
@@ -456,6 +453,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         nextCommentIcon.setVisibility(View.GONE);
         nextCommentLayout.setVisibility(View.GONE);
         nextCommentLayoutBorderLine.setVisibility(View.GONE);
+        nextCommentNicknameExtra.setText("에게 답글");
 
         if(forum.getUnlikes()==0&&forum.getLikes()==0){
             stateLayout.setVisibility(View.GONE);
@@ -549,55 +547,119 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
             commentHolder.commentMoreButton.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    currentComment = forumCommentList.get(position);
-                    if(currentComment.getId().equals(id))
-                    {
-                        PopupMenu popupCommentMine = new PopupMenu(getApplicationContext(),v);
-                        MenuInflater menuInflater = new MenuInflater(getApplicationContext());
-                        menuInflater.inflate(R.menu.anonymous_forum_view_mine_popup_menu,popupCommentMine.getMenu());
-                        popupCommentMine.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                            @Override
-                            public boolean onMenuItemClick(MenuItem item) {
-                                switch (item.getItemId()){
-                                    case R.id.mine_delete:
-                                        noticeText.setText(R.string.delete_question);
-                                        noticePopupWindow.showAtLocation(popupView, Gravity.CENTER,0,0);
-                                        noticeOk.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                startMyTask(new CommentDeleteTask(),currentComment.getNum_primary()+"",currentComment.getNum()+"",currentComment.getDepth()+"",currentComment.getNum_group()+"");
-                                                noticePopupWindow.dismiss();
-                                            }
-                                        });
-                                        break;
 
-                                    case R.id.mine_edit:
-                                        noticeText.setText(R.string.edit_question);
-                                        noticePopupWindow.showAtLocation(popupView,Gravity.CENTER,0,0);
-                                        noticeOk.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                noticePopupWindow.dismiss();
-                                                commentInput.post(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        commentInput.requestFocus();
-                                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                                        imm.showSoftInput(commentInput, InputMethodManager.SHOW_IMPLICIT);
-                                                        commentInput.setText(currentComment.getContent());
-                                                        editmode = true;
-                                                    }
-                                                });
+                    if(editmode)
+                        ShowCancelEditMode();
+                    else {
+                        currentComment = forumCommentList.get(position);
+                        if (currentComment.getId().equals(id)) {
+                            PopupMenu popupCommentMine = new PopupMenu(getApplicationContext(), v);
+                            MenuInflater menuInflater = new MenuInflater(getApplicationContext());
+                            menuInflater.inflate(R.menu.anonymous_forum_comment_mine_popup_menu, popupCommentMine.getMenu());
+                            popupCommentMine.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                @Override
+                                public boolean onMenuItemClick(MenuItem item) {
+                                    switch (item.getItemId()) {
+                                        case R.id.mine_comment_write:
+                                            if (currentComment.getDepth() == 0) {
+                                                nextCommentIcon.setVisibility(View.VISIBLE);
+                                                nextCommentLayout.setVisibility(View.VISIBLE);
+                                                nextCommentLayoutBorderLine.setVisibility(View.VISIBLE);
+                                                nextCommentNicknameExtra.setText("에게 답글");
+                                                nextCommentNickname.setText(currentComment.getNickname());
+                                                commentInput.requestFocus();
+                                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                imm.showSoftInput(commentInput, InputMethodManager.SHOW_IMPLICIT);
+                                                comment = new Comment(currentForum.getNum(), 1, currentComment.getNum_group(), id, "default_nickname", "default_content", "default_upload_datetime");
                                             }
-                                        });
-                                        break;
-                                    default :
-                                        break;
+                                            break;
+
+                                        case R.id.mine_comment_delete:
+                                            nextCommentIcon.setVisibility(View.GONE);
+                                            nextCommentLayout.setVisibility(View.GONE);
+                                            nextCommentLayoutBorderLine.setVisibility(View.GONE);
+                                            noticeText.setText(R.string.delete_question);
+                                            noticePopupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+                                            noticeOk.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    startMyTask(new CommentDeleteTask(), currentComment.getNum_primary() + "", currentComment.getNum() + "", currentComment.getDepth() + "", currentComment.getNum_group() + "");
+                                                    noticePopupWindow.dismiss();
+                                                }
+                                            });
+                                            break;
+
+                                        case R.id.mine_comment_edit:
+                                            nextCommentLayoutBorderLine.setVisibility(View.GONE);
+                                            noticeText.setText(R.string.edit_question);
+                                            noticePopupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+                                            noticeOk.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    noticePopupWindow.dismiss();
+                                                    commentInput.post(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            nextCommentIcon.setVisibility(View.VISIBLE);
+                                                            nextCommentLayoutBorderLine.setVisibility(View.VISIBLE);
+                                                            nextCommentLayout.setVisibility(View.VISIBLE);
+                                                            nextCommentNicknameExtra.setText("");
+                                                            nextCommentNickname.setText("수정 모드");
+                                                            commentInput.requestFocus();
+                                                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                            imm.showSoftInput(commentInput, InputMethodManager.SHOW_IMPLICIT);
+                                                            commentInput.setText(currentComment.getContent());
+                                                            editmode = true;
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                            break;
+                                        case R.id.mine_comment_copy:
+                                            setClipBoardLink(getApplicationContext(), commentHolder.commentContent.getText().toString());
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                    return false;
                                 }
-                                return false;
+                            });
+                            popupCommentMine.show();
+                        } else {
+                            if (!currentComment.getNickname().isEmpty() && !currentComment.getId().isEmpty()) {
+                                PopupMenu popupCommentOther = new PopupMenu(getApplicationContext(), v);
+                                MenuInflater menuInflater = new MenuInflater(getApplicationContext());
+                                menuInflater.inflate(R.menu.anonymous_forum_comment_other_popup_menu, popupCommentOther.getMenu());
+                                popupCommentOther.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                    @Override
+                                    public boolean onMenuItemClick(MenuItem item) {
+                                        switch (item.getItemId()) {
+                                            case R.id.other_comment_write:
+                                                if (currentComment.getDepth() == 0) {
+                                                    nextCommentIcon.setVisibility(View.VISIBLE);
+                                                    nextCommentLayout.setVisibility(View.VISIBLE);
+                                                    nextCommentLayoutBorderLine.setVisibility(View.VISIBLE);
+                                                    nextCommentNicknameExtra.setText("에게 답글");
+                                                    nextCommentNickname.setText(currentComment.getNickname());
+                                                    commentInput.requestFocus();
+                                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                    imm.showSoftInput(commentInput, InputMethodManager.SHOW_IMPLICIT);
+                                                    comment = new Comment(currentForum.getNum(), 1, currentComment.getNum_group(), id, "default_nickname", "default_content", "default_upload_datetime");
+                                                }
+                                                break;
+
+                                            case R.id.other_comment_copy:
+                                                setClipBoardLink(getApplicationContext(), commentHolder.commentContent.getText().toString());
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                        return false;
+                                    }
+                                });
+                                popupCommentOther.show();
                             }
-                        });
-                        popupCommentMine.show();
+                        }
                     }
                 }
             });
@@ -605,55 +667,88 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
             commentHolder.nextCommentMoreButton.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    currentComment = forumCommentList.get(position);
-                    if(currentComment.getId().equals(id))
-                    {
-                        PopupMenu popupCommentMine = new PopupMenu(getApplicationContext(),v);
-                        MenuInflater menuInflater = new MenuInflater(getApplicationContext());
-                        menuInflater.inflate(R.menu.anonymous_forum_view_mine_popup_menu,popupCommentMine.getMenu());
-                        popupCommentMine.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                            @Override
-                            public boolean onMenuItemClick(MenuItem item) {
-                                switch (item.getItemId()){
-                                    case R.id.mine_delete:
-                                        noticeText.setText(R.string.delete_question);
-                                        noticePopupWindow.showAtLocation(popupView, Gravity.CENTER,0,0);
-                                        noticeOk.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                startMyTask(new CommentDeleteTask(),currentComment.getNum_primary()+"",currentComment.getNum()+"",currentComment.getDepth()+"",currentComment.getNum_group()+"");
-                                                noticePopupWindow.dismiss();
-                                            }
-                                        });
-                                        break;
+                    if(editmode)
+                        ShowCancelEditMode();
+                    else {
+                        currentComment = forumCommentList.get(position);
+                        if (currentComment.getId().equals(id))   //본인
+                        {
+                            PopupMenu popupNextCommentMine = new PopupMenu(getApplicationContext(), v);
+                            MenuInflater menuInflater = new MenuInflater(getApplicationContext());
+                            menuInflater.inflate(R.menu.anonymous_forum_next_comment_mine_popup_menu, popupNextCommentMine.getMenu());
+                            popupNextCommentMine.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                @Override
+                                public boolean onMenuItemClick(MenuItem item) {
+                                    switch (item.getItemId()) {
+                                        case R.id.mine_next_comment_delete:
+                                            nextCommentIcon.setVisibility(View.GONE);
+                                            nextCommentLayout.setVisibility(View.GONE);
+                                            nextCommentLayoutBorderLine.setVisibility(View.GONE);
+                                            noticeText.setText(R.string.delete_question);
+                                            noticePopupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+                                            noticeOk.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    startMyTask(new CommentDeleteTask(), currentComment.getNum_primary() + "", currentComment.getNum() + "", currentComment.getDepth() + "", currentComment.getNum_group() + "");
+                                                    noticePopupWindow.dismiss();
+                                                }
+                                            });
+                                            break;
 
-                                    case R.id.mine_edit:
-                                        noticeText.setText(R.string.edit_question);
-                                        noticePopupWindow.showAtLocation(popupView,Gravity.CENTER,0,0);
-                                        noticeOk.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                noticePopupWindow.dismiss();
-                                                commentInput.post(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        commentInput.requestFocus();
-                                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                                        imm.showSoftInput(commentInput, InputMethodManager.SHOW_IMPLICIT);
-                                                        commentInput.setText(currentComment.getContent());
-                                                        editmode = true;
-                                                    }
-                                                });
-                                            }
-                                        });
-                                        break;
-                                    default :
-                                        break;
+                                        case R.id.mine_next_comment_edit:
+                                            noticeText.setText(R.string.edit_question);
+                                            noticePopupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+                                            noticeOk.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    noticePopupWindow.dismiss();
+                                                    commentInput.post(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            nextCommentIcon.setVisibility(View.VISIBLE);
+                                                            nextCommentLayoutBorderLine.setVisibility(View.VISIBLE);
+                                                            nextCommentLayout.setVisibility(View.VISIBLE);
+                                                            nextCommentNicknameExtra.setText("");
+                                                            nextCommentNickname.setText("수정 모드");
+                                                            commentInput.requestFocus();
+                                                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                            imm.showSoftInput(commentInput, InputMethodManager.SHOW_IMPLICIT);
+                                                            commentInput.setText(currentComment.getContent());
+                                                            editmode = true;
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                            break;
+                                        case R.id.mine_next_comment_copy:
+                                            setClipBoardLink(getApplicationContext(), commentHolder.nextCommentContent.getText().toString());
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                    return false;
                                 }
-                                return false;
-                            }
-                        });
-                        popupCommentMine.show();
+                            });
+                            popupNextCommentMine.show();
+                        } else {
+                            PopupMenu popupNextCommentOther = new PopupMenu(getApplicationContext(), v);
+                            MenuInflater menuInflater = new MenuInflater(getApplicationContext());
+                            menuInflater.inflate(R.menu.anonymous_forum_next_comment_other_popup_menu, popupNextCommentOther.getMenu());
+                            popupNextCommentOther.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                @Override
+                                public boolean onMenuItemClick(MenuItem item) {
+                                    switch (item.getItemId()) {
+                                        case R.id.other_next_comment_copy:
+                                            setClipBoardLink(getApplicationContext(), commentHolder.nextCommentContent.getText().toString());
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                    return false;
+                                }
+                            });
+                            popupNextCommentOther.show();
+                        }
                     }
                 }
             });
@@ -661,16 +756,24 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
             commentHolder.commentLayout.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    Comment currentComment = forumCommentList.get(position);
-                    if(currentComment.getDepth()==0) {
-                        nextCommentIcon.setVisibility(View.VISIBLE);
-                        nextCommentLayout.setVisibility(View.VISIBLE);
-                        nextCommentLayoutBorderLine.setVisibility(View.VISIBLE);
-                        nextCommentNickname.setText(currentComment.getNickname());
-                        commentInput.requestFocus();
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(commentInput, InputMethodManager.SHOW_IMPLICIT);
-                        comment = new Comment(currentForum.getNum(),1,currentComment.getNum_group(),id,"default_nickname","default_content","default_upload_datetime");
+
+                    if(editmode)
+                        ShowCancelEditMode();
+                    else {
+                        if (!currentComment.getNickname().isEmpty() && !currentComment.getId().isEmpty()) {
+                            Comment currentComment = forumCommentList.get(position);
+                            if (currentComment.getDepth() == 0) {
+                                nextCommentIcon.setVisibility(View.VISIBLE);
+                                nextCommentLayout.setVisibility(View.VISIBLE);
+                                nextCommentLayoutBorderLine.setVisibility(View.VISIBLE);
+                                nextCommentNicknameExtra.setText("에게 답글");
+                                nextCommentNickname.setText(currentComment.getNickname());
+                                commentInput.requestFocus();
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.showSoftInput(commentInput, InputMethodManager.SHOW_IMPLICIT);
+                                comment = new Comment(currentForum.getNum(), 1, currentComment.getNum_group(), id, "default_nickname", "default_content", "default_upload_datetime");
+                            }
+                        }
                     }
                 }
             });
@@ -746,29 +849,29 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
             String postParameters = "num="+num+"&id="+id+"&remain="+remain;
 
             try{
-                URL serverUrl = new URL("http://13.124.99.123/forum_like_upload.php");
+                URL serverUrl = new URL("https://server.allofgist.com/forum_like_upload.php");
 
-                HttpURLConnection httpURLConnection =  (HttpURLConnection)serverUrl.openConnection();
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                HttpsURLConnection httpsURLConnection =  (HttpsURLConnection)serverUrl.openConnection();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameters.getBytes("utf-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("LikeUploadTask","POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
                 BufferedReader bufferedReader;
 
-                if(responseStatusCode == HttpURLConnection.HTTP_OK)
-                    inputStream = httpURLConnection.getInputStream();
+                if(responseStatusCode == HttpsURLConnection.HTTP_OK)
+                    inputStream = httpsURLConnection.getInputStream();
                 else
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
 
                 bufferedReader = new BufferedReader(new InputStreamReader(inputStream),8*1024);
                 String line = null;
@@ -826,29 +929,29 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
             String postParameters = "num="+num+"&id="+id+"&remain="+remain;
 
             try{
-                URL serverUrl = new URL("http://13.124.99.123/forum_unlike_upload.php");
+                URL serverUrl = new URL("https://server.allofgist.com/forum_unlike_upload.php");
 
-                HttpURLConnection httpURLConnection =  (HttpURLConnection)serverUrl.openConnection();
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                HttpsURLConnection httpsURLConnection =  (HttpsURLConnection)serverUrl.openConnection();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameters.getBytes("utf-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("LikeUploadTask","POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
                 BufferedReader bufferedReader;
 
-                if(responseStatusCode == HttpURLConnection.HTTP_OK)
-                    inputStream = httpURLConnection.getInputStream();
+                if(responseStatusCode == httpsURLConnection.HTTP_OK)
+                    inputStream = httpsURLConnection.getInputStream();
                 else
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
 
                 bufferedReader = new BufferedReader(new InputStreamReader(inputStream),8*1024);
                 String line = null;
@@ -911,29 +1014,29 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
             String postParameters = "num="+num+"&depth="+depth+"&num_group="+num_group+"&id="+id+"&content="+content+"&upload_datetime="+upload_datetime;
 
             try{
-                URL serverUrl = new URL("http://13.124.99.123/forum_comment_insert.php");
-                HttpURLConnection httpURLConnection = (HttpURLConnection) serverUrl.openConnection();
+                URL serverUrl = new URL("https://server.allofgist.com/forum_comment_insert.php");
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) serverUrl.openConnection();
 
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameters.getBytes("utf-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("CommentInsertTask","POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
                 BufferedReader bufferedReader;
 
-                if(responseStatusCode== HttpURLConnection.HTTP_OK)
-                    inputStream = httpURLConnection.getInputStream();
+                if(responseStatusCode== httpsURLConnection.HTTP_OK)
+                    inputStream = httpsURLConnection.getInputStream();
                 else
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
 
                 bufferedReader = new BufferedReader(new InputStreamReader(inputStream),8*1024);
 
@@ -980,28 +1083,28 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
             String data = "";
 
             try{
-                URL serverUrl = new URL("http://13.124.99.123/forum_comment_load.php");
-                HttpURLConnection httpURLConnection = (HttpURLConnection)serverUrl.openConnection();
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                URL serverUrl = new URL("https://server.allofgist.com/forum_comment_load.php");
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection)serverUrl.openConnection();
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameter.getBytes("utf-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("CommentLoadTask","POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
                 BufferedReader bufferedReader;
 
-                if(responseStatusCode == HttpURLConnection.HTTP_OK)
-                    inputStream = httpURLConnection.getInputStream();
+                if(responseStatusCode == httpsURLConnection.HTTP_OK)
+                    inputStream = httpsURLConnection.getInputStream();
                 else
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
 
                 bufferedReader = new BufferedReader(new InputStreamReader(inputStream),8*1024);
 
@@ -1066,28 +1169,28 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
             String num = strings[0];
             String postParameter = "num="+num;
             try{
-                URL serverUrl = new URL("http://13.124.99.123/forum_delete.php");
-                HttpURLConnection httpURLConnection = (HttpURLConnection)serverUrl.openConnection();
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                URL serverUrl = new URL("https://server.allofgist.com/forum_delete.php");
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection)serverUrl.openConnection();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameter.getBytes("utf-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("ForumDeleteTask","POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
                 BufferedReader bufferedReader;
 
-                if(responseStatusCode== HttpURLConnection.HTTP_OK){
-                    inputStream = httpURLConnection.getInputStream();
+                if(responseStatusCode== httpsURLConnection.HTTP_OK){
+                    inputStream = httpsURLConnection.getInputStream();
                 }else{
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
                 }
                 bufferedReader = new BufferedReader(new InputStreamReader(inputStream),8*1024);
 
@@ -1127,27 +1230,27 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
             String num = strings[0];
             String postParameter = "num="+num;
             try{
-                URL serverUrl = new URL("http://13.124.99.123/forum_current_load.php");
-                HttpURLConnection httpURLConnection = (HttpURLConnection)serverUrl.openConnection();
+                URL serverUrl = new URL("https://server.allofgist.com/forum_current_load.php");
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection)serverUrl.openConnection();
 
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameter.getBytes("utf-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("phptest", "POST response code - " + responseStatusCode);
 
                 InputStream inputStream;
-                if (responseStatusCode == httpURLConnection.HTTP_OK) {
-                    inputStream = httpURLConnection.getInputStream();
+                if (responseStatusCode == httpsURLConnection.HTTP_OK) {
+                    inputStream = httpsURLConnection.getInputStream();
                 } else {
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
                 }
 
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
@@ -1216,28 +1319,28 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
             String num_group = strings[3];
             String postParameter = "num_primary="+num_primary+"&num="+num+"&depth="+depth+"&num_group="+num_group;
             try{
-                URL serverUrl = new URL("http://13.124.99.123/forum_comment_delete.php");
-                HttpURLConnection httpURLConnection = (HttpURLConnection)serverUrl.openConnection();
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                URL serverUrl = new URL("https://server.allofgist.com/forum_comment_delete.php");
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection)serverUrl.openConnection();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameter.getBytes("utf-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("ForumDeleteTask","POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
                 BufferedReader bufferedReader;
 
-                if(responseStatusCode== HttpURLConnection.HTTP_OK){
-                    inputStream = httpURLConnection.getInputStream();
+                if(responseStatusCode== httpsURLConnection.HTTP_OK){
+                    inputStream = httpsURLConnection.getInputStream();
                 }else{
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
                 }
                 bufferedReader = new BufferedReader(new InputStreamReader(inputStream),8*1024);
 
@@ -1283,28 +1386,28 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
             String content =  strings[1];
             String postParameter = "num_primary="+num_primary+"&content="+content;
             try{
-                URL serverUrl = new URL("http://13.124.99.123/forum_comment_edit.php");
-                HttpURLConnection httpURLConnection = (HttpURLConnection)serverUrl.openConnection();
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                URL serverUrl = new URL("https://server.allofgist.com/forum_comment_edit.php");
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection)serverUrl.openConnection();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameter.getBytes("utf-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("ForumDeleteTask","POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
                 BufferedReader bufferedReader;
 
-                if(responseStatusCode== HttpURLConnection.HTTP_OK){
-                    inputStream = httpURLConnection.getInputStream();
+                if(responseStatusCode== httpsURLConnection.HTTP_OK){
+                    inputStream = httpsURLConnection.getInputStream();
                 }else{
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
                 }
                 bufferedReader = new BufferedReader(new InputStreamReader(inputStream),8*1024);
 
@@ -1394,6 +1497,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         nextCommentIcon = (ImageView)findViewById(R.id.anonymous_forum_view_next_comment_icon);
         nextCommentLayout = (LinearLayout)findViewById(R.id.anonymous_forum_view_next_comment_layout);
         nextCommentNickname = (TextView)findViewById(R.id.anonymous_forum_view_next_comment_nickname);
+        nextCommentNicknameExtra = (TextView)findViewById(R.id.anonymous_forum_view_next_comment_nickname_extra);
         nextCommentCloseButton = (ImageButton)findViewById(R.id.anonymous_forum_view_next_comment_close_button);
         nextCommentLayoutBorderLine = (View)findViewById(R.id.anonymous_forum_view_next_comment_border_line);
 
@@ -1433,4 +1537,32 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         return (int) (spValue * fontScale);
     }
 
+    public static void setClipBoardLink(Context context , String link){
+        ClipboardManager clipboardManager = (ClipboardManager)context.getSystemService(context.CLIPBOARD_SERVICE);
+        ClipData clipData = ClipData.newPlainText("label", link);
+        clipboardManager.setPrimaryClip(clipData);
+    }
+    public void ShowCancelEditMode(){
+        noticeText.setText(R.string.edit_cancel_question);
+        noticePopupWindow.showAtLocation(popupView, Gravity.CENTER,0,0);
+        noticeOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                noticePopupWindow.dismiss();
+                nextCommentIcon.setVisibility(View.GONE);
+                nextCommentLayout.setVisibility(View.GONE);
+                nextCommentLayoutBorderLine.setVisibility(View.GONE);
+                commentInput.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        commentInput.requestFocus();
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(commentInput.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+                        commentInput.setText("");
+                        editmode = false;
+                    }
+                });
+            }
+        });
+    }
 }

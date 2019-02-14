@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import javax.net.ssl.HttpsURLConnection;
+
 
 public class AnonymousForum_BestviewFragment extends Fragment {
 
@@ -214,28 +216,28 @@ public class AnonymousForum_BestviewFragment extends Fragment {
             String page = strings[0];
             String postParameter = "page="+page;
             try{
-                URL serverUrl = new URL("http://13.124.99.123/forum_best_load.php");
-                HttpURLConnection httpURLConnection = (HttpURLConnection)serverUrl.openConnection();
+                URL serverUrl = new URL("https://server.allofgist.com/forum_best_load.php");
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection)serverUrl.openConnection();
 
                 Thread.sleep(300);
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameter.getBytes("utf-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("phptest", "POST response code - " + responseStatusCode);
 
                 InputStream inputStream;
-                if (responseStatusCode == httpURLConnection.HTTP_OK) {
-                    inputStream = httpURLConnection.getInputStream();
+                if (responseStatusCode == httpsURLConnection.HTTP_OK) {
+                    inputStream = httpsURLConnection.getInputStream();
                 } else {
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
                 }
 
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
@@ -323,30 +325,30 @@ public class AnonymousForum_BestviewFragment extends Fragment {
                 String forumPosition = strings[0];
                 String forumNum = strings[1];
                 String params = "num="+forumNum+"&forumPosition="+forumPosition;
-                URL serverUrl = new URL("http://13.124.99.123/views_upload.php");
-                HttpURLConnection httpURLConnection = (HttpURLConnection)serverUrl.openConnection();
+                URL serverUrl = new URL("https://server.allofgist.com/views_upload.php");
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection)serverUrl.openConnection();
 
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoInput(true);
-                httpURLConnection.connect();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.setDoInput(true);
+                httpsURLConnection.connect();
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(params.getBytes("euc-kr"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("viewsUploadTask","POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
                 BufferedReader bufferedReader;
 
-                if(responseStatusCode == HttpURLConnection.HTTP_OK){
-                    inputStream = httpURLConnection.getInputStream();
+                if(responseStatusCode == httpsURLConnection.HTTP_OK){
+                    inputStream = httpsURLConnection.getInputStream();
                 }else{
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
                 }
 
                 bufferedReader = new BufferedReader(new InputStreamReader(inputStream),8*1024);

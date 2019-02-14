@@ -50,7 +50,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -59,6 +58,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import cn.trinea.android.view.autoscrollviewpager.AutoScrollViewPager;
 
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Site> major_set = null;
 
     //로그인 정보
-    String id;
+    private String id = "LOGIN_ERROR";
 
     //즐겨찾기 keylist
     ArrayList<Integer> keylist;
@@ -176,8 +177,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //로그인 정보 가져오기
-        SharedPreferences loginPrefs = getSharedPreferences("LOGIN_ID",MODE_PRIVATE);
-        id = loginPrefs.getString("ID","LOGIN_ERROR");
+        id = getIntent().getStringExtra("ID");
         if(id.equals("LOGIN_ERROR")){
             Toast.makeText(MainActivity.this,"로그인 오류!",Toast.LENGTH_LONG).show();
             finish();
@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
         advertisementList.setInterval(3000);
         advertisementList.startAutoScroll();
 
-        startMyTask(new TokenLoadTask(),"http://13.124.99.123/tokenload.php",id);
+        startMyTask(new TokenLoadTask(),"https://server.allofgist.com/tokenload.php",id);
 
         calendarCategory.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -410,11 +410,11 @@ public class MainActivity extends AppCompatActivity {
             String Address = this.url;
             URL url;
             BufferedReader br;
-            HttpURLConnection conn;
+            HttpsURLConnection conn;
             String protocol = "GET";
             try {
                 url = new URL(Address);
-                conn = (HttpURLConnection) url.openConnection();
+                conn = (HttpsURLConnection) url.openConnection();
                 conn.setRequestMethod(protocol);
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
                 String line;
@@ -505,7 +505,7 @@ public class MainActivity extends AppCompatActivity {
             final BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             Site currentsite = mDataBaseset.get(keylist.get(position));
-            if(position==0){
+            if(position==0&&currentsite.getMsite_name().equals("즐겨찾기 추가")){
                 favoritesHolder.mImageView.setImageResource(currentsite.getMsite_imagesource());
             }
             else {
@@ -655,8 +655,8 @@ public class MainActivity extends AppCompatActivity {
             Log.e("POST",param);
             try {
                 URL url = new URL(
-                        "http://13.124.99.123/favoriteload.php");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        "https://server.allofgist.com/favoriteload.php");
+                httpsURLConnection conn = (httpsURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestMethod("POST");
                 conn.setDoInput(true);
@@ -733,8 +733,8 @@ public class MainActivity extends AppCompatActivity {
             try {
                 /* 서버연결 */
                 URL url = new URL(
-                        "http://13.124.99.123/user_diary_schedule_list_load.php");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        "https://server.allofgist.com/user_diary_schedule_list_load.php");
+                HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestMethod("POST");
                 conn.setDoInput(true);
@@ -833,7 +833,6 @@ public class MainActivity extends AppCompatActivity {
                 }catch(Exception e){
                     e.printStackTrace();
                 }
-                startMyTask(new FavoriteLoadTask(),id);
 /*
                 int i = 0;
                 while(!alarmListData.isEmpty()&&i<alarmListData.size()) {
@@ -859,6 +858,7 @@ public class MainActivity extends AppCompatActivity {
                 //startMyTask(new PushNotification(), "");
 
             }
+            startMyTask(new FavoriteLoadTask(),id);
         }
     }
 
@@ -869,33 +869,33 @@ public class MainActivity extends AppCompatActivity {
             String data = "";
             String ID = (String)strings[0];
 
-            String serverUrl = "http://13.124.99.123/favoriteload.php";
+            String serverUrl = "https://server.allofgist.com/favoriteload.php";
             String postParameters = "id="+ID;
 
             try{
                 URL url = new URL(serverUrl);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
 
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameters.getBytes("UTF-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("phptest","POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
-                if(responseStatusCode == httpURLConnection.HTTP_OK){
-                    inputStream = httpURLConnection.getInputStream();
+                if(responseStatusCode == httpsURLConnection.HTTP_OK){
+                    inputStream = httpsURLConnection.getInputStream();
                 }
                 else{
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
                 }
 
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream,"UTF-8");
@@ -966,8 +966,8 @@ public class MainActivity extends AppCompatActivity {
             try {
                 /* 서버연결 */
                 URL url = new URL(
-                        "http://13.124.99.123/push_notification.php");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        "https://server.allofgist.com/push_notification.php");
+                HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestMethod("POST");
                 conn.setDoInput(true);
@@ -1021,28 +1021,28 @@ public class MainActivity extends AppCompatActivity {
 
             try{
                 URL url = new URL(serverUrl);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
 
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameters.getBytes("UTF-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("phptest","POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
-                if(responseStatusCode == httpURLConnection.HTTP_OK){
-                    inputStream = httpURLConnection.getInputStream();
+                if(responseStatusCode == httpsURLConnection.HTTP_OK){
+                    inputStream = httpsURLConnection.getInputStream();
                 }
                 else{
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
                 }
 
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream,"UTF-8");
@@ -1082,7 +1082,7 @@ public class MainActivity extends AppCompatActivity {
                         editor.putString("token",newToken);
                         editor.apply();
 
-                        startMyTask(new TokenToServerTask(),"http://13.124.99.123/tokeninsert.php",id,newToken);
+                        startMyTask(new TokenToServerTask(),"https://server.allofgist.com/tokeninsert.php",id,newToken);
                     }
                 });
             }
@@ -1097,7 +1097,7 @@ public class MainActivity extends AppCompatActivity {
                         editor.putString("token",newToken);
                         editor.apply();
 
-                        startMyTask(new TokenToServerTask(),"http://13.124.99.123/tokeninsert.php",id,newToken);
+                        startMyTask(new TokenToServerTask(),"https://server.allofgist.com/tokeninsert.php",id,newToken);
                     }
                 });
             }
@@ -1117,28 +1117,28 @@ public class MainActivity extends AppCompatActivity {
 
             try{
                 URL url = new URL(serverUrl);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
 
-                httpURLConnection.setReadTimeout(5000);
-                httpURLConnection.setConnectTimeout(5000);
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.connect();
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
 
 
-                OutputStream outputStream = httpURLConnection.getOutputStream();
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
                 outputStream.write(postParameters.getBytes("UTF-8"));
                 outputStream.flush();
                 outputStream.close();
 
-                int responseStatusCode = httpURLConnection.getResponseCode();
+                int responseStatusCode = httpsURLConnection.getResponseCode();
                 Log.d("phptest","POST response code - "+responseStatusCode);
 
                 InputStream inputStream;
-                if(responseStatusCode == httpURLConnection.HTTP_OK){
-                    inputStream = httpURLConnection.getInputStream();
+                if(responseStatusCode == httpsURLConnection.HTTP_OK){
+                    inputStream = httpsURLConnection.getInputStream();
                 }
                 else{
-                    inputStream = httpURLConnection.getErrorStream();
+                    inputStream = httpsURLConnection.getErrorStream();
                 }
 
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream,"UTF-8");
@@ -1285,7 +1285,7 @@ public class MainActivity extends AppCompatActivity {
         itemList.add(new Site("학내공지", "https://college.gist.ac.kr/main/Sub040203", R.drawable.haknaegongji));
         itemList.add(new Site("GIST 대학생","https://www.facebook.com/groups/giststudent/",R.drawable.giststudent));
         itemList.add(new Site("GIST 대나무숲","https://www.facebook.com/GISTIT.ac.kr/",R.drawable.gistdaenamoo));
-        itemList.add(new Site("GIST 대나무숲 제보함","http://fbpage.kr/?pi=128#/submit",R.drawable.gistdaenamoojaeboo));
+        itemList.add(new Site("GIST 대나무숲 제보함","https://fbpage.kr/?pi=128#/submit",R.drawable.gistdaenamoojaeboo));
         itemList.add(new Site("언어교육센터","https://language.gist.ac.kr/",R.drawable.language));
         itemList.add(new Site("창업진흥센터", "https://www.facebook.com/gistbi/?ref=py_c", R.drawable.changup));
         itemList.add(new Site("학과별 사이트",R.drawable.majorset));
@@ -1293,8 +1293,8 @@ public class MainActivity extends AppCompatActivity {
         itemList.add(new Site("GIST 동아리연합회", "https://www.facebook.com/gistclubunite/", R.drawable.clubnight));
         itemList.add(new Site("GIST 하우스", "https://www.facebook.com/GISTcollegeHOUSE/", R.drawable.gisthouse));
         itemList.add(new Site("GIST 문화행사위원회", "https://www.facebook.com/Moonhangwe/", R.drawable.moonhangwe));
-        itemList.add(new Site("GIST 신문","http://gistnews.co.kr/", "https://www.facebook.com/GistSinmoon/", R.drawable.gistnews));
-        itemList.add(new Site("GIST 홍보대사", "http://blog.naver.com/PostList.nhn?blogId=gist1993&from=postList&categoryNo=28", R.drawable.gionnare));
+        itemList.add(new Site("GIST 신문","https://gistnews.co.kr/", "https://www.facebook.com/GistSinmoon/", R.drawable.gistnews));
+        itemList.add(new Site("GIST 홍보대사", "https://blog.naver.com/PostList.nhn?blogId=gist1993&from=postList&categoryNo=28", R.drawable.gionnare));
         itemList.add(new Site("춤 동아리 막무가내", "https://www.facebook.com/gistmacmoo/","https://www.youtube.com/channel/UCHG5tpsQEpnVNzNpGgLfWMw", R.drawable.mackmooganae));
         itemList.add(new Site("힙합 동아리 Ignition", "https://www.facebook.com/GISTignition/","https://www.youtube.com/channel/UCmdXmpzSH7EHwONokx-hYRQ", R.drawable.ignition));
         itemList.add(new Site("노래 동아리 싱송생송", "https://www.facebook.com/gistsingsong/","https://www.youtube.com/channel/UCLr7P2ZBg2SPK6D_3nTmFXQ", R.drawable.singsongsangsong));
