@@ -107,4 +107,6 @@
     <string name="screentshot_forum">전체 화면 캡쳐하기</string>
     <string name="copy_comment">댓글 복사</string>
     <string name="write_comment">답글 쓰기</string>
+    <string name="search_comment_mine">내 작성글 검색</string>
+    <string name="search_comment">작성글 검색</string>
 </resources>

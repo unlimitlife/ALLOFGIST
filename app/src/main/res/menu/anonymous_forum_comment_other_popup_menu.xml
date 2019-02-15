@@ -4,6 +4,9 @@
         android:id="@+id/other_comment_write"
         android:title="@string/write_comment"/>
     <item
+        android:id="@+id/other_comment_search"
+        android:title="@string/search_comment"/>
+    <item
         android:id="@+id/other_comment_copy"
         android:title="@string/copy_comment"/>
 </menu>

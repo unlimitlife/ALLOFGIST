@@ -288,7 +288,34 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                         });
                         popupMine.show();
                     } else {
+                        PopupMenu popupOther = new PopupMenu(getApplicationContext(), v);
+                        MenuInflater menuInflater = new MenuInflater(getApplicationContext());
+                        menuInflater.inflate(R.menu.anonymous_forum_view_other_popup_menu, popupOther.getMenu());
+                        popupOther.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                switch (item.getItemId()) {
 
+                                    case R.id.other_capture:
+                                        View screenview = getWindow().getDecorView().getRootView();
+                                        //progress bar
+                                        File screenShot = ScreenShot(screenview);
+                                        try {
+                                            if (screenShot.isFile()) {
+                                                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(screenShot)));
+                                                OrangeToast(getApplicationContext(),"[AllofGist] 폴더에 저장되었습니다.");
+                                            }
+                                        }catch (NullPointerException e) {
+                                            e.printStackTrace();
+                                            OrangeToast(getApplicationContext(),"캡쳐된 파일을 찾을 수 없습니다.");
+                                        }
+                                    default:
+                                        break;
+                                }
+                                return false;
+                            }
+                        });
+                        popupOther.show();
                     }
                 }
             }
@@ -642,6 +669,13 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                                                 }
                                             });
                                             break;
+                                        case R.id.mine_comment_search:
+                                            Intent searchActivity = new Intent(AnonymousForumActivity_View.this, AnonymousForumActivity_Search.class);
+                                            searchActivity.putExtra("ID", id);
+                                            searchActivity.putExtra("NICKNAME", currentComment.getNickname());
+                                            searchActivity.putExtra("ID_TAG",currentComment.getId());
+                                            startActivity(searchActivity);
+                                            break;
                                         case R.id.mine_comment_copy:
                                             setClipBoardLink(getApplicationContext(), commentHolder.commentContent.getText().toString());
                                             break;
@@ -657,6 +691,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                                 PopupMenu popupCommentOther = new PopupMenu(getApplicationContext(), v);
                                 MenuInflater menuInflater = new MenuInflater(getApplicationContext());
                                 menuInflater.inflate(R.menu.anonymous_forum_comment_other_popup_menu, popupCommentOther.getMenu());
+                                popupCommentOther.getMenu().getItem(1).setTitle("'"+currentComment.getNickname()+"'"+" 작성글 검색");
                                 popupCommentOther.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                                     @Override
                                     public boolean onMenuItemClick(MenuItem item) {
@@ -673,6 +708,14 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                                                     imm.showSoftInput(commentInput, InputMethodManager.SHOW_IMPLICIT);
                                                     comment = new Comment(currentForum.getNum(), 1, currentComment.getNum_group(), id, "default_nickname", "default_content", "default_upload_datetime");
                                                 }
+                                                break;
+
+                                            case R.id.other_comment_search:
+                                                Intent searchActivity = new Intent(AnonymousForumActivity_View.this, AnonymousForumActivity_Search.class);
+                                                searchActivity.putExtra("ID", id);
+                                                searchActivity.putExtra("NICKNAME", currentComment.getNickname());
+                                                searchActivity.putExtra("ID_TAG",currentComment.getId());
+                                                startActivity(searchActivity);
                                                 break;
 
                                             case R.id.other_comment_copy:
@@ -747,6 +790,13 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                                                 }
                                             });
                                             break;
+                                        case R.id.mine_next_comment_search:
+                                            Intent searchActivity = new Intent(AnonymousForumActivity_View.this, AnonymousForumActivity_Search.class);
+                                            searchActivity.putExtra("ID", id);
+                                            searchActivity.putExtra("NICKNAME", currentComment.getNickname());
+                                            searchActivity.putExtra("ID_TAG",currentComment.getId());
+                                            startActivity(searchActivity);
+                                            break;
                                         case R.id.mine_next_comment_copy:
                                             setClipBoardLink(getApplicationContext(), commentHolder.nextCommentContent.getText().toString());
                                             break;
@@ -761,10 +811,18 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                             PopupMenu popupNextCommentOther = new PopupMenu(getApplicationContext(), v);
                             MenuInflater menuInflater = new MenuInflater(getApplicationContext());
                             menuInflater.inflate(R.menu.anonymous_forum_next_comment_other_popup_menu, popupNextCommentOther.getMenu());
+                            popupNextCommentOther.getMenu().getItem(1).setTitle("'"+currentComment.getNickname()+"'"+" 작성글 검색");
                             popupNextCommentOther.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                                 @Override
                                 public boolean onMenuItemClick(MenuItem item) {
                                     switch (item.getItemId()) {
+                                        case R.id.other_next_comment_search:
+                                            Intent searchActivity = new Intent(AnonymousForumActivity_View.this, AnonymousForumActivity_Search.class);
+                                            searchActivity.putExtra("ID", id);
+                                            searchActivity.putExtra("NICKNAME", currentComment.getNickname());
+                                            searchActivity.putExtra("ID_TAG",currentComment.getId());
+                                            startActivity(searchActivity);
+                                            break;
                                         case R.id.other_next_comment_copy:
                                             setClipBoardLink(getApplicationContext(), commentHolder.nextCommentContent.getText().toString());
                                             break;

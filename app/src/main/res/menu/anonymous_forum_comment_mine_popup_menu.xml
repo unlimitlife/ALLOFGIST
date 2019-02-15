@@ -10,6 +10,9 @@
         android:id="@+id/mine_comment_edit"
         android:title="@string/edit_forum"/>
     <item
+        android:id="@+id/mine_comment_search"
+        android:title="@string/search_comment_mine"/>
+    <item
         android:id="@+id/mine_comment_copy"
         android:title="@string/copy_comment"/>
 </menu>
