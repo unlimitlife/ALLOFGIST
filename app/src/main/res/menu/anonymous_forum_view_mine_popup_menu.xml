@@ -6,4 +6,7 @@
     <item
         android:id="@+id/mine_edit"
         android:title="@string/edit_forum"/>
+    <item
+        android:id="@+id/mine_capture"
+        android:title="@string/screentshot_forum"/>
 </menu>

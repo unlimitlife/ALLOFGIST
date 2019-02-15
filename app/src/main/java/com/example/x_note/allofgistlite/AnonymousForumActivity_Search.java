@@ -63,6 +63,7 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
 
     RecyclerView searchList;
     private ArrayList<Forum> forumList;
+    String ID_TAG = "";
 
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.KOREA);
     SimpleDateFormat datetimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.KOREA);
@@ -83,11 +84,12 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
 
         //게시글에서 작성글 검색으로 들어오는 경우
         try {
-            if (!getIntent().getStringExtra("NICKNAME").isEmpty()) {
+            ID_TAG = getIntent().getStringExtra("ID_TAG");
+            if (!getIntent().getStringExtra("NICKNAME").isEmpty()&&!ID_TAG.equals("")) {
                 searchClassificationText.setText(R.string.writer_search);
                 searchEditText.setText(getIntent().getStringExtra("NICKNAME"));
                 forumList = new ArrayList<Forum>();
-                startMyTask(new SearchLoadTask(), "w", 0 + "", searchEditText.getText().toString());
+                startMyTask(new SearchIdLoadTask(), ID_TAG);
             }
         }catch (NullPointerException e){
             e.printStackTrace();
@@ -174,36 +176,40 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
             public void onClick(View v) {
                 int onlyBest;
                 String condition;
-                if(searchOnlyBestCheckBox.isChecked())
+                if (searchOnlyBestCheckBox.isChecked())
                     onlyBest = 1;
                 else
                     onlyBest = 0;
-                switch (searchClassificationText.getText().toString()){
-                    case "전체":
-                        condition = "o";
-                        break;
-                    case "제목":
-                        condition = "t";
-                        break;
-                    case "내용":
-                        condition = "c";
-                        break;
-                    case "글쓴이":
-                        condition = "w";
-                        break;
-                    case "제목+내용":
-                        condition = "twc";
-                        break;
-                    default:
-                        condition = "o";
-                        break;
-                }
-                if(searchEditText.getText().toString().isEmpty())
-                    OrangeToast(getApplicationContext(),"검색어를 입력해주세요.");
-                else {
-                    forumList = new ArrayList<Forum>();
-                    progressBar.setVisibility(View.VISIBLE);
-                    startMyTask(new SearchLoadTask(), condition, onlyBest + "", searchEditText.getText().toString());
+                if (!ID_TAG.equals("")) {
+                    startMyTask(new SearchIdLoadTask(), searchEditText.getText().toString(), ID_TAG);
+                } else {
+                    switch (searchClassificationText.getText().toString()) {
+                        case "전체":
+                            condition = "o";
+                            break;
+                        case "제목":
+                            condition = "t";
+                            break;
+                        case "내용":
+                            condition = "c";
+                            break;
+                        case "글쓴이":
+                            condition = "w";
+                            break;
+                        case "제목+내용":
+                            condition = "twc";
+                            break;
+                        default:
+                            condition = "o";
+                            break;
+                    }
+                    if (searchEditText.getText().toString().isEmpty())
+                        OrangeToast(getApplicationContext(), "검색어를 입력해주세요.");
+                    else {
+                        forumList = new ArrayList<Forum>();
+                        progressBar.setVisibility(View.VISIBLE);
+                        startMyTask(new SearchLoadTask(), condition, onlyBest + "", searchEditText.getText().toString());
+                    }
                 }
             }
         });
@@ -301,7 +307,7 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
             String data ="";
             String postParameters = "condition="+condition+"&onlyBest="+onlyBest+"&text="+text;
             try{
-                URL serverUrl = new URL("http://server.allofgist.com/forum_search_load.php");
+                URL serverUrl = new URL("https://server.allofgist.com/forum_search_load.php");
                 HttpsURLConnection httpsURLConnection = (HttpsURLConnection)serverUrl.openConnection();
 
                 httpsURLConnection.setReadTimeout(5000);
@@ -349,10 +355,6 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
         @Override
         protected void onPostExecute(JSONArray jsonArray) {
             try {
-                if(jsonArray.length()==0) {
-                    //검색 결과가 없는 경우  게시물을 1만개씩 잘라 불러올 경우 불러오기 버튼 넣어야함
-                    OrangeToast(getApplicationContext(),"검색 결과 없음");
-                }
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     Forum forum = new Forum(Integer.parseInt(jsonObject.getString("num")),
@@ -392,14 +394,131 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
                         })
                 );
 
+            }catch (NullPointerException e){
+                e.printStackTrace();
+                //검색 결과가 없는 경우  게시물을 1만개씩 잘라 불러올 경우 불러오기 버튼 넣어야함
+                OrangeToast(getApplicationContext(), "검색 결과 없음");
+
             }catch (Exception e){
                 e.printStackTrace();
                 OrangeToast(getApplicationContext(),"게시판 업로드 에러!");
             }
+            if(progressBar.getVisibility()==View.VISIBLE)
+                progressBar.setVisibility(View.GONE);
         }
     }
 
+    class SearchIdLoadTask extends AsyncTask<String,Void, JSONArray>{
+        JSONArray jsonArray = null;
 
+        @Override
+        protected JSONArray doInBackground(String... strings) {
+            String id = strings[0];
+            String data ="";
+            String postParameters = "id="+id;
+            try{
+                URL serverUrl = new URL("https://server.allofgist.com/forum_search_id_load.php");
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection)serverUrl.openConnection();
+
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
+
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("utf-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpsURLConnection.getResponseCode();
+                Log.d("SearchLoadTask","POST response code - "+responseStatusCode);
+
+                InputStream inputStream;
+                BufferedReader bufferedReader;
+
+                if(responseStatusCode== httpsURLConnection.HTTP_OK)
+                    inputStream = httpsURLConnection.getInputStream();
+                else
+                    inputStream = httpsURLConnection.getErrorStream();
+
+                bufferedReader = new BufferedReader(new InputStreamReader(inputStream),8*1024);
+                String line = null;
+
+                StringBuffer stringBuffer = new StringBuffer();
+                while((line=bufferedReader.readLine())!=null)
+                    stringBuffer.append(line+"\n");
+
+                data = stringBuffer.toString();
+                bufferedReader.close();
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            try{
+                jsonArray = new JSONArray(data);
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+            return jsonArray;
+        }
+
+        @Override
+        protected void onPostExecute(JSONArray jsonArray) {
+            try {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    Forum forum = new Forum(Integer.parseInt(jsonObject.getString("num")),
+                            jsonObject.getString("id"),
+                            jsonObject.getString("title"),
+                            jsonObject.getString("content"),
+                            jsonObject.getString("nickname"),
+                            datetimeFormat.parse(jsonObject.getString("upload_datetime")),
+                            Integer.parseInt(jsonObject.getString("views")),
+                            Integer.parseInt(jsonObject.getString("likes")),
+                            Integer.parseInt(jsonObject.getString("unlikes")),
+                            Integer.parseInt(jsonObject.getString("comments")),
+                            jsonObject.getString("like_select"),
+                            jsonObject.getString("unlike_select"));
+                    forumList.add(forum);
+
+                }
+                if(progressBar.getVisibility()==View.VISIBLE)
+                    progressBar.setVisibility(View.GONE);
+                searchList.setAdapter(new ForumListAdapter(getApplicationContext()));
+                RecyclerView.LayoutManager layoutManager =
+                        new LinearLayoutManager(getApplicationContext());
+                searchList.setLayoutManager(layoutManager);
+
+
+                searchList.addOnItemTouchListener(
+                        new RecyclerItemClickListener(getApplicationContext(), searchList, new RecyclerItemClickListener.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+                                startMyTask(new ViewsUploadTask(),position+"",forumList.get(position).getNum()+"");
+                            }
+
+                            @Override
+                            public void onLongItemClick(View view, int position) {
+
+                            }
+                        })
+                );
+
+            }catch (NullPointerException e){
+                e.printStackTrace();
+                //검색 결과가 없는 경우  게시물을 1만개씩 잘라 불러올 경우 불러오기 버튼 넣어야함
+                OrangeToast(getApplicationContext(), "검색 결과 없음");
+
+            }catch (Exception e){
+                e.printStackTrace();
+                OrangeToast(getApplicationContext(),"게시판 업로드 에러!");
+            }
+            if(progressBar.getVisibility()==View.VISIBLE)
+                progressBar.setVisibility(View.GONE);
+
+            ID_TAG="";
+        }
+    }
 
     class ViewsUploadTask extends AsyncTask<String,Void,JSONArray>{
 
@@ -497,6 +616,8 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
             }
         }
     }
+
+
 
     private static String replaceLast(String string, String toReplace, String replacement) {
 

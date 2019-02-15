@@ -2,12 +2,19 @@ package com.example.x_note.allofgistlite;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -39,6 +46,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -72,6 +81,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
     TextView upload_datetime;
     SimpleDateFormat datetimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm",Locale.KOREA);
     SimpleDateFormat datetimeSecFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
+    SimpleDateFormat datetime_SecFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss", Locale.KOREA);
     TextView viewsAndComments;
     ImageButton zoomOut;
     ImageButton zoomIn;
@@ -257,6 +267,19 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                                             }
                                         });
                                         break;
+                                    case R.id.mine_capture:
+                                        View screenview = getWindow().getDecorView().getRootView();
+                                        //progress bar
+                                        File screenShot = ScreenShot(screenview);
+                                        try {
+                                            if (screenShot.isFile()) {
+                                                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(screenShot)));
+                                                OrangeToast(getApplicationContext(),"[AllofGist] 폴더에 저장되었습니다.");
+                                            }
+                                        }catch (NullPointerException e) {
+                                            e.printStackTrace();
+                                            OrangeToast(getApplicationContext(),"캡쳐된 파일을 찾을 수 없습니다.");
+                                        }
                                     default:
                                         break;
                                 }
@@ -318,6 +341,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     Intent searchActivity = new Intent(AnonymousForumActivity_View.this, AnonymousForumActivity_Search.class);
                     searchActivity.putExtra("ID", id);
                     searchActivity.putExtra("NICKNAME", currentForum.getNickname());
+                    searchActivity.putExtra("ID_TAG",currentForum.getId());
                     startActivity(searchActivity);
                 }
             }
@@ -438,7 +462,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         });
 
     }
-    //스크롤 새로 고침 필요
+
     public void DataBinding(Forum forum) {
         topTitle.setText(forum.getTitle());
 
@@ -454,6 +478,9 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         nextCommentLayout.setVisibility(View.GONE);
         nextCommentLayoutBorderLine.setVisibility(View.GONE);
         nextCommentNicknameExtra.setText("에게 답글");
+
+        commentInput.setText("");
+        editmode = false;
 
         if(forum.getUnlikes()==0&&forum.getLikes()==0){
             stateLayout.setVisibility(View.GONE);
@@ -1537,11 +1564,63 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         return (int) (spValue * fontScale);
     }
 
+    //클립보드 복사
     public static void setClipBoardLink(Context context , String link){
         ClipboardManager clipboardManager = (ClipboardManager)context.getSystemService(context.CLIPBOARD_SERVICE);
         ClipData clipData = ClipData.newPlainText("label", link);
         clipboardManager.setPrimaryClip(clipData);
     }
+
+    public static Bitmap loadBitmapFromView(View v)
+    {
+        Bitmap b = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        v.layout(0, 0, v.getLayoutParams().width, v.getLayoutParams().height);
+        v.draw(c);
+        return b;
+    }
+
+    //스크린샷 저장
+    public File ScreenShot(View view){
+        //view.setDrawingCacheEnabled(true);  //화면에 뿌릴때 캐시를 사용하게 한다
+
+        //Bitmap screenBitmap = view.getDrawingCache(true).copy(Bitmap.Config.RGB_565, false);   //캐시를 비트맵으로 변환
+        //view.destroyDrawingCache();
+        Bitmap screenBitmap =  loadBitmapFromView(view);
+
+        String filename = "AllofGist_capture_"+datetime_SecFormat.format(Calendar.getInstance(Locale.KOREA).getTimeInMillis())+".jpg";
+        String directory_uri = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + File.separator + "AllofGist" + File.separator;
+        File directory = new File(directory_uri);
+        File file = new File(directory_uri+filename);  //Pictures폴더 screenshot.png 파일
+        FileOutputStream os = null;
+        if(!directory.exists()){
+            try{
+                directory.mkdirs();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        try{
+            os = new FileOutputStream(file);
+            screenBitmap.compress(Bitmap.CompressFormat.JPEG, 90, os);   //비트맵을 PNG파일로 변환
+            os.flush();
+            os.close();
+        }catch (Exception e){
+            e.printStackTrace();
+            OrangeToast(getApplicationContext(),"캡쳐된 파일을 찾을 수 없습니다.");
+            return null;
+        }
+        //view.setDrawingCacheEnabled(false);
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DATA,
+                directory_uri + filename);
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+        getContentResolver().insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        return file;
+    }
+
+
     public void ShowCancelEditMode(){
         noticeText.setText(R.string.edit_cancel_question);
         noticePopupWindow.showAtLocation(popupView, Gravity.CENTER,0,0);
