@@ -9,13 +9,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#FF7F00">
+        android:background="@color/gist_red">
         <ImageButton
             android:id="@+id/write_back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/left_arrow_white"
-            android:background="#FF7F00"
+            android:background="@color/gist_red"
             android:layout_centerVertical="true"
             android:layout_marginStart="8dp"
             android:layout_alignParentStart="true"/>
@@ -46,7 +46,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
-                android:text="닉네임으로 게시할까요?"
+                android:text="@string/write_nickname_question"
                 android:background="#FFFFFF"
                 android:fontFamily="@font/noto_sans"
                 android:includeFontPadding="false"
@@ -64,13 +64,13 @@
                 android:fontFamily="@font/noto_sans"
                 android:includeFontPadding="false"
                 android:textColor="#a3a3a3"
-                android:text="미선택시, 닉네임 대신 '익명'으로 게시됩니다."/>
+                android:text="@string/write_nickname_notice"/>
         </LinearLayout>
         <Switch
             android:id="@+id/nickname_select"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:shadowColor="#FF7F00"
+            android:shadowColor="@color/gist_red"
             android:background="#FFFFFF"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
@@ -79,7 +79,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#FF7F00"/>
+        android:background="@color/gist_dark_gray"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -88,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:background="#FFFFFF"
-            android:hint="게시자"
+            android:hint="@string/write_writer"
             android:layout_marginStart="16dp"
             android:textSize="15sp"
             android:fontFamily="@font/noto_sans"
@@ -107,14 +107,14 @@
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:textColor="#a3a3a3"
-            android:text="익명"
+            android:text="@string/write_noname"
             android:textSize="15sp"/>
     </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#FF7F00"/>
+        android:background="@color/gist_dark_gray"/>
     <EditText
         android:id="@+id/write_title"
         android:layout_width="match_parent"
@@ -123,26 +123,28 @@
         android:fontFamily="@font/noto_sans"
         android:includeFontPadding="false"
         android:paddingLeft="16dp"
-        android:hint="제목"
+        android:hint="@string/write_title"
         android:inputType="text"
         android:textSize="15sp"
         android:textColor="#000000"/>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#FF7F00"/>
+        android:background="@color/gist_dark_gray"/>
+
     <EditText
         android:id="@+id/write_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fontFamily="@font/noto_sans"
-        android:includeFontPadding="false"
         android:background="#FFFFFF"
+        android:fontFamily="@font/noto_sans"
         android:gravity="top|left"
-        android:hint="내용"
+        android:hint="@string/write_hint"
+        android:includeFontPadding="false"
         android:inputType="textMultiLine"
         android:paddingLeft="16dp"
         android:paddingTop="16dp"
+        android:paddingRight="16dp"
         android:textColor="#000000"
         android:textSize="15sp" />
 </LinearLayout>

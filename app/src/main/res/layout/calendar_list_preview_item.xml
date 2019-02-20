@@ -19,7 +19,7 @@
             android:layout_width="5dp"
             android:layout_height="5dp"
             android:layout_gravity="center"
-            android:background="#FF7F00"/>
+            android:background="@color/gist_red"/>
     </FrameLayout>
     <LinearLayout
         android:layout_width="match_parent"

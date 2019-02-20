@@ -34,7 +34,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/opt/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/maps/ic_local_cafe_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/opt/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_power_settings_new_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -51,13 +51,24 @@
                                           </PersistentState>
                                         </value>
                                       </entry>
+                                      <entry key="text">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="color" value="000000" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
                                     </map>
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="food_select_orange_2" />
+                                      <entry key="outputName" value="logout_red" />
                                       <entry key="theme" value="CUSTOM" />
-                                      <entry key="themeColor" value="ff7f00" />
+                                      <entry key="themeColor" value="dc2314" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -94,7 +105,18 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="color" value="ffffff" />
+                                                <entry key="color" value="4f5b54" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
+                                      <entry key="clipartAsset">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="url" value="jar:file:/opt/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/av/ic_repeat_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -104,9 +126,8 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="backgroundColor" value="ff7f00" />
                                       <entry key="iconShape" value="CIRCLE" />
-                                      <entry key="outputName" value="add_orange" />
+                                      <entry key="outputName" value="like_state_red" />
                                     </map>
                                   </option>
                                 </PersistentState>

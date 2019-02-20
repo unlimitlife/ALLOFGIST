@@ -6,7 +6,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="#FF7F00">
+        android:background="@color/gist_red">
         <ImageButton
             android:id="@+id/back"
             android:layout_width="30dp"
@@ -14,7 +14,7 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="8dp"
             android:layout_centerVertical="true"
-            android:background="#FF7F00"
+            android:background="@color/gist_red"
             android:src="@drawable/left_arrow_white"/>
         <TextView
             android:layout_width="wrap_content"
@@ -33,7 +33,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="8dp"
             android:layout_centerVertical="true"
-            android:background="#FF7F00"
+            android:background="@color/gist_red"
             android:src="@drawable/check_white"/>
     </RelativeLayout>
     <FrameLayout
@@ -47,7 +47,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/repeat_black"
+                android:src="@drawable/repeat_gray"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"/>
@@ -71,7 +71,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/repeat_black"
+                android:src="@drawable/repeat_gray"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"/>
             <RelativeLayout
@@ -87,7 +87,7 @@
                     android:textSize="18sp"
                     android:fontFamily="@font/noto_sans"
                     android:includeFontPadding="false"
-                    android:textColor="#000000"
+                    android:textColor="@color/gist_dark_gray"
                     android:layout_margin="20dp" />
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -144,7 +144,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/repeat_black"
+                android:src="@drawable/repeat_gray"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"/>
             <RelativeLayout
@@ -160,7 +160,7 @@
                     android:textSize="18sp"
                     android:fontFamily="@font/noto_sans"
                     android:includeFontPadding="false"
-                    android:textColor="#000000"
+                    android:textColor="@color/gist_dark_gray"
                     android:layout_margin="20dp" />
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -217,7 +217,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/repeat_black"
+                android:src="@drawable/repeat_gray"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"/>
             <RelativeLayout
@@ -231,7 +231,7 @@
                     android:layout_alignParentLeft="true"
                     android:text="매월 반복"
                     android:textSize="18sp"
-                    android:textColor="#000000"
+                    android:textColor="@color/gist_dark_gray"
                     android:fontFamily="@font/noto_sans"
                     android:includeFontPadding="false"
                     android:layout_margin="20dp" />
@@ -290,7 +290,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/repeat_black"
+                android:src="@drawable/repeat_gray"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"/>
             <RelativeLayout
@@ -306,7 +306,7 @@
                     android:textSize="18sp"
                     android:fontFamily="@font/noto_sans"
                     android:includeFontPadding="false"
-                    android:textColor="#000000"
+                    android:textColor="@color/gist_dark_gray"
                     android:layout_margin="20dp" />
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -351,7 +351,7 @@
             android:textSize="18sp"
             android:fontFamily="@font/noto_sans"
             android:includeFontPadding="false"
-            android:textColor="#000000"/>
+            android:textColor="@color/gist_dark_gray"/>
         <ImageButton
             android:id="@+id/end_date_datepicker_close_button"
             android:layout_width="wrap_content"

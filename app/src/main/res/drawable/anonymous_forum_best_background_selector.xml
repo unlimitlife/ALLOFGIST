@@ -3,7 +3,7 @@
 
     <item
         android:state_selected="true"
-        android:drawable="@drawable/orange_solid_box"
+        android:drawable="@drawable/red_solid_box"
         />
     <item
         android:state_selected="false"

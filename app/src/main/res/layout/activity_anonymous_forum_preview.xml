@@ -11,36 +11,37 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#FF7F00">
+        android:background="@color/white">
 
         <TextView
+            android:id="@+id/title_anonymous_forum_preview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="GIST"
+            android:text="@string/title_preview"
             android:textSize="25sp"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/gist_dark_gray"
             android:fontFamily="@font/noto_sans"
             android:includeFontPadding="false"
             android:layout_centerInParent="true"
             />
     </RelativeLayout>
 
-    <com.example.x_note.allofgistlite.NonSwipeableViewPager
-    android:id="@+id/anonymous_forum_preview_switch_layout"
-    android:layout_weight="1"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:tag="fragment_container"
-    android:background="#FFFFFF"/>
+    <com.allofgist.dell.allofgistlite.NonSwipeableViewPager
+        android:id="@+id/anonymous_forum_preview_switch_layout"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:tag="fragment_container"
+        android:background="#ECECEC"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#FF7F00"/>
+        android:background="@color/forum_gray"/>
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
+        android:background="@drawable/top_bar_layout_design"
         >
         <TableRow
             android:background="#FFFFFF">
@@ -56,13 +57,13 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/home_orange"/>
+                    android:src="@drawable/home_red"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_sans"
                     android:includeFontPadding="false"
-                    android:textColor="#585858"
+                    android:textColor="@color/gist_dark_gray"
                     android:text="@string/menu_button_home"/>
             </LinearLayout>
             <LinearLayout
@@ -84,7 +85,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_sans"
-                    android:textColor="#585858"
+                    android:textColor="@color/gist_dark_gray"
                     android:includeFontPadding="false"
                     android:text="@string/menu_button_best"/>
             </LinearLayout>
@@ -100,12 +101,12 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/search_orange"/>
+                    android:src="@drawable/search_red"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_sans"
-                    android:textColor="#585858"
+                    android:textColor="@color/gist_dark_gray"
                     android:includeFontPadding="false"
                     android:text="@string/menu_button_search"/>
             </LinearLayout>
@@ -121,11 +122,11 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/write_orange"/>
+                    android:src="@drawable/write_red"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#585858"
+                    android:textColor="@color/gist_dark_gray"
                     android:fontFamily="@font/noto_sans"
                     android:includeFontPadding="false"
                     android:text="@string/menu_button_write"/>

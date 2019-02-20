@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/gist_dark_gray">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/gist_red"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp">
+            <ImageButton
+                android:id="@+id/site_tutorial_back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:background="@color/blank"
+                android:src="@drawable/close_white"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                />
+            <TextView
+                android:id="@+id/selectText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_tutorial"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/noto_sans"
+                android:includeFontPadding="false"
+                android:layout_centerInParent="true"
+                android:textStyle="bold"
+                android:background="@color/blank"/>
+
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_site_tuorial"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/blank"/>
+
+    </LinearLayout>
+</LinearLayout>

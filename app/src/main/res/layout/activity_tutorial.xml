@@ -7,120 +7,70 @@
     android:orientation="vertical"
     tools:context=".Tutorial"
     android:background="#ffffff">
-    <LinearLayout
+    <TextView
+        android:id="@+id/selectText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_favorite"
+        android:textSize="20sp"
+        android:textColor="@color/gist_red"
+        android:fontFamily="@font/noto_sans"
+        android:includeFontPadding="false"
+        android:layout_gravity="center"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"/>
+
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tab_layout_tutorial"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/white"
+        android:fontFamily="@font/noto_sans"
+        android:includeFontPadding="false"
+        app:tabGravity="fill"
+        app:tabMode="fixed"
+        app:tabTextColor="@color/gist_dark_gray"
+        app:tabSelectedTextColor="@color/gist_red"
+        app:tabRippleColor="@null"
+        app:tabIndicatorHeight="0dp"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#E4E4E4"/>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/tutorial_switch_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/selectText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginLeft="16dp"
-            android:text="Select favorites"
-            android:textSize="35sp"
-            android:textColor="#FF7F00"
-            android:fontFamily="@font/noto_sans"
-            android:includeFontPadding="false"
-            android:textStyle="bold"/>
+        android:background="@color/white_gray"
+        android:layout_gravity="center_horizontal"/>
 
-    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="5.5"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:focusableInTouchMode="false"
-            android:clickable="false"
-            android:focusable="false">
-            <Button
-                android:id="@+id/official_button_tutorial"
-                android:layout_width="32dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingTop="16dp"
-                android:background="@drawable/chapter_box_color_selector"
-                android:text="@string/button_official_text"
-                android:fontFamily="@font/noto_sans"
-                android:includeFontPadding="false"
-                android:textColor="@drawable/chapter_box_text_color_selector"
-                android:textSize="15sp"/>
-            <Button
-                android:id="@+id/organization_button_tutorial"
-                android:layout_width="32dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingTop="16dp"
-                android:background="@drawable/chapter_box_color_selector"
-                android:text="@string/button_organization_text"
-                android:fontFamily="@font/noto_sans"
-                android:includeFontPadding="false"
-                android:textColor="@drawable/chapter_box_text_color_selector"
-                android:textSize="15sp"/>
-            <Button
-                android:id="@+id/circle_button_tutorial"
-                android:layout_width="32dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:paddingTop="16dp"
-                android:background="@drawable/chapter_box_color_selector"
-                android:gravity="center"
-                android:text="@string/button_circle_text"
-                android:fontFamily="@font/noto_sans"
-                android:includeFontPadding="false"
-                android:textColor="@drawable/chapter_box_text_color_selector"
-                android:textSize="15sp"/>
-        </LinearLayout>
-        <android.support.v4.view.ViewPager
-            android:id="@+id/tutorial_switch_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/orange_base_layout_design"/>
-
-        <!--
-        <GridView
-            android:id="@+id/allsites"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/orange_base_layout_design"
-            android:horizontalSpacing="10dp"
-            android:verticalSpacing="10dp"
-            android:numColumns="3"
-            android:paddingLeft="16dp">
-        </GridView>-->
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
         android:background="#FFFFFF">
 
         <Button
             android:id="@+id/next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_width="200dp"
+            android:layout_height="36dp"
             android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:background="@drawable/orange_base_layout_design"
-            android:text="Next"
-            android:textColor="#FF7F00"
+            android:layout_marginBottom="16dp"
+            android:text="@string/apply_button"
+            android:background="@drawable/roundable_ok_button_design"
+            android:textColor="@color/white"
             android:fontFamily="@font/noto_sans"
             android:includeFontPadding="false"
-            android:textSize="25sp"
+            android:textSize="16sp"
             android:gravity="center"
             />
     </LinearLayout>
+
 
 
 </LinearLayout>

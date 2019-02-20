@@ -6,5 +6,5 @@
         android:drawable="@drawable/chapter_button_selected_design"/>
     <item
         android:state_selected="false"
-        android:drawable="@drawable/orange_base_layout_design"/>
+        android:drawable="@drawable/item_unselected_state"/>
 </selector>

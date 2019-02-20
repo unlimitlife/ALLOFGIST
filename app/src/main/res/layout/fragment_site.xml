@@ -3,18 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/orange_base_layout_design"
     tools:context=".OfficialSiteFragment">
 
     <GridView
         android:id="@+id/allsites"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/orange_base_layout_design"
-        android:horizontalSpacing="10dp"
         android:verticalSpacing="10dp"
         android:numColumns="3"
-        android:paddingLeft="16dp">
+        android:gravity="center_horizontal">
     </GridView>
 
 </FrameLayout>

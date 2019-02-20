@@ -19,6 +19,7 @@
         tools:src="@mipmap/ic_launcher"
         android:layout_gravity="center"
         android:layout_marginTop="8dp"
+        android:padding="0.5dp"
         />
     <TextView
         android:layout_width="60dp"

@@ -21,7 +21,7 @@
             android:layout_height="10dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
-            android:background="#FF7F00"/>
+            android:background="@color/gist_red"/>
     </FrameLayout>
     <LinearLayout
         android:layout_width="0dp"

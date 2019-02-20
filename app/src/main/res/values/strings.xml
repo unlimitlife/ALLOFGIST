@@ -1,10 +1,16 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">ALLOFGISTLITE</string>
+    <string name="app_name">ALLOFGIST</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_login">Sign in</string>
 
+    <!-- Strings related to textview in Start screen -->
+    <string name="title_start">ALL OF</string>
+    <string name="subtitle_start">GIST integrated application</string>
+    <string name="login_start">LOGIN</string>
+    <string name="signup_ques_start">아직 회원이 아니신가요?</string>
+    <string name="signup_start">회원가입</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
@@ -14,9 +20,8 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."</string>
-    <string name="email_etc">\u0040 google.com</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+    <string name="email_etc">\u0040 gmail.com</string>
     <string name="title_activity_add_schedule">AddSchedule</string>
 
     <!-- Strings related to edittext(id,pw) in start screen -->
@@ -30,8 +35,26 @@
     <string name="textview_pw_check_signup"><font size="13">Password Check</font></string>
     <string name="textview_email_signup"><font size="13">Google Email</font></string>
 
+    <!-- Strings related to navigation drawer layout -->
+    <string name="user_information_main">회원정보</string>
+    <string name="edit_nickname_main">닉네임 변경</string>
+    <string name="delete_user_main">회원 탈퇴</string>
+    <string name="logout_main">로그아웃</string>
+
+    <!-- Strings related to textview in MainActivity screen -->
+    <string name="title_main">ALL OF GIST</string>
+    <string name="favorite_site_main">즐겨찾는 사이트</string>
+    <string name="diary_main">일정관리</string>
+    <string name="allsite_main">전체 사이트</string>
+    <string name="food_diary_main">식단표</string>
+    <string name="anonymous_forum_main">익명 게시판</string>
+    <string name="favorite_setting_main">즐겨찾기 관리</string>
+    <string name="advertisement_main">홍보판</string>
+    <string name="favorite_notice_main">즐겨찾기를 추가해주세요.</string>
+    <string name="logout_notice">정말 로그아웃 하시겠습니까?</string>
+
     <!-- Strings related to edittext in signup screen -->
-    <string name="title_signup">Sign Up</string>
+    <string name="title_signup">Sign up</string>
     <string name="edittext_nickname_hint_signup"><font size="13">익명게시판에서 사용되는 닉네임입니다.</font></string>
     <string name="edittext_id_hint_signup"><font size="13">아이디를 입력해주세요.</font></string>
     <string name="edittext_pw_hint_signup"><font size="13">패스워드를 입력해주세요.</font></string>
@@ -40,9 +63,13 @@
     <string name="button_signup">SIGN UP</string>
 
     <!-- Strings related to button in tutorial screen -->
-    <string name="button_official_text">공\n식</string>
-    <string name="button_organization_text">조\n직</string>
-    <string name="button_circle_text">동\n아\n리</string>
+    <string name="tab_official_text">공식</string>
+    <string name="tab_organization_text">조직</string>
+    <string name="tab_circle_text">동아리</string>
+    <string name="title_favorite">Favorite</string>
+    <string name="apply_button">Apply</string>
+    <string name="title_tutorial">Tutorial</string>
+
 
     <!-- Strings related to CalendarMain -->
     <string name="title_calendar_main">Calendar</string>
@@ -64,8 +91,10 @@
     <string name="first_restaurant_first_floor">제1학생식당 1층</string>
     <string name="first_restaurant_second_floor">제1학생식당 2층</string>
     <string name="second_restaurant">제2학생식당</string>
+    <string name="notice_food_diary">하단의 버튼을 눌러주세요.</string>
 
     <!-- Strings related to menuButton in anonymous forum preview -->
+    <string name="title_preview">GIST</string>
     <string name="menu_button_home">홈</string>
     <string name="menu_button_best">인기글</string>
     <string name="menu_button_overview">전체글</string>
@@ -84,6 +113,12 @@
     <!-- Strings related to anonymous forum write -->
     <string name="submit_button">등록</string>
     <string name="edit_button">수정</string>
+    <string name="write_nickname_question">닉네임으로 게시할까요?</string>
+    <string name="write_nickname_notice">미선택시, 닉네임 대신 \'익명\'으로 게시됩니다.</string>
+    <string name="write_noname">익명</string>
+    <string name="write_writer">게시자</string>
+    <string name="write_title">제목</string>
+    <string name="write_hint"><font size="12">여기를 눌러 글을 작성할 수 있습니다.\n\nGIST 익명 게시판이 오랫동안 유지될 수 있도록 아래의 내용은 꼭 지켜주세요 :)\n\n[이용 규칙]\n1. 욕설, 비하, 음란물, 개인정보가 포함된 게시물 게시\n2. 특정인이나 단체/지역을 비방하는 행위\n3. 규제가 필요할 정도의 과도한 도배\n\n위의 유의사항을 위배한 게시물이 등록 시 삭제 및 차단 조치가 될 수 있습니다.</font></string>
 
     <!-- Strings related to anonymous forum search classification menu -->
     <string name="all_search">전체</string>
@@ -93,6 +128,7 @@
     <string name="title_with_content_search">제목+내용</string>
 
     <string name="only_best_search">인기글만 검색</string>
+    <string name="no_search_result">검색 결과가 없습니다.</string>
 
     <!-- Strings related to notice popup window -->
     <string name="cancel">취소</string>
@@ -109,4 +145,12 @@
     <string name="write_comment">답글 쓰기</string>
     <string name="search_comment_mine">내 작성글 검색</string>
     <string name="search_comment">작성글 검색</string>
+    <string name="title_activity_navigation_drawer">NavigationDrawerActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
 </resources>
