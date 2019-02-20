@@ -326,6 +326,7 @@ public class AllsiteActivity extends AppCompatActivity {
         itemList.add(new Site("기타 동아리 HOTSIX", R.drawable.hotsix,"활발하고 주기적인 멘토-멘티 활동을 통해 기타를 배울 수 있고,  다 같이 공연 준비하고 친목도 다질 수 있는 GIST의 기타 동아리입니다."));
         itemList.add(new Site("피아노 동아리 GISRI", R.drawable.gisri,"피아노를 좋아하는 사람들이 모인 동아리입니다. 함께 모여 연습하고 피드백을 주고 받는 시간을 주로 가지며 그랜드 피아노에서 공연할 수 있는 기회도 주어집니다."));
         itemList.add(new Site("밴드 Main", R.drawable.main,"GIST를 대표하는 실력파 밴드로 보컬을 제외한 모든 세션을 소화하실 수 있는 분, 음악을 듣고 악보로 따낼 수 있으신 분등 수많은 음악적 인재들이 왔다 가셨다고 합니다."));
+        itemList.add(new Site("밴드 휴강익스프레스",R.drawable.hugangexpress,"GIST의 탄생과 동시에 시작한 밴드입니다. 가장 오래된 밴드답게 많은 선배들과 함께 정기공연, 버스킹, 야유회, 정기합주, 회식등 여러 활동을 진행합니다."));
         itemList.add(new Site("밴드 도도한 쭈쭈바", R.drawable.dozzu,"악기를 배워 본적 없는 초급자들도 밴드를 할 수 있다는 것을 보여주기 위해 만들어진 밴드이다. 단순 공연 뿐만 아니라, MT, 굿즈 제작등 구성원간의 친밀도를 높이는 활동도 합니다. "));
         itemList.add(new Site("영화 동아리 Cinergy", R.drawable.cinergy,"1년에 자체제작 영화 한 편 완성을 목표로 하고 있는 영화 제작 동아리입니다. 장편 영화 말고도 여러 액션씬 공모전등과 같은 내부 활동과 팀별 단편 영화 제작등의 활동도 합니다."));
         itemList.add(new Site("영상편집 동아리 The GIST", R.drawable.thegist,"영상제작을 주로 하는 종합예술창작 엔터테인먼트 동아리입니다. UCC, 홍보영상, 뮤직비디오, 합성 사진 제작, 이글루 제작등 하고 싶은 모든 활동을 할 수 있습니다. 동아리 공식 유튜브 채널도 있습니다. "));

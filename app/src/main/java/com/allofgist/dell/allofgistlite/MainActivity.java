@@ -1330,6 +1330,7 @@ public class MainActivity extends AppCompatActivity {
         itemList.add(new Site("기타 동아리 HOTSIX", "https://www.facebook.com/gisthotsix/", R.drawable.hotsix));
         itemList.add(new Site("피아노 동아리 GISRI", "https://www.facebook.com/gistgisri/?ref=py_c", R.drawable.gisri));
         itemList.add(new Site("밴드 Main", "https://www.facebook.com/MAIN-899414343552162/", R.drawable.main));
+        itemList.add(new Site("밴드 휴강익스프레스","https://www.facebook.com/%ED%9C%B4%EA%B0%95%EC%9D%B5%EC%8A%A4%ED%94%84%EB%A0%88%EC%8A%A4-1798215557148106/",R.drawable.hugangexpress));
         itemList.add(new Site("밴드 도도한 쭈쭈바", "https://www.facebook.com/dozzu/", R.drawable.dozzu));
         itemList.add(new Site("영화 동아리 Cinergy", "https://www.facebook.com/gistcinergy/", R.drawable.cinergy));
         itemList.add(new Site("영상편집 동아리 The GIST", "https://www.facebook.com/Gentletist/","https://www.youtube.com/channel/UCMUDHS0SZvQilFe5h6eI9rA/videos", R.drawable.thegist));
