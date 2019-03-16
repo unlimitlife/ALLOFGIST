@@ -310,7 +310,7 @@ public class Allsite_OfficialSiteFragment extends Fragment {
         itemList.add(new Site("Zeus system", "https://zeus.gist.ac.kr", R.drawable.zeus));
         itemList.add(new Site("수강 신청 사이트", "https://zeus.gist.ac.kr/sys/lecture/lecture_main.do", R.drawable.courseregisteration));
         itemList.add(new Site("Portal system", "https://portal.gist.ac.kr/intro.jsp", R.drawable.portal));
-        itemList.add(new Site("Email system", "https://mail.gist.ac.kr/loginl?locale=ko_KR", R.drawable.email));
+        itemList.add(new Site("Email system", "https://mail.gist.ac.kr/", R.drawable.email));
         itemList.add(new Site("GIST college", "https://college.gist.ac.kr/", R.drawable.college));
         itemList.add(new Site("GIST library", "https://library.gist.ac.kr/", R.drawable.library));
         itemList.add(new Site("학내공지", "https://college.gist.ac.kr/prog/bbsArticle/BBSMSTR_000000005587/list.do", R.drawable.haknaegongji));

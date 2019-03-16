@@ -137,6 +137,11 @@ public class FoodDiary extends AppCompatActivity {
                             line = line.replace("\"></p></p>","");
                             break;
                         }
+                        if(line.startsWith("\t\t\t\t\t\t\t\t\t\t\t\t<p><p><img")){
+                            line = line.split("src=\"")[1];
+                            line = line.split("\">")[0];
+                            break;
+                        }
                     }
                     if(!line.isEmpty()){
                         if(line.contains("gist.ac.kr"))

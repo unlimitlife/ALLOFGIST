@@ -120,18 +120,19 @@
                     android:id="@+id/gotoToday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:backgroundTint="#FFFFFF"
+                    app:backgroundTint="@color/white_gray"
                     android:foreground="?android:attr/selectableItemBackground"
-                    android:elevation="1dp"/>
+                    android:elevation="1dp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:elevation="7dp"
                     android:fontFamily="@font/noto_sans"
                     android:includeFontPadding="false"
                     android:text="오늘"
-                    android:elevation="7dp"
-                    android:layout_gravity="center"
-                    android:textColor="@color/gist_dark_gray"/>
+                    android:textColor="@color/gist_dark_gray" />
             </FrameLayout>
             <FrameLayout
                 android:layout_width="wrap_content"

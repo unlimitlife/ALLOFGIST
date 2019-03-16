@@ -10,14 +10,16 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +29,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,7 +37,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -71,7 +74,7 @@ import cn.trinea.android.view.autoscrollviewpager.AutoScrollViewPager;
 
 import static com.allofgist.dell.allofgistlite.Allsite_OfficialSiteFragment.getCircledBitmap;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     String Title = "<font color=#4F5B54>ALL OF </font> <font color=#DC2314>G</font><font color=#4F5B54>IST</font>";
     TextView titleMain;
@@ -80,9 +83,21 @@ public class MainActivity extends AppCompatActivity {
     private Canvas mCanvas;
     private Paint mPaint;
 
+    //사용자 환경설정
+    DrawerLayout drawer;
+    android.support.v7.widget.Toolbar toolbar;
+    ActionBarDrawerToggle toggle;
+    NavigationView navigationView;
 
-    ImageButton userSetting;
-    ImageButton logoutButton;
+    //닉네임 변경 팝업
+    PopupWindow nicknamePopupWindow;
+    View nicknamePopupView;
+
+    TextView nicknameText;
+    TextView nicknameEditText;
+    TextView nicknameCancel;
+    TextView nicknameOk;
+
 
     //로그 아웃 팝업
     PopupWindow noticePopupWindow;
@@ -137,8 +152,6 @@ public class MainActivity extends AppCompatActivity {
     private final long FINISH_INTERVAL_TIME = 2000;
     private long backPressedTime = 0;
 
-    //새로고침 (즐겨찾기)
-    private ImageButton reloadFavorite;
 
     @Override
     protected void onResume() {
@@ -170,12 +183,86 @@ public class MainActivity extends AppCompatActivity {
         window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.user_setting, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int itemId = item.getItemId();
+
+        if (itemId == R.id.nav_academic_calendar) {
+            startActivity(new Intent(MainActivity.this, AcademicCalendarActivity.class));
+        } else if (itemId == R.id.nav_credit_calculator) {
+            Intent calculator = new Intent(MainActivity.this,CreditCalculator.class);
+            calculator.putExtra("ID",id);
+            startActivity(calculator);
+        } else if (itemId == R.id.nav_edit_nickname) {
+            nicknameText.setText(R.string.nickname_notice);
+            nicknamePopupWindow.showAtLocation(nicknamePopupView,Gravity.CENTER,0,0);
+            nicknameOk.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(nicknameEditText.getText().toString().isEmpty()){
+                        GrayToast(getApplicationContext(),"변경할 닉네임을 입력해주세요.");
+                    }
+                    else{
+                        startMyTask(new NickNameEditTask(),id,nicknameEditText.getText().toString());
+                    }
+                }
+            });
+
+        } else if (itemId == R.id.nav_logout) {
+            noticeText.setText(R.string.logout_notice);
+            noticePopupWindow.showAtLocation(popupView, Gravity.CENTER,0,0);
+            noticeOk.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    auto_login = getSharedPreferences("AUTO_LOGIN", Activity.MODE_PRIVATE);
+                    saveUser = auto_login.edit();
+                    saveUser.remove("USER_ID");
+                    saveUser.apply();
+                    finish();
+                }
+            });
+        } else if (itemId == R.id.nav_delete_user) {
+            noticeText.setText(R.string.delete_user_notice);
+            noticePopupWindow.showAtLocation(popupView, Gravity.CENTER,0,0);
+            noticeOk.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startMyTask(new UserDeleteTask(),id);
+                }
+            });
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
 
         //로그인 정보 가져오기
         id = getIntent().getStringExtra("ID");
@@ -189,6 +276,14 @@ public class MainActivity extends AppCompatActivity {
 
         setData();
 
+        //UserSetting
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView.setNavigationItemSelectedListener(this);
+        startMyTask(new NickNameLoadTask(),id);
+
+        //Advertisement Util
         AutoScrollAdapter autoScrollAdapter = new AutoScrollAdapter(getApplicationContext(),advertisementContentList);
         advertisementList.setAdapter(autoScrollAdapter);
         advertisementList.setInterval(3000);
@@ -196,11 +291,11 @@ public class MainActivity extends AppCompatActivity {
 
         startMyTask(new TokenLoadTask(),"https://server.allofgist.com/tokenload.php",id);
 
-        userSetting.setOnClickListener(new View.OnClickListener() {
+        nicknameCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GrayToast(getApplicationContext(),"업데이트 버전과 함께 찾아뵙겠습니다!");
-
+                if(nicknamePopupWindow.isShowing())
+                    nicknamePopupWindow.dismiss();
             }
         });
 
@@ -209,24 +304,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(noticePopupWindow.isShowing())
                     noticePopupWindow.dismiss();
-            }
-        });
-
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                noticeText.setText(R.string.logout_notice);
-                noticePopupWindow.showAtLocation(popupView, Gravity.CENTER,0,0);
-                noticeOk.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        auto_login = getSharedPreferences("AUTO_LOGIN", Activity.MODE_PRIVATE);
-                        saveUser = auto_login.edit();
-                        saveUser.remove("USER_ID");
-                        saveUser.apply();
-                        finish();
-                    }
-                });
             }
         });
 
@@ -287,13 +364,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        long tempTime = System.currentTimeMillis();
-        long intervalTime = tempTime - backPressedTime;
-        if(0<=intervalTime&&FINISH_INTERVAL_TIME>=intervalTime)
-            super.onBackPressed();
-        else {
-            backPressedTime = tempTime;
-            GrayToast(getApplicationContext(),"한번 더 뒤로가기를 누르면 종료됩니다.");
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            long tempTime = System.currentTimeMillis();
+            long intervalTime = tempTime - backPressedTime;
+            if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime)
+                super.onBackPressed();
+            else {
+                backPressedTime = tempTime;
+                GrayToast(getApplicationContext(), "한번 더 뒤로가기를 누르면 종료됩니다.");
+            }
         }
     }
 
@@ -1186,6 +1268,199 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    class NickNameLoadTask extends AsyncTask<String,Void,String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            String ID = (String) strings[0];
+            String postParameters = "id=" + ID;
+
+            try {
+                URL url = new URL("https://server.allofgist.com/nicknameload.php");
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
+
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpsURLConnection.getResponseCode();
+                Log.d("nicknametest", "POST response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == httpsURLConnection.HTTP_OK)
+                    inputStream = httpsURLConnection.getInputStream();
+                else
+                    inputStream = httpsURLConnection.getErrorStream();
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new String("Error: " + e.getMessage());
+            }
+        }
+
+
+        @Override
+        protected void onPostExecute(String nickname) {
+            View headerView = navigationView.getHeaderView(0);
+            TextView nickname_nav = (TextView)headerView.findViewById(R.id.nickname_nav);
+            nickname_nav.setText(nickname+"님");
+        }
+    }
+
+
+
+    class NickNameEditTask extends AsyncTask<String,Void,String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            String ID = (String) strings[0];
+            String NICKNAME = (String) strings[1];
+            String postParameters = "id=" + ID + "&nickname=" + NICKNAME;
+
+            try {
+                URL url = new URL("https://server.allofgist.com/nickname_edit.php");
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
+
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpsURLConnection.getResponseCode();
+                Log.d("nicknametest", "POST response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == httpsURLConnection.HTTP_OK)
+                    inputStream = httpsURLConnection.getInputStream();
+                else
+                    inputStream = httpsURLConnection.getErrorStream();
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new String("Error: " + e.getMessage());
+            }
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            if(result.equals("OK")){
+                nicknamePopupWindow.dismiss();
+                startMyTask(new NickNameLoadTask(),id);
+            }
+            else
+                GrayToast(getApplicationContext(),"서버 연결에 실패하였습니다.");
+        }
+    }
+
+
+    class UserDeleteTask extends AsyncTask<String,Void,String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            String ID = (String) strings[0];
+            String postParameters = "id=" + ID;
+
+            try {
+                URL url = new URL("https://server.allofgist.com/user_delete.php");
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
+
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpsURLConnection.getResponseCode();
+                Log.d("nicknametest", "POST response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == httpsURLConnection.HTTP_OK)
+                    inputStream = httpsURLConnection.getInputStream();
+                else
+                    inputStream = httpsURLConnection.getErrorStream();
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new String("Error: " + e.getMessage());
+            }
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            if(result.equals("OK")){
+                auto_login = getSharedPreferences("AUTO_LOGIN", Activity.MODE_PRIVATE);
+                saveUser = auto_login.edit();
+                saveUser.remove("USER_ID");
+                saveUser.apply();
+                finish();
+            }
+            else
+                GrayToast(getApplicationContext(),"서버 연결을 실패하였습니다.");
+        }
+    }
+
     public class CalendarListAdapter extends BaseAdapter {
 
         private ArrayList<Schedule> calendarAdapterData;
@@ -1245,9 +1520,25 @@ public class MainActivity extends AppCompatActivity {
 
     public void InitialSetting(){
 
+        //사용자 환경설정
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_main);
+        toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+
         titleMain = (TextView)findViewById(R.id.title_main);
-        userSetting = (ImageButton)findViewById(R.id.userButton);
-        logoutButton = (ImageButton)findViewById(R.id.logout_main);
+
+        //nickname popup menu
+        nicknamePopupView = getLayoutInflater().inflate(R.layout.notice_edittext_plus_cancel_popup_window,null);
+        nicknamePopupWindow = new PopupWindow(nicknamePopupView, RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT,true);
+
+        nicknameText = (TextView)nicknamePopupView.findViewById(R.id.notice_edittext_text);
+        nicknameEditText = (EditText)nicknamePopupView.findViewById(R.id.notice_edittext_nickname);
+        nicknameOk = (TextView)nicknamePopupView.findViewById(R.id.notice_edittext_ok_textview);
+        nicknameCancel = (TextView)nicknamePopupView.findViewById(R.id.notice_edittext_cancel_textview);
+        nicknamePopupWindow.setBackgroundDrawable(new ColorDrawable(Color.argb(80,0,0,0)));
+
 
         //logout popup menu
         popupView = getLayoutInflater().inflate(R.layout.notice_plus_cancel_popup_window,null);
@@ -1306,7 +1597,7 @@ public class MainActivity extends AppCompatActivity {
         itemList.add(new Site("Zeus system", "https://zeus.gist.ac.kr", R.drawable.zeus));
         itemList.add(new Site("수강 신청 사이트","https://zeus.gist.ac.kr/sys/lecture/lecture_main.do",R.drawable.courseregisteration));
         itemList.add(new Site("Portal system", "https://portal.gist.ac.kr/intro.jsp", R.drawable.portal));
-        itemList.add(new Site("Email system", "https://mail.gist.ac.kr/loginl?locale=ko_KR", R.drawable.email));
+        itemList.add(new Site("Email system", "https://mail.gist.ac.kr/", R.drawable.email));
         itemList.add(new Site("GIST college", "https://college.gist.ac.kr/", R.drawable.college));
         itemList.add(new Site("GIST library", "https://library.gist.ac.kr/", R.drawable.library));
         itemList.add(new Site("학내공지", "https://college.gist.ac.kr/prog/bbsArticle/BBSMSTR_000000005587/list.do", R.drawable.haknaegongji));

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/credit_five"
+        android:title="@string/credit_five"/>
+    <item
+        android:id="@+id/credit_four"
+        android:title="@string/credit_four"/>
+    <item
+        android:id="@+id/credit_three"
+        android:title="@string/credit_three"/>
+    <item
+        android:id="@+id/credit_two"
+        android:title="@string/credit_two"/>
+    <item
+        android:id="@+id/credit_one"
+        android:title="@string/credit_one"/>
+    <item
+        android:id="@+id/credit_zero"
+        android:title="@string/credit_zero"/>
+</menu>

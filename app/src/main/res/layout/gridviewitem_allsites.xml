@@ -16,7 +16,6 @@
         android:layout_height="60dp"
         android:id="@+id/image"
         android:scaleType="centerCrop"
-        tools:src="@mipmap/ic_launcher"
         android:layout_gravity="center"
         android:layout_marginTop="8dp"
         android:padding="0.5dp"

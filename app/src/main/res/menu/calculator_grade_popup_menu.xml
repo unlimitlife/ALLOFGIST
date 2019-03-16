@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/grade_aplus"
+        android:title="@string/grade_aplus"/>
+    <item
+        android:id="@+id/grade_azero"
+        android:title="@string/grade_azero"/>
+    <item
+        android:id="@+id/grade_bplus"
+        android:title="@string/grade_bplus"/>
+    <item
+        android:id="@+id/grade_bzero"
+        android:title="@string/grade_bzero"/>
+    <item
+        android:id="@+id/grade_cplus"
+        android:title="@string/grade_cplus"/>
+    <item
+        android:id="@+id/grade_czero"
+        android:title="@string/grade_czero"/>
+    <item
+        android:id="@+id/grade_dplus"
+        android:title="@string/grade_dplus"/>
+    <item
+        android:id="@+id/grade_dzero"
+        android:title="@string/grade_dzero"/>
+    <item
+        android:id="@+id/grade_f"
+        android:title="@string/grade_f"/>
+</menu>

@@ -16,13 +16,15 @@
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="false"
-        android:largeHeap="true"
         android:icon="@drawable/gist"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:largeHeap="true"
+        android:roundIcon="@drawable/gist"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.allofgist.dell.allofgistlite.AnonymousForumActivity_Search" /> <!-- [START fcm_default_icon] -->
+        <activity android:name=".AddCreditCalculator"></activity>
+        <activity android:name=".CreditCalculator" />
+        <activity android:name=".AnonymousForumActivity_Search" /> <!-- [START fcm_default_icon] -->
         <!--
              Set custom default icon. This is used when no icon is set for incoming notification messages.
              See README(https://goo.gl/l4GJaQ) for more.
@@ -37,35 +39,35 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimaryDark" /> <!-- [END fcm_default_icon] -->
-        <activity android:name="com.allofgist.dell.allofgistlite.StartScreen">
+        <activity android:name=".StartScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.allofgist.dell.allofgistlite.Tutorial" />
-        <activity android:name="com.allofgist.dell.allofgistlite.MainActivity" />
-        <activity android:name="com.allofgist.dell.allofgistlite.AcademicCalendarActivity" />
-        <activity android:name="com.allofgist.dell.allofgistlite.FoodDiary" />
-        <activity android:name="com.allofgist.dell.allofgistlite.web_interface" />
-        <activity android:name="com.allofgist.dell.allofgistlite.CalendarMain" />
-        <activity android:name="com.allofgist.dell.allofgistlite.SignupActivity" />
-        <activity android:name="com.allofgist.dell.allofgistlite.AllsiteActivity" />
-        <activity android:name="com.allofgist.dell.allofgistlite.FavoriteSettingActivity" />
+        <activity android:name=".Tutorial" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".AcademicCalendarActivity" />
+        <activity android:name=".FoodDiary" />
+        <activity android:name=".web_interface" />
+        <activity android:name=".CalendarMain" />
+        <activity android:name=".SignupActivity" />
+        <activity android:name=".AllsiteActivity" />
+        <activity android:name=".FavoriteSettingActivity" />
 
         <service
-            android:name="com.allofgist.dell.allofgistlite.FirebaseMessagingService"
+            android:name=".FirebaseMessagingService"
             android:stopWithTask="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <activity android:name="com.allofgist.dell.allofgistlite.NotificationReceiver" />
-        <activity android:name="com.allofgist.dell.allofgistlite.AnonymousForumActivity_Preview" />
-        <activity android:name="com.allofgist.dell.allofgistlite.AnonymousForumActivity_Write" />
-        <activity android:name="com.allofgist.dell.allofgistlite.AnonymousForumActivity_View" />
+        <activity android:name=".NotificationReceiver" />
+        <activity android:name=".AnonymousForumActivity_Preview" />
+        <activity android:name=".AnonymousForumActivity_Write" />
+        <activity android:name=".AnonymousForumActivity_View" />
     </application>
 
 </manifest>

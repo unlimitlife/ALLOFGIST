@@ -11,6 +11,7 @@
     <string name="login_start">LOGIN</string>
     <string name="signup_ques_start">아직 회원이 아니신가요?</string>
     <string name="signup_start">회원가입</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
@@ -36,6 +37,7 @@
     <string name="textview_email_signup"><font size="13">Google Email</font></string>
 
     <!-- Strings related to navigation drawer layout -->
+    <string name="credit_calculator_main">학점 계산기</string>
     <string name="user_information_main">회원정보</string>
     <string name="edit_nickname_main">닉네임 변경</string>
     <string name="delete_user_main">회원 탈퇴</string>
@@ -52,6 +54,9 @@
     <string name="advertisement_main">홍보판</string>
     <string name="favorite_notice_main">즐겨찾기를 추가해주세요.</string>
     <string name="logout_notice">정말 로그아웃 하시겠습니까?</string>
+    <string name="nv_header_hello">안녕하세요!</string>
+    <string name="nickname_notice">닉네임 변경</string>
+    <string name="delete_user_notice">정말 탈퇴 하시겠습니까?</string>
 
     <!-- Strings related to edittext in signup screen -->
     <string name="title_signup">Sign up</string>
@@ -152,5 +157,53 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_user_setting">UserSetting</string>
 
+    <!-- Strings related to Credit Calculator -->
+    <string name="title_credit_calculator">Calculator</string>
+    <string name="type_classification">Type</string>
+    <string name="title_classification">Title</string>
+    <string name="credits_classification">Credits</string>
+    <string name="grade_classification">Grade</string>
+    <string name="notice_reset">입력하신 모든 내용을 삭제하시겠습니까?</string>
+    <string name="notice_delete_log">해당 기록을 삭제하시겠습니까?</string>
+    <string name="reset_calculator">초기화</string>
+    <string name="add_calculator">과목 추가</string>
+    <string name="save_log_calculator">기록 저장</string>
+    <string name="edit_log_calculator">기록 수정</string>
+    <string name="watch_log_calculator">기록 보기</string>
+    <string name="hint_title_calculator">제목 - ex) 2019학년 1학기</string>
+
+    <!-- Strings related to AddCreditCalculator-->
+    <string name="calculator_add_popup_title">과목 추가</string>
+    <string name="calculator_edit_popup_title">과목 수정</string>
+    <string name="calculator_add_popup_save">저장</string>
+    <string name="calculator_add_popup_input_type">구분</string>
+    <string name="calculator_add_popup_input_title">과목명</string>
+    <string name="calculator_add_popup_input_credits">학점</string>
+    <string name="calculator_add_popup_input_grade">점수</string>
+
+    <!-- Strings related to Calculator add Credits_Popup_Menu -->
+    <string name="credit_five">5</string>
+    <string name="credit_four">4</string>
+    <string name="credit_three">3</string>
+    <string name="credit_two">2</string>
+    <string name="credit_one">1</string>
+    <string name="credit_zero">0</string>
+
+    <!-- Strings related to Calculator add Grade_Popup_Menu -->
+    <string name="grade_aplus">A+</string>
+    <string name="grade_azero">A0</string>
+    <string name="grade_bplus">B+</string>
+    <string name="grade_bzero">B0</string>
+    <string name="grade_cplus">C+</string>
+    <string name="grade_czero">C0</string>
+    <string name="grade_dplus">D+</string>
+    <string name="grade_dzero">D0</string>
+    <string name="grade_f">F</string>
+
+    <!-- Strings related to Calculator load Popup Window -->
+    <string name="load_type_top_bar">불러오기 - 구분</string>
+    <string name="load_title_top_bar">불러오기 - 과목명</string>
+    <string name="load_close_button">닫기</string>
 </resources>
