@@ -166,6 +166,7 @@
     <string name="credits_classification">Credits</string>
     <string name="grade_classification">Grade</string>
     <string name="notice_reset">입력하신 모든 내용을 삭제하시겠습니까?</string>
+    <string name="notice_edit_reset">수정 작업을 취소하시겠습니까?</string>
     <string name="notice_delete_log">해당 기록을 삭제하시겠습니까?</string>
     <string name="reset_calculator">초기화</string>
     <string name="add_calculator">과목 추가</string>

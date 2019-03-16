@@ -75,8 +75,25 @@ public class CreditCalculator extends AppCompatActivity {
             watchLogPopupWindow.dismiss();
         else if(noticePopupWindow.isShowing())
             noticePopupWindow.dismiss();
-        else
-            super.onBackPressed();
+        else {
+            if(saveButton.getText().equals(getString(R.string.edit_log_calculator))) {
+                noticeText.setText(R.string.notice_edit_reset);
+                noticePopupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+                noticeOk.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        title.setText("");
+                        calculatorData = new ArrayList<Calculator>();
+                        creditCalculatorAdapter.notifyDataSetChanged();
+                        saveButton.setText(R.string.save_log_calculator);
+                        noticePopupWindow.dismiss();
+                    }
+                });
+            }
+            else {
+                super.onBackPressed();
+            }
+        }
     }
 
     @Override
@@ -148,16 +165,33 @@ public class CreditCalculator extends AppCompatActivity {
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                noticeText.setText(R.string.notice_reset);
-                noticePopupWindow.showAtLocation(popupView, Gravity.CENTER,0,0);
-                noticeOk.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        calculatorData = new ArrayList<Calculator>();
-                        creditCalculatorAdapter.notifyDataSetChanged();
-                        noticePopupWindow.dismiss();
-                    }
-                });
+                if(saveButton.getText().equals(getString(R.string.edit_log_calculator))) {
+                    noticeText.setText(R.string.notice_edit_reset);
+                    noticePopupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+                    noticeOk.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            title.setText("");
+                            calculatorData = new ArrayList<Calculator>();
+                            creditCalculatorAdapter.notifyDataSetChanged();
+                            saveButton.setText(R.string.save_log_calculator);
+                            noticePopupWindow.dismiss();
+                        }
+                    });
+
+                }else{
+                    noticeText.setText(R.string.notice_reset);
+                    noticePopupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+                    noticeOk.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            title.setText("");
+                            calculatorData = new ArrayList<Calculator>();
+                            creditCalculatorAdapter.notifyDataSetChanged();
+                            noticePopupWindow.dismiss();
+                        }
+                    });
+                }
             }
         });
 
