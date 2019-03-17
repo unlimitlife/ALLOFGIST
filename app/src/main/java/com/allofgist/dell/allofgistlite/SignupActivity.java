@@ -27,8 +27,6 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import static com.allofgist.dell.allofgistlite.MainActivity.startMyTask;
-
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -74,7 +72,7 @@ public class SignupActivity extends AppCompatActivity {
                 String emailId = mEditTextEmailId.getText().toString();
 
                 if(password.equals(passwordCheck)&&!password.isEmpty()&&!passwordCheck.isEmpty()&&!name.isEmpty()&&!emailId.isEmpty()&&!nickname.isEmpty()){
-                    startMyTask(new IDCheckTask(),name,emailId);
+                    new IDCheckTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,name,emailId);
                 }
                 else if (!password.equals(passwordCheck)&&!password.isEmpty()&&!passwordCheck.isEmpty()&&!name.isEmpty()&&!emailId.isEmpty()){
                     GrayToast(SignupActivity.this,"비밀번호가 일치하지 않습니다.");
@@ -235,7 +233,7 @@ public class SignupActivity extends AppCompatActivity {
                 String emailId = mEditTextEmailId.getText().toString();
 
                 Signup task = new Signup();
-                startMyTask(task,"https://" + IP_ADDRESS + "/insert.php", nickname,name,password,emailId);
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"https://" + IP_ADDRESS + "/insert.php", nickname,name,password,emailId);
 
                 mEditTextNickname.setText("");
                 mEditTextId.setText("");

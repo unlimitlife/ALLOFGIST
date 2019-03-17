@@ -10,7 +10,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -172,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //DB에 저장된 즐겨찾기 key(번호) 저장하는 배열
         keylist = new ArrayList<Integer>();
 
-        startMyTask(scheduleLoadTask,id,completedate);
+        scheduleLoadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id,completedate);
 
     }
 
@@ -223,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         GrayToast(getApplicationContext(),"변경할 닉네임을 입력해주세요.");
                     }
                     else{
-                        startMyTask(new NickNameEditTask(),id,nicknameEditText.getText().toString());
+                        new NickNameEditTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, id, nicknameEditText.getText().toString());
                     }
                 }
             });
@@ -247,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             noticeOk.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startMyTask(new UserDeleteTask(),id);
+                    new UserDeleteTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id);
                 }
             });
 
@@ -281,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
-        startMyTask(new NickNameLoadTask(),id);
+        new NickNameLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id);
 
         //Advertisement Util
         AutoScrollAdapter autoScrollAdapter = new AutoScrollAdapter(getApplicationContext(),advertisementContentList);
@@ -289,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         advertisementList.setInterval(3000);
         advertisementList.startAutoScroll();
 
-        startMyTask(new TokenLoadTask(),"https://server.allofgist.com/tokenload.php",id);
+        new TokenLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "https://server.allofgist.com/tokenload.php",id);
 
         nicknameCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -967,7 +969,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 e.printStackTrace();
             }
 
-            startMyTask(new FavoriteLoadTask(),id);
+            new FavoriteLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, id);
         }
     }
 
@@ -1186,7 +1188,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         editor.putString("token",newToken);
                         editor.apply();
 
-                        startMyTask(new TokenToServerTask(),"https://server.allofgist.com/tokeninsert.php",id,newToken);
+                        new TokenToServerTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"https://server.allofgist.com/tokeninsert.php",id,newToken);
                     }
                 });
             }
@@ -1201,7 +1203,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         editor.putString("token",newToken);
                         editor.apply();
 
-                        startMyTask(new TokenToServerTask(),"https://server.allofgist.com/tokeninsert.php",id,newToken);
+                        new TokenToServerTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"https://server.allofgist.com/tokeninsert.php",id,newToken);
                     }
                 });
             }
@@ -1387,7 +1389,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         protected void onPostExecute(String result) {
             if(result.equals("OK")){
                 nicknamePopupWindow.dismiss();
-                startMyTask(new NickNameLoadTask(),id);
+                new NickNameLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id);
             }
             else
                 GrayToast(getApplicationContext(),"서버 연결에 실패하였습니다.");
@@ -1655,12 +1657,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     //asynctask 병렬처리
-    public static void startMyTask(AsyncTask asyncTask, String... params){
+    /*public static void startMyTask(AsyncTask asyncTask, String... params){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
             asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
         else
             asyncTask.execute(params);
-    }
+    }*/
 
     public static void MultipleColorInOneText(String text, TextView textView) {
 

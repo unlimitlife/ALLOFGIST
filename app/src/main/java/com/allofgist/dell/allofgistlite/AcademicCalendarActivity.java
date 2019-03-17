@@ -58,7 +58,7 @@ public class AcademicCalendarActivity extends FragmentActivity {
 
 
 
-    public void GrayToast(Context context,String message){
+    public static void GrayToast(Context context,String message){
         Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
         View toastView = toast.getView();
         toastView.setBackgroundResource(R.drawable.gray_toast_design);

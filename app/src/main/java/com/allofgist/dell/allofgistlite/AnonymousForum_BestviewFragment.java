@@ -33,7 +33,6 @@ import java.util.Locale;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import static com.allofgist.dell.allofgistlite.MainActivity.startMyTask;
 
 
 public class AnonymousForum_BestviewFragment extends Fragment {
@@ -88,18 +87,18 @@ public class AnonymousForum_BestviewFragment extends Fragment {
                 contentList.setOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
                     @Override
                     public void onLoadMore(int current_page) {
-                        startMyTask(new ForumLoadTask(),current_page+"");
+                        new ForumLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,current_page+"");
                     }
                 });
 
-                startMyTask(new ForumLoadTask(),1+"");
+                new ForumLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,1+"");
             }
         });
 
         contentList.setOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int current_page) {
-                startMyTask(new ForumLoadTask(),current_page+"");
+                new ForumLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,current_page+"");
             }
         });
 
@@ -107,7 +106,7 @@ public class AnonymousForum_BestviewFragment extends Fragment {
                 new RecyclerItemClickListener(getContext(), contentList, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        startMyTask(new ViewsUploadTask(),position+"",forumList.get(position).getNum()+"");
+                        new ViewsUploadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,position+"",forumList.get(position).getNum()+"");
                     }
 
                     @Override
@@ -120,7 +119,7 @@ public class AnonymousForum_BestviewFragment extends Fragment {
 
         if(!swipeRefreshLayout.isRefreshing())
             progressBar.setVisibility(View.VISIBLE);
-        startMyTask(new ForumLoadTask(),1+"");
+        new ForumLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,1+"");
 
         return rootView;
 

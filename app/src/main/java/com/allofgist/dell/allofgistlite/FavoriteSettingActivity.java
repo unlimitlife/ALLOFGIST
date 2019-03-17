@@ -27,8 +27,6 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import static com.allofgist.dell.allofgistlite.MainActivity.startMyTask;
-
 public class FavoriteSettingActivity extends AppCompatActivity {
 
     private List<Site> itemList = null;
@@ -70,7 +68,7 @@ public class FavoriteSettingActivity extends AppCompatActivity {
         circleKeylist = new ArrayList<Integer>();
 
         keylist = new ArrayList<Integer>();
-        startMyTask(new FavoriteLoadTask(), id);
+        new FavoriteLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, id);
 
 
         //즐겨찾기 완료 버튼
@@ -78,7 +76,7 @@ public class FavoriteSettingActivity extends AppCompatActivity {
         completeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startMyTask(new FavoriteInsertTask(),id);
+                new FavoriteInsertTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id);
             }
         });
 

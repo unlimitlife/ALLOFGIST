@@ -150,7 +150,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         forumCommentList = new ArrayList<Comment>();
-        startMyTask(new CommentLoadTask(),currentForum.getNum()+"");
+        new CommentLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentForum.getNum()+"");
     }
 
     @Override
@@ -195,7 +195,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 forumCommentList = new ArrayList<Comment>();
-                startMyTask(new ForumReloadTask(),currentForum.getNum()+"");
+                new ForumReloadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentForum.getNum()+"");
             }
         });
 
@@ -241,7 +241,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                                         noticeOk.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                startMyTask(new ForumDeleteTask(), currentForum.getNum() + "");
+                                                new ForumDeleteTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, currentForum.getNum() + "");
                                                 noticePopupWindow.dismiss();
                                             }
                                         });
@@ -379,7 +379,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     ShowCancelEditMode();
                 else {
                     if (unlikeClick % 2 == 0)
-                        startMyTask(new LikeUploadTask(), (currentForum.getNum() + ""), id, ((likeClick % 2) + ""));
+                        new LikeUploadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (currentForum.getNum() + ""), id, ((likeClick % 2) + ""));
                 }
 
             }
@@ -392,7 +392,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     ShowCancelEditMode();
                 else {
                     if (likeClick % 2 == 0)
-                        startMyTask(new UnlikeUploadTask(), (currentForum.getNum() + ""), id, ((unlikeClick % 2) + ""));
+                        new UnlikeUploadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (currentForum.getNum() + ""), id, ((unlikeClick % 2) + ""));
                 }
 
             }
@@ -422,7 +422,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     GrayToast(getApplicationContext(),"댓글을 입력해주세요.");
                 else{
                     if(editmode){
-                        startMyTask(new CommentEditTask(),currentComment.getNum_primary()+"",commentInput.getText().toString());
+                        new CommentEditTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentComment.getNum_primary()+"",commentInput.getText().toString());
                     }
                     else {
                         String num = currentForum.getNum() + "";
@@ -432,13 +432,13 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                         if (nextCommentLayout.getVisibility() == View.GONE) {
                             String depth_input = "0";
                             String num_group_input = "0";
-                            startMyTask(new CommentInsertTask(), num, depth_input, num_group_input,
+                            new CommentInsertTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, num, depth_input, num_group_input,
                                     id_input, content_input, upload_datetime_input);
                         } else if (comment != null) {
                             comment.setContent(commentInput.getText().toString());
                             comment.setUpload_datetime(upload_datetime_input);
 
-                            startMyTask(new CommentInsertTask(), comment.getNum() + "",
+                            new CommentInsertTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, comment.getNum() + "",
                                     comment.getDepth() + "", comment.getNum_group() + "", comment.getId(),
                                     comment.getContent(), comment.getUpload_datetime());
                         }
@@ -635,7 +635,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                                             noticeOk.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    startMyTask(new CommentDeleteTask(), currentComment.getNum_primary() + "", currentComment.getNum() + "", currentComment.getDepth() + "", currentComment.getNum_group() + "");
+                                                    new CommentDeleteTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, currentComment.getNum_primary() + "", currentComment.getNum() + "", currentComment.getDepth() + "", currentComment.getNum_group() + "");
                                                     noticePopupWindow.dismiss();
                                                 }
                                             });
@@ -757,7 +757,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                                             noticeOk.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    startMyTask(new CommentDeleteTask(), currentComment.getNum_primary() + "", currentComment.getNum() + "", currentComment.getDepth() + "", currentComment.getNum_group() + "");
+                                                    new CommentDeleteTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, currentComment.getNum_primary() + "", currentComment.getNum() + "", currentComment.getDepth() + "", currentComment.getNum_group() + "");
                                                     noticePopupWindow.dismiss();
                                                 }
                                             });
@@ -1146,7 +1146,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                 InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 manager.hideSoftInputFromWindow(commentInput.getWindowToken(), 0);
                 commentInput.setText("");
-                startMyTask(new CommentLoadTask(),currentForum.getNum()+"");
+                new CommentLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentForum.getNum()+"");
 
             }
             else
@@ -1382,7 +1382,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     currentForum = forum;
                 }
                 if(swipeRefreshLayout.isRefreshing())
-                    startMyTask(new CommentLoadTask(),currentForum.getNum()+"");
+                    new CommentLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentForum.getNum()+"");
 
             }catch (Exception e){
                 e.printStackTrace();
@@ -1451,7 +1451,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     public void run() {
                         swipeRefreshLayout.setRefreshing(true);
                         forumCommentList = new ArrayList<Comment>();
-                        startMyTask(new ForumReloadTask(),currentForum.getNum()+"");
+                        new ForumReloadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentForum.getNum()+"");
                     }
                 });
             }
@@ -1526,7 +1526,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     public void run() {
                         swipeRefreshLayout.setRefreshing(true);
                         forumCommentList = new ArrayList<Comment>();
-                        startMyTask(new ForumReloadTask(),currentForum.getNum()+"");
+                        new ForumReloadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentForum.getNum()+"");
                     }
                 });
             }
@@ -1592,16 +1592,6 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         noticeCancel = (TextView)popupView.findViewById(R.id.notice_plus_cancel_textview);
         noticePopupWindow.setBackgroundDrawable(new ColorDrawable(Color.argb(80,0,0,0)));
     }
-
-
-    //asynctask 병렬처리
-    public void startMyTask(AsyncTask asyncTask, String... params){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-            asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
-        else
-            asyncTask.execute(params);
-    }
-
 
     public static int pixtosp(Context context, float pixel){
         float fontScale = context.getResources().getDisplayMetrics().scaledDensity;

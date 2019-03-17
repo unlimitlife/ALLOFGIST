@@ -31,8 +31,6 @@ import java.util.Locale;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import static com.allofgist.dell.allofgistlite.MainActivity.startMyTask;
-
 public class AnonymousForumActivity_Write extends AppCompatActivity {
 
     String id;
@@ -121,7 +119,7 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    startMyTask(new NickNameLoadTask(),id);
+                    new NickNameLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id);
                 }
                 else
                     nicknameTextView.setText("익명");
@@ -170,16 +168,16 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
                     try{
                         if(editmode) {
                             forum.setUpload_datetime(currentForum.getUpload_datetime());
-                            startMyTask(new ForumEditTask(), forum.getId(), forum.getTitle(), forum.getContent(), forum.getNickname(), currentForum.getNum() + "");
+                            new ForumEditTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, forum.getId(), forum.getTitle(), forum.getContent(), forum.getNickname(), currentForum.getNum() + "");
                         }
                         else{
                             forum.setUpload_datetime(new Date(Calendar.getInstance().getTimeInMillis()));
-                            startMyTask(new ForumInsertTask(),forum.getId(),forum.getTitle(),forum.getContent(),forum.getNickname(),datetimeformat.format(forum.getUpload_datetime()));
+                            new ForumInsertTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,forum.getId(),forum.getTitle(),forum.getContent(),forum.getNickname(),datetimeformat.format(forum.getUpload_datetime()));
                         }
                     }catch (NullPointerException e){
                         e.printStackTrace();
                         forum.setUpload_datetime(new Date(Calendar.getInstance().getTimeInMillis()));
-                        startMyTask(new ForumInsertTask(),forum.getId(),forum.getTitle(),forum.getContent(),forum.getNickname(),datetimeformat.format(forum.getUpload_datetime()));
+                        new ForumInsertTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,forum.getId(),forum.getTitle(),forum.getContent(),forum.getNickname(),datetimeformat.format(forum.getUpload_datetime()));
                     }
 
                 }

@@ -2,6 +2,7 @@ package com.allofgist.dell.allofgistlite;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -12,24 +13,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 
 import javax.net.ssl.HttpsURLConnection;
 
 public class AcademicFragment extends Fragment {
     private int mPageNumber;
+    private ViewGroup mLeak;
     // get currentMonth
-    private Calendar today = Calendar.getInstance();
-    int month = today.get(Calendar.MONTH)+1;
     private HashMap<Integer,ArrayList<CalendarContext>> calendarData;
     RecyclerView context;
+
+    private MyAsyncTask setdata;
 
 
     public static AcademicFragment create(int pageNumber) {
@@ -50,18 +55,16 @@ public class AcademicFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_academic_list, container, false);
+        mLeak = (ViewGroup) inflater.inflate(R.layout.fragment_academic_list, container, false);
 
-        MyAsyncTask setdata = new MyAsyncTask();
-        context = (RecyclerView) rootView.findViewById(R.id.calendar_context);
+        //context = (RecyclerView) rootView.findViewById(R.id.calendar_context);
+        //setdata = new MyAsyncTask(this);
 
+        context = (RecyclerView) mLeak.findViewById(R.id.calendar_context);
+        setdata = new MyAsyncTask();
+        setdata.execute();
 
-        new MyAsyncTask().execute();
-
-        //calendarData = setdata.doInBackground();
-        //AcademicAdapter academicAdapter = new AcademicAdapter(getContext(),calendarData.get((mPageNumber+month)-1));
-        //context.setAdapter(academicAdapter);
-        return rootView;
+        return mLeak;
     }
 
 
@@ -111,65 +114,14 @@ public class AcademicFragment extends Fragment {
         }
     }
 
-/*
-    private class AcademicAdapter extends ArrayAdapter<CalendarContext> {
-        private ArrayList<CalendarContext> calendarContext;
-        private ArrayList<String> rawData;
-        private HashMap<Integer,ArrayList<String>> data;
-
-        public AcademicAdapter(Context context, ArrayList<CalendarContext> calendarContext){
-            super(context,0, calendarContext);
-            this.calendarContext = calendarContext;
-        }
-
-        @Override
-        public int getCount() {
-            return calendarContext.size();
-        }
-
-        @NonNull
-        @Override
-        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            View view = convertView;
-            calendarHolder holder;
-
-            if(view == null){
-                LayoutInflater layoutInflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = layoutInflater.inflate(R.layout.calendar_list_item,null);
-
-                holder = new calendarHolder(view);
-
-                view.setTag(holder);
-            }
-            else
-                holder = (calendarHolder)view.getTag();
-            if(calendarContext.get(position).getDate_title().contains("~")){
-                holder.dateView.setText(calendarContext.get(position).getDate_title().replace(" ~ ","\n~\n"));
-            }
-            else
-                holder.dateView.setText(calendarContext.get(position).getDate_title());
-
-            holder.dateView.setText(calendarContext.get(position).getDate_title());
-            holder.contextView.setText(calendarContext.get(position).getContext());
-            return view;
-        }
-    }
-
-
-
-    public class calendarHolder{
-        private TextView dateView;
-        private TextView contextView;
-
-        public calendarHolder(View view){
-            dateView = (TextView) view.findViewById(R.id.diary_compelete_date_textview);
-            contextView = (TextView) view.findViewById(R.id.diary_context_textview);
-        }
-    }
-*/
-
     //크롤링 데이터 수집
     public class MyAsyncTask extends AsyncTask<Integer,Void,HashMap<Integer,ArrayList<CalendarContext>>> {
+
+        /*private WeakReference<AcademicFragment> fragmentWeakReference;
+
+        private MyAsyncTask(AcademicFragment context) {
+            fragmentWeakReference = new WeakReference<>(context);
+        }*/
 
         @Override
         protected HashMap<Integer, ArrayList<CalendarContext>> doInBackground(Integer... params) {
@@ -201,7 +153,6 @@ public class AcademicFragment extends Fragment {
                     }
                     //System.out.println(line);
                 }
-///*
                 int rawDataSize = rawData.size();
                 ArrayList<String> Data = new ArrayList<String>();
                 for(int i=0;i<rawDataSize;i++) {
@@ -240,7 +191,7 @@ public class AcademicFragment extends Fragment {
                     data.put(i, new ArrayList<CalendarContext>());
 
                     while (Data.get(num) != null) {
-                        if (Data.get(num) == "MonthChange") {
+                        if (Data.get(num).equals("MonthChange")) {
                             num++;
                             break;
                         }
@@ -262,34 +213,45 @@ public class AcademicFragment extends Fragment {
 
         @Override
         protected void onPostExecute(HashMap<Integer, ArrayList<CalendarContext>> integerArrayListHashMap) {
-            AcademicAdapter academicAdapter = new AcademicAdapter(getContext(),integerArrayListHashMap.get(mPageNumber+month-1));
-            context.setAdapter(academicAdapter);
-            context.setLayoutManager(new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,false));
 
+            int month = Calendar.getInstance(Locale.KOREA).get(Calendar.MONTH)+1;
 
-            /*  리스트뷰 차일드 수에 맞게 height 조절*/
-            /*if (academicAdapter == null) {
-                // pre-condition
-                return;
+            AcademicAdapter academicAdapter = new AcademicAdapter(getActivity(),integerArrayListHashMap.get(mPageNumber+month-1));
+            try {
+                context.setAdapter(academicAdapter);
+                context.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
+            }catch (NullPointerException e) {
+                e.printStackTrace();
+                GrayToast(getActivity(), "학사 일정 불러오기를 실패하였습니다.");
             }
+            /*AcademicFragment academicFragment = fragmentWeakReference.get();
+            AcademicAdapter academicAdapter = new AcademicAdapter(academicFragment.getActivity(),integerArrayListHashMap.get(mPageNumber+month-1));
+            try {
+                if(academicFragment == null || academicFragment.isRemoving()) return;
 
-            int totalHeight = 0;
-            int addlittle = 10000;        //원래 이 코드에서 빠져야 하는 부분
-            //for (int i = 0; i < academicAdapter.getCount(); i++) {
-            for (int i = 0; i <integerArrayListHashMap.get(mPageNumber+month-1).size(); i++) {
-                View listItem = academicAdapter.getView(i, null, context);
-
-                listItem.measure(0, 0);
-                if(addlittle>listItem.getMeasuredHeight())     //원래 이 코드에서 빠져야 하는 부분
-                    addlittle = listItem.getMeasuredHeight();   //원래 이 코드에서 빠져야 하는 부분
-                totalHeight += listItem.getMeasuredHeight();
-            }
-            totalHeight += (addlittle*2);  //원래 이 코드에서 빠져야 하는 부분(본 코드가 litview를 완전히 fit하지 못해서 자체적으로 붙임)  -> calendar item의 각각에 marginBottom이 부여되서 그럼
-            ViewGroup.LayoutParams params = context.getLayoutParams();
-            //params.height = totalHeight + (context.getDividerHeight() * (academicAdapter.getCount() - 1));
-            params.height = totalHeight + (context.getDividerHeight() * (integerArrayListHashMap.get(mPageNumber+month-1).size() - 1));
-            context.setLayoutParams(params);
-*/
+                context = (RecyclerView) academicFragment.getActivity().findViewById(R.id.calendar_context);
+                context.setAdapter(academicAdapter);
+                context.setLayoutManager(new LinearLayoutManager(academicFragment.getActivity(), RecyclerView.VERTICAL, false));
+            }catch (NullPointerException e){
+                e.printStackTrace();
+                GrayToast(academicFragment.getActivity(),"학사 일정 불러오기를 실패하였습니다.");
+            }*/
         }
+    }
+
+
+    public void GrayToast(Context context, String message){
+        Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        View toastView = toast.getView();
+        toastView.setBackgroundResource(R.drawable.gray_toast_design);
+        toast.show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mLeak = null;
+        if(setdata!=null)
+            setdata.cancel(true);
     }
 }

@@ -99,51 +99,7 @@ public class CreditCalculator extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        try {
-            completedCredits = 0;
-            gpa = 0;
-            for (int i = 0; i < calculatorData.size(); i++) {
-                double currentCredits = Double.parseDouble(calculatorData.get(i).getCredits());
-                completedCredits += currentCredits;
-                double grade = 0;
-                switch (calculatorData.get(i).getGrade()) {
-                    case "A+":
-                        grade = 4.5;
-                        break;
-                    case "A0":
-                        grade = 4.0;
-                        break;
-                    case "B+":
-                        grade = 3.5;
-                        break;
-                    case "B0":
-                        grade = 3.0;
-                        break;
-                    case "C+":
-                        grade = 2.5;
-                        break;
-                    case "C0":
-                        grade = 2.0;
-                        break;
-                    case "D+":
-                        grade = 1.5;
-                        break;
-                    case "D0":
-                        grade = 1.0;
-                        break;
-                    case "F":
-                        grade = 0.0;
-                        break;
-                }
-                gpa += (grade * currentCredits);
-            }
-            gpa = (Math.round(gpa/completedCredits*100.00)/100.00);
-            result.setText(("Completed Credits : " + (int)completedCredits + " | GPA : " + gpa + "/4.5"));
-        }catch (ArithmeticException e){
-            e.printStackTrace();
-            result.setText(("Completed Credits : " + 0 + " | GPA : " + 0 + "/4.5"));
-
-        }
+        calculateGPA();
 
     }
 
@@ -285,6 +241,10 @@ public class CreditCalculator extends AppCompatActivity {
                         title.setText(logTitleList.get(position));
                         previousTitle = logTitleList.get(position);
                         creditCalculatorAdapter.notifyDataSetChanged();
+                        result.setText(("Completed Credits : " + (int)completedCredits + " | GPA : " + gpa + "/4.5"));
+
+                        calculateGPA();
+
                         saveButton.setText(R.string.edit_log_calculator);
                         watchLogPopupWindow.dismiss();
 
@@ -564,4 +524,50 @@ public class CreditCalculator extends AppCompatActivity {
         return list;
     }
 
+    public void calculateGPA(){
+        try {
+            completedCredits = 0;
+            gpa = 0;
+            for (int i = 0; i < calculatorData.size(); i++) {
+                double currentCredits = Double.parseDouble(calculatorData.get(i).getCredits());
+                completedCredits += currentCredits;
+                double grade = 0;
+                switch (calculatorData.get(i).getGrade()) {
+                    case "A+":
+                        grade = 4.5;
+                        break;
+                    case "A0":
+                        grade = 4.0;
+                        break;
+                    case "B+":
+                        grade = 3.5;
+                        break;
+                    case "B0":
+                        grade = 3.0;
+                        break;
+                    case "C+":
+                        grade = 2.5;
+                        break;
+                    case "C0":
+                        grade = 2.0;
+                        break;
+                    case "D+":
+                        grade = 1.5;
+                        break;
+                    case "D0":
+                        grade = 1.0;
+                        break;
+                    case "F":
+                        grade = 0.0;
+                        break;
+                }
+                gpa += (grade * currentCredits);
+            }
+            gpa = (Math.round(gpa/completedCredits*100.00)/100.00);
+            result.setText(("Completed Credits : " + (int)completedCredits + " | GPA : " + gpa + "/4.5"));
+        }catch (ArithmeticException e){
+            e.printStackTrace();
+            result.setText(("Completed Credits : " + 0 + " | GPA : " + 0 + "/4.5"));
+        }
+    }
 }

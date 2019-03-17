@@ -24,7 +24,7 @@ public class NotificationReceiver extends AppCompatActivity {
         setContentView(R.layout.activity_notification_receiver);
 
 
-        startMyTask(new PushNotification(),"");
+        new PushNotification().execute("");
 
     }
 
@@ -83,11 +83,4 @@ public class NotificationReceiver extends AppCompatActivity {
 
     }
 
-    //asynctask 병렬처리
-    public void startMyTask(AsyncTask asyncTask, String... params){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-            asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
-        else
-            asyncTask.execute(params);
-    }
 }

@@ -43,7 +43,6 @@ import java.util.Locale;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import static com.allofgist.dell.allofgistlite.MainActivity.startMyTask;
 
 public class AnonymousForumActivity_Search extends AppCompatActivity {
 
@@ -92,7 +91,7 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
                 searchClassificationText.setText(R.string.writer_search);
                 searchEditText.setText(getIntent().getStringExtra("NICKNAME"));
                 forumList = new ArrayList<Forum>();
-                startMyTask(new SearchIdLoadTask(), ID_TAG);
+                new SearchIdLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ID_TAG);
             }
         }catch (NullPointerException e){
             e.printStackTrace();
@@ -189,7 +188,7 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
                 }
                 try{
                     if (!ID_TAG.equals("")) {
-                        startMyTask(new SearchIdLoadTask(), searchEditText.getText().toString(), ID_TAG);
+                        new SearchIdLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, searchEditText.getText().toString(), ID_TAG);
                     }
                 }catch(NullPointerException e){
                     e.printStackTrace();
@@ -218,7 +217,7 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
                     else {
                         forumList = new ArrayList<Forum>();
                         progressBar.setVisibility(View.VISIBLE);
-                        startMyTask(new SearchLoadTask(), condition, onlyBest + "", searchEditText.getText().toString());
+                        new SearchLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, condition, onlyBest + "", searchEditText.getText().toString());
                     }
                 }
             }
@@ -400,7 +399,7 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
                         new RecyclerItemClickListener(getApplicationContext(), searchList, new RecyclerItemClickListener.OnItemClickListener() {
                             @Override
                             public void onItemClick(View view, int position) {
-                                startMyTask(new ViewsUploadTask(),position+"",forumList.get(position).getNum()+"");
+                                new ViewsUploadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,position+"",forumList.get(position).getNum()+"");
                             }
 
                             @Override
@@ -510,7 +509,7 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
                         new RecyclerItemClickListener(getApplicationContext(), searchList, new RecyclerItemClickListener.OnItemClickListener() {
                             @Override
                             public void onItemClick(View view, int position) {
-                                startMyTask(new ViewsUploadTask(),position+"",forumList.get(position).getNum()+"");
+                                new ViewsUploadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,position+"",forumList.get(position).getNum()+"");
                             }
 
                             @Override

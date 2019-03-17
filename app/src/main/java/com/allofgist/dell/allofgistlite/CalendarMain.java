@@ -1016,12 +1016,12 @@ public class CalendarMain extends AppCompatActivity {
                                     String startDate = repeatDate[0].replaceAll("\\.", "-");
                                     String endDate = repeatDate[1].replaceAll("\\.", "-");
 
-                                    //startMyTask(editDiary,"https://server.allofgist.com/diaryedit.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatText[0], startDate, endDate, schedule.getNum()+"");
-                                    startMyTask(editDiary,"https://server.allofgist.com/diaryedit_noalarm.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), repeatText[0], startDate, endDate, schedule.getNum()+"");
+                                    //editDiary,"https://server.allofgist.com/diaryedit.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatText[0], startDate, endDate, schedule.getNum()+"");
+                                    editDiary.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"https://server.allofgist.com/diaryedit_noalarm.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), repeatText[0], startDate, endDate, schedule.getNum()+"");
 
                                 } else
-                                    startMyTask(editDiary,"https://server.allofgist.com/diaryedit_noalarm.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), repeatButton.getText().toString(), null, null, schedule.getNum()+"");
-                                    //startMyTask(editDiary,"https://server.allofgist.com/diaryedit.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatButton.getText().toString(), null, null, schedule.getNum()+"");
+                                    editDiary.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"https://server.allofgist.com/diaryedit_noalarm.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), repeatButton.getText().toString(), null, null, schedule.getNum()+"");
+                                    //editDiary,"https://server.allofgist.com/diaryedit.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatButton.getText().toString(), null, null, schedule.getNum()+"");
 
                                 addScheduleScreen.dismiss();
                             }
@@ -1045,7 +1045,7 @@ public class CalendarMain extends AppCompatActivity {
                                         noRepeatOkTextView.setOnClickListener(new View.OnClickListener(){
                                             @Override
                                             public void onClick(View view) {
-                                                startMyTask(new DeleteDiaryTask(),id,schedule.getNum()+"");
+                                                new DeleteDiaryTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id,schedule.getNum()+"");
                                                 deleteSchedulePopupWindow.dismiss();
                                                 addScheduleScreen.dismiss();
                                             }
@@ -1057,7 +1057,7 @@ public class CalendarMain extends AppCompatActivity {
                                         allDeleteTextView.setOnClickListener(new View.OnClickListener(){
                                             @Override
                                             public void onClick(View view) {
-                                                startMyTask(new DeleteDiaryTask(),id,schedule.getNum()+"");
+                                                new DeleteDiaryTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id,schedule.getNum()+"");
                                                 deleteSchedulePopupWindow.dismiss();
                                                 addScheduleScreen.dismiss();
                                             }
@@ -1084,7 +1084,7 @@ public class CalendarMain extends AppCompatActivity {
                 String completedate = date.format(calendarView.getSelectedDate().getDate());
                 Log.e("completedate","taskinput"+completedate);
                 ScheduleLoadTask scheduleLoadTask = new ScheduleLoadTask();
-                startMyTask(scheduleLoadTask,id,completedate);
+                scheduleLoadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id,completedate);
 
             }
         });
@@ -1099,7 +1099,7 @@ public class CalendarMain extends AppCompatActivity {
                     if(!isDot.contains(date.parse(date1.getYear()+"-"+(date1.getMonth()+1)+"-"+1))) {
                         isDot.add(date.parse(date1.getYear() + "-" + (date1.getMonth() + 1) + "-" + 1));
                         EventDotTask eventDotTask = new EventDotTask();
-                        startMyTask(eventDotTask, id, date1.getYear() + "", (date1.getMonth() + 1) + "");
+                        eventDotTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, id, date1.getYear() + "", (date1.getMonth() + 1) + "");
 
                     }
                 }catch(Exception e) {
@@ -1129,7 +1129,7 @@ public class CalendarMain extends AppCompatActivity {
                 calendarListAdapter.calendarAdapterData.clear();
                 calendarListAdapter.notifyDataSetChanged();
                 textDate.setText(Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + ". " + day[Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1]);
-                startMyTask(new ScheduleLoadTask(),id,completedate);
+                new ScheduleLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id,completedate);
             }
         });
 
@@ -1816,11 +1816,11 @@ public class CalendarMain extends AppCompatActivity {
                                 String[] repeatDate = repeatText[1].split(" - ");
                                 String startDate = repeatDate[0].replaceAll("\\.", "-");
                                 String endDate = repeatDate[1].replaceAll("\\.", "-");
-                                startMyTask(addDiary,"https://server.allofgist.com/diaryinsert_noalarm.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), repeatText[0], startDate, endDate);
-                                //startMyTask(addDiary,"https://server.allofgist.com/diaryinsert.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatText[0], startDate, endDate);
+                                addDiary.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"https://server.allofgist.com/diaryinsert_noalarm.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), repeatText[0], startDate, endDate);
+                                //addDiary,"https://server.allofgist.com/diaryinsert.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatText[0], startDate, endDate);
                             } else
-                                startMyTask(addDiary,"https://server.allofgist.com/diaryinsert_noalarm.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), repeatButton.getText().toString(), null, null);
-                                //startMyTask(addDiary,"https://server.allofgist.com/diaryinsert.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatButton.getText().toString(), null, null);
+                                addDiary.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"https://server.allofgist.com/diaryinsert_noalarm.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), repeatButton.getText().toString(), null, null);
+                                //addDiary,"https://server.allofgist.com/diaryinsert.php", id, edit_diary.getText().toString(), completeDatetime, (completeDate + " " + completeTime + ":" + "00"), alarmButton.getText().toString(), repeatButton.getText().toString(), null, null);
 
 
                             addScheduleScreen.dismiss();
@@ -1874,8 +1874,8 @@ public class CalendarMain extends AppCompatActivity {
         }catch (Exception e){
             e.printStackTrace();
         }
-        startMyTask(initialEventDotTask,id,calendarView.getCurrentDate().getYear()+"",(calendarView.getCurrentDate().getMonth()+1)+"");
-        startMyTask(initialScheduleLoadTask,id,(calendar.get(Calendar.YEAR)+"-"+(calendar.get(Calendar.MONTH)+1)+"-"+calendar.get(Calendar.DAY_OF_MONTH)));
+        initialEventDotTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id,calendarView.getCurrentDate().getYear()+"",(calendarView.getCurrentDate().getMonth()+1)+"");
+        initialScheduleLoadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id,(calendar.get(Calendar.YEAR)+"-"+(calendar.get(Calendar.MONTH)+1)+"-"+calendar.get(Calendar.DAY_OF_MONTH)));
     }
 
     public void UpdateCalendarScreen() {
@@ -1891,24 +1891,16 @@ public class CalendarMain extends AppCompatActivity {
             calendarListAdapter.calendarAdapterData.clear();
             calendarListAdapter.notifyDataSetChanged();
             isDot.add(date.parse(calendarView.getSelectedDate().getYear() + "-" + (calendarView.getSelectedDate().getMonth() + 1) + "-" + "1"));
-            startMyTask(updateEventDotTask, id, calendarView.getSelectedDate().getYear() + "", (calendarView.getSelectedDate().getMonth() + 1) + "");
-            startMyTask(updateScheduleLoadTask, id, calendarView.getSelectedDate().getYear() + "-" + (calendarView.getSelectedDate().getMonth() + 1) + "-" + (calendarView.getSelectedDate().getDay()));
+            updateEventDotTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, id, calendarView.getSelectedDate().getYear() + "", (calendarView.getSelectedDate().getMonth() + 1) + "");
+            updateScheduleLoadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, id, calendarView.getSelectedDate().getYear() + "-" + (calendarView.getSelectedDate().getMonth() + 1) + "-" + (calendarView.getSelectedDate().getDay()));
         }catch(Exception e){
             Calendar calendar = Calendar.getInstance();
             calendarListAdapter.calendarAdapterData.clear();
             calendarListAdapter.notifyDataSetChanged();
-            startMyTask(updateEventDotTask,id,calendarView.getCurrentDate().getYear()+"",(calendarView.getCurrentDate().getMonth()+1)+"");
-            startMyTask(updateScheduleLoadTask,id,(calendar.get(Calendar.YEAR)+"-"+(calendar.get(Calendar.MONTH)+1)+"-"+calendar.get(Calendar.DAY_OF_MONTH)));
+            updateEventDotTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id,calendarView.getCurrentDate().getYear()+"",(calendarView.getCurrentDate().getMonth()+1)+"");
+            updateScheduleLoadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id,(calendar.get(Calendar.YEAR)+"-"+(calendar.get(Calendar.MONTH)+1)+"-"+calendar.get(Calendar.DAY_OF_MONTH)));
             e.printStackTrace();
         }
-    }
-
-    //asynctask 병렬처리
-    public void startMyTask(AsyncTask asyncTask, String... params){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-            asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
-        else
-            asyncTask.execute(params);
     }
 
     public void InitiallizeRepeatSetting(Button button, LinearLayout linearLayout) {

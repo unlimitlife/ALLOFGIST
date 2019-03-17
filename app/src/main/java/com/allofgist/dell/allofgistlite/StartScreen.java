@@ -23,13 +23,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
 import static com.allofgist.dell.allofgistlite.Allsite_OfficialSiteFragment.setSimpleSize;
-import static com.allofgist.dell.allofgistlite.MainActivity.startMyTask;
 
 public class StartScreen extends AppCompatActivity {
 
@@ -38,12 +38,12 @@ public class StartScreen extends AppCompatActivity {
     public static int REQUEST_HEIGHT = 256;
 
     public EditText login_id, login_pw;
-    public String id, pw;
+    static public String id, pw;
 
     public String auto_login_id;
 
-    SharedPreferences auto_login;
-    SharedPreferences.Editor saveUser;
+    static SharedPreferences auto_login;
+    static SharedPreferences.Editor saveUser;
 
     TextView titleView;
     ImageView titleIcon;
@@ -106,13 +106,14 @@ public class StartScreen extends AppCompatActivity {
                 }
 
                 loginDB lDB = new loginDB();
-                startMyTask(lDB, id, pw);
+                lDB.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, id, pw);
 
             }
         });
     }
 
     public class loginDB extends AsyncTask<String, Integer, Integer> {
+
         ProgressDialog progressDialog;
 
         @Override
@@ -193,7 +194,7 @@ public class StartScreen extends AppCompatActivity {
             if (result == 1) {
                 Log.e("RESULT", "성공적으로 처리되었습니다!");
                 TutorialCheck tutorialCheck = new TutorialCheck();
-                startMyTask(tutorialCheck, id);
+                tutorialCheck.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, id);
 
             } else if (result == 0) {
                 Log.e("RESULT", "비밀번호가 일치하지 않습니다.");
@@ -213,6 +214,7 @@ public class StartScreen extends AppCompatActivity {
 
         @Override
         protected Integer doInBackground(String... params) {
+
 
             /* 인풋 파라메터값 생성 */
             String data = "";
@@ -289,7 +291,7 @@ public class StartScreen extends AppCompatActivity {
 
             //처음인 회원
             else if (result == 0) {
-                Intent tutorial = new Intent(StartScreen.this, Tutorial.class);
+                Intent tutorial = new Intent(StartScreen.this,Tutorial.class);
                 tutorial.putExtra("ID", id);
                 auto_login = getSharedPreferences("AUTO_LOGIN", Activity.MODE_PRIVATE);
                 saveUser = auto_login.edit();
@@ -327,7 +329,7 @@ public class StartScreen extends AppCompatActivity {
     }
 
 
-    public void GrayToast(Context context,String message){
+    public static void GrayToast(Context context,String message){
         Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
         View toastView = toast.getView();
         toastView.setBackgroundResource(R.drawable.gray_toast_design);

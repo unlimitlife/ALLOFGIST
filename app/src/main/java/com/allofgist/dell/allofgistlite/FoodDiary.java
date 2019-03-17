@@ -56,7 +56,7 @@ public class FoodDiary extends AppCompatActivity {
             public void onClick(View view) {
                 noticeTextView.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
-                startMyTask(new RestaurantLoadTask(),"https://www.gist.ac.kr/kr/html/sub05/050601.html");
+                new RestaurantLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"https://www.gist.ac.kr/kr/html/sub05/050601.html");
             }
         });
 
@@ -65,7 +65,7 @@ public class FoodDiary extends AppCompatActivity {
             public void onClick(View view) {
                 noticeTextView.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
-                startMyTask(new RestaurantLoadTask(),"https://www.gist.ac.kr/kr/html/sub05/050603.html");
+                new RestaurantLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"https://www.gist.ac.kr/kr/html/sub05/050603.html");
             }
         });
 
@@ -74,7 +74,7 @@ public class FoodDiary extends AppCompatActivity {
             public void onClick(View view) {
                 noticeTextView.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
-                startMyTask(new RestaurantLoadTask(),"https://www.gist.ac.kr/kr/html/sub05/050602.html");
+                new RestaurantLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"https://www.gist.ac.kr/kr/html/sub05/050602.html");
             }
         });
     }
@@ -171,15 +171,6 @@ public class FoodDiary extends AppCompatActivity {
             }
         }
     }
-
-    //asynctask 병렬처리
-    public void startMyTask(AsyncTask asyncTask, String... params){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-            asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
-        else
-            asyncTask.execute(params);
-    }
-
 
     public void GrayToast(Context context,String message){
         Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);

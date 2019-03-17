@@ -27,8 +27,6 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import static com.allofgist.dell.allofgistlite.MainActivity.startMyTask;
-
 public class Tutorial extends AppCompatActivity {
 
     private List<Site> itemList = null;
@@ -134,7 +132,7 @@ public class Tutorial extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startMyTask(new FavoriteInsertTask(),id);
+                new FavoriteInsertTask().execute(id);
             }
         });
 
