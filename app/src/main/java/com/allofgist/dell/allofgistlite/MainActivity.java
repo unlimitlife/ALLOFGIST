@@ -2,6 +2,8 @@ package com.allofgist.dell.allofgistlite;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -148,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private String id = "LOGIN_ERROR";
 
     //즐겨찾기 keylist
-    ArrayList<Integer> keylist;
+    public static ArrayList<Integer> keylist;
 
     //뒤로가기 버튼 관련
     private final long FINISH_INTERVAL_TIME = 2000;
@@ -1054,6 +1056,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     recyclerView.setOnFlingListener(null);
                     snapToBlock.attachToRecyclerView(recyclerView);
                 }
+
+                //위젯 업데이트
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(MainActivity.this);
+                int appWidgetIds[] = appWidgetManager.getAppWidgetIds(new ComponentName(MainActivity.this, FavoriteWidget.class));
+                appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.favoritelist_widget);
             }
         }
     }

@@ -402,8 +402,9 @@ public class FavoriteSettingActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            if(s.equals("OK"))
+            if(s.equals("OK")) {
                 finish();
+            }
             else
                 GrayToast(getApplicationContext(),"서버 접속을 실패하였습니다.");
         }

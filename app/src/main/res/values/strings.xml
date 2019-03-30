@@ -207,4 +207,7 @@
     <string name="load_type_top_bar">불러오기 - 구분</string>
     <string name="load_title_top_bar">불러오기 - 과목명</string>
     <string name="load_close_button">닫기</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="configure">Configure</string>
 </resources>
