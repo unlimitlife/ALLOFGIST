@@ -57,6 +57,8 @@
     <string name="nv_header_hello">안녕하세요!</string>
     <string name="nickname_notice">닉네임 변경</string>
     <string name="delete_user_notice">정말 탈퇴 하시겠습니까?</string>
+    <string name="engineer_name_notice">개발자 &#58; 이동건</string>
+    <string name="engineer_address_notice">연락처 &#58; 010-8636-5629 &#124; unlimitlife&#64;gist.ac.kr</string>
 
     <!-- Strings related to edittext in signup screen -->
     <string name="title_signup">Sign up</string>

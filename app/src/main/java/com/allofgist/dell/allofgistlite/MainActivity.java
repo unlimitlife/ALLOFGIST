@@ -140,14 +140,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RelativeLayout foodDiaryCategory;
     private RelativeLayout favoriteSettingCategory;
     private RelativeLayout anonymousForumCategory;
-    private RelativeLayout advertisementCategory;
+    private RelativeLayout calculatorCategory;
 
     //사이트 정보
     private List<Site> itemList = null;
     private ArrayList<Site> major_set = null;
 
     //로그인 정보
-    private String id = "LOGIN_ERROR";
+    public static String id = "LOGIN_ERROR";
 
     //즐겨찾기 keylist
     public static ArrayList<Integer> keylist;
@@ -288,10 +288,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         new NickNameLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id);
 
         //Advertisement Util
-        AutoScrollAdapter autoScrollAdapter = new AutoScrollAdapter(getApplicationContext(),advertisementContentList);
+        /*AutoScrollAdapter autoScrollAdapter = new AutoScrollAdapter(getApplicationContext(),advertisementContentList);
         advertisementList.setAdapter(autoScrollAdapter);
         advertisementList.setInterval(3000);
-        advertisementList.startAutoScroll();
+        advertisementList.startAutoScroll();*/
 
         new TokenLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "https://server.allofgist.com/tokenload.php",id);
 
@@ -356,10 +356,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        advertisementCategory.setOnClickListener(new View.OnClickListener() {
+        calculatorCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GrayToast(getApplicationContext(),"업데이트 버전과 함께 찾아뵙겠습니다!");
+                Intent calculatorActivity = new Intent(MainActivity.this, CreditCalculator.class);
+                calculatorActivity.putExtra("ID",id);
+                startActivity(calculatorActivity);
             }
         });
 
@@ -1558,7 +1560,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         noticeCancel = (TextView)popupView.findViewById(R.id.notice_plus_cancel_textview);
         noticePopupWindow.setBackgroundDrawable(new ColorDrawable(Color.argb(80,0,0,0)));
 
-        advertisementList = (AutoScrollViewPager)findViewById(R.id.advertisement_preview);
+        //advertisementList = (AutoScrollViewPager)findViewById(R.id.advertisement_preview);
 
         favoriteNotice = (TextView)findViewById(R.id.favorite_notice_main);
         scheduleText = (TextView)findViewById(R.id.schedule_text);
@@ -1586,17 +1588,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         foodDiaryCategory = (RelativeLayout)findViewById(R.id.category_food_diary);
         favoriteSettingCategory = (RelativeLayout)findViewById(R.id.category_favorite_setting);
         anonymousForumCategory = (RelativeLayout)findViewById(R.id.category_anonymous_forum);
-        advertisementCategory = (RelativeLayout)findViewById(R.id.category_advertisement);
+        calculatorCategory = (RelativeLayout)findViewById(R.id.category_calculator);
 
     }
 
     public void setData(){
-        advertisementContentList = new ArrayList<String>();
+        /*advertisementContentList = new ArrayList<String>();
         advertisementContentList.add("ALLOFGIST에 접속하신 것을 환영합니다.");
         advertisementContentList.add("신입생분들 GIST 입학을 환영합니다!");
         advertisementContentList.add("더 나은 어플이 되기 위해 개발자가 뼈를 깎고 있는 중입니다..");
         advertisementContentList.add("ALLOFGIST 많이 이용해주세요!");
-        advertisementContentList.add("추후, 홍보판 기능으로 사용될 공간입니다.");
+        advertisementContentList.add("추후, 홍보판 기능으로 사용될 공간입니다.");*/
 
 
         itemList = new ArrayList<Site>();

@@ -1,15 +1,25 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white_gray"
-    android:padding="@dimen/widget_margin">
+    android:background="@drawable/widget_layout_design"
+    android:id="@+id/favorite_widget_layout">
 
+    <!--<TextView
+        android:id="@+id/favorite_notice_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/favorite_notice_main"
+        android:textColor="@color/gist_light_gray"
+        android:textSize="16sp"
+        android:visibility="gone"/>-->
     <GridView
         android:id="@+id/favoritelist_widget"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:verticalSpacing="10dp"
+        android:layout_height="wrap_content"
+        android:background="@color/blank"
+        android:gravity="center"
         android:numColumns="3"
-        android:gravity="center_horizontal"/>
-
-</RelativeLayout>
+        android:layout_gravity="center"/>
+</FrameLayout>

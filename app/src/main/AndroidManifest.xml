@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.allofgist.dell.allofgistlite"
-    android:versionCode="4"
-    android:versionName="1.2.1">
+    android:versionCode="5"
+    android:versionName="1.3.0">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- To auto-complete the email text field in the login form with the user's emails -->
@@ -25,7 +25,9 @@
         android:theme="@style/AppTheme">
         <receiver android:name=".FavoriteWidget">
             <intent-filter>
+
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
             </intent-filter>
 
             <meta-data
@@ -65,7 +67,11 @@
         <activity android:name=".CalendarMain" />
         <activity android:name=".SignupActivity" />
         <activity android:name=".AllsiteActivity" />
-        <activity android:name=".FavoriteSettingActivity" />
+        <activity android:name=".FavoriteSettingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".FirebaseMessagingService"

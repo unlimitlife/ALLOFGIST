@@ -1,5 +1,7 @@
 package com.allofgist.dell.allofgistlite;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
@@ -403,6 +405,11 @@ public class FavoriteSettingActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             if(s.equals("OK")) {
+
+                //위젯 업데이트
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(FavoriteSettingActivity.this);
+                int appWidgetIds[] = appWidgetManager.getAppWidgetIds(new ComponentName(FavoriteSettingActivity.this, FavoriteWidget.class));
+                appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.favoritelist_widget);
                 finish();
             }
             else

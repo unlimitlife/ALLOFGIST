@@ -1,16 +1,34 @@
 package com.allofgist.dell.allofgistlite;
 
+import android.app.Activity;
 import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import static com.allofgist.dell.allofgistlite.Allsite_OfficialSiteFragment.getCircledBitmap;
 
@@ -22,7 +40,7 @@ public class FavoriteWidgetService extends RemoteViewsService {
 }
 
 class FavoriteWidgetServiceFactory implements RemoteViewsService.RemoteViewsFactory {
-    private ArrayList<Integer> keylist;
+    public static ArrayList<Integer> keylist;
     private Context mContext;
     private ArrayList<Site> itemList;
     private ArrayList<Site> major_set;
@@ -32,93 +50,103 @@ class FavoriteWidgetServiceFactory implements RemoteViewsService.RemoteViewsFact
 
     public FavoriteWidgetServiceFactory(Context context, Intent intent) {
         mContext = context;
-        if(MainActivity.keylist != null)
+        //keylist = intent.getIntegerArrayListExtra("KEYLIST");
+        //keylist = new ArrayList<Integer>();
+        /*if(MainActivity.keylist != null)
             this.keylist = MainActivity.keylist;
         else {
             keylist = new ArrayList<Integer>();
             keylist.add(0);
-        }
+        }*/
     }
 
     // Initialize the data set.
     public void onCreate() {
         setData();
+        keylist = new ArrayList<Integer>();
+        new FavoriteLoadTask().execute(MainActivity.id);
     }
 
     public RemoteViews getViewAt(int position) {
 
-        RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.gridviewitem_allsites);
-        try {
-            Site favoriteSite = itemList.get(keylist.get(position));
-            String siteUrl = "https://www.google.com";
+        RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.gridviewitem_widget);
 
-            rv.setTextViewText(R.id.name, favoriteSite.getMsite_name());
+        if(keylist.get(0)==0) {
+            //  rv.setEmptyView(R.id.favoritelist_widget, R.id.favorite_notice_widget);
+        }
+        else {
+            try {
+                Site favoriteSite = itemList.get(keylist.get(position));
+                String siteUrl = "https://www.google.com";
 
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeResource(mContext.getResources(), favoriteSite.getMsite_imagesource(), options);
-            BitmapFactory.decodeResource(mContext.getResources(), favoriteSite.getMsite_imagesource(), options);
-            BitmapFactory.decodeResource(mContext.getResources(), favoriteSite.getMsite_imagesource(), options);
-            options.inSampleSize = setSimpleSize(options, REQUEST_WIDTH, REQUEST_HEIGHT);
-            options.inJustDecodeBounds = false;
-            Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), favoriteSite.getMsite_imagesource(), options);
+                final BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                BitmapFactory.decodeResource(mContext.getResources(), favoriteSite.getMsite_imagesource(), options);
+                BitmapFactory.decodeResource(mContext.getResources(), favoriteSite.getMsite_imagesource(), options);
+                BitmapFactory.decodeResource(mContext.getResources(), favoriteSite.getMsite_imagesource(), options);
+                options.inSampleSize = setSimpleSize(options, REQUEST_WIDTH, REQUEST_HEIGHT);
+                options.inJustDecodeBounds = false;
+                Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), favoriteSite.getMsite_imagesource(), options);
 
-            rv.setImageViewBitmap(R.id.image, getCircledBitmap(bitmap));
+                rv.setImageViewBitmap(R.id.image_widget, getCircledBitmap(bitmap));
 
-            if(favoriteSite.getMsite_name().equals("")){
-                //
-            }
-            else if (favoriteSite.getMsite_name().equals("학과별 사이트")) {
-                //
-            } else if (favoriteSite.getMsite_name().equals("GIST home")){
-                siteUrl = favoriteSite.getMsite_urlW();
-            } else if (favoriteSite.getMsite_name().equals("GIST 신문")) {
-                siteUrl = favoriteSite.getMsite_urlF();
-            } else if (favoriteSite.getMsite_name().equals("춤 동아리 막무가내") || favoriteSite.getMsite_name().equals("힙합 동아리 Ignition") || favoriteSite.getMsite_name().equals("노래 동아리 싱송생송") || favoriteSite.getMsite_name().equals("오케스트라 동아리 악동") || favoriteSite.getMsite_name().equals("연극 동아리 지대로") || favoriteSite.getMsite_name().equals("영상편집 동아리 The GIST")) {
-                siteUrl = favoriteSite.getMsite_urlF();
-            }else
-                siteUrl = favoriteSite.getMsite_url();
+                if (favoriteSite.getMsite_name().equals("")) {
+
+                } else if (favoriteSite.getMsite_name().equals("학과별 사이트")) {
+                    //
+                } else if (favoriteSite.getMsite_name().equals("GIST home")) {
+                    siteUrl = favoriteSite.getMsite_urlW();
+                } else if (favoriteSite.getMsite_name().equals("GIST 신문")) {
+                    siteUrl = favoriteSite.getMsite_urlF();
+                } else if (favoriteSite.getMsite_name().equals("춤 동아리 막무가내") || favoriteSite.getMsite_name().equals("힙합 동아리 Ignition") || favoriteSite.getMsite_name().equals("노래 동아리 싱송생송") || favoriteSite.getMsite_name().equals("오케스트라 동아리 악동") || favoriteSite.getMsite_name().equals("연극 동아리 지대로") || favoriteSite.getMsite_name().equals("영상편집 동아리 The GIST")) {
+                    siteUrl = favoriteSite.getMsite_urlF();
+                } else
+                    siteUrl = favoriteSite.getMsite_url();
 
 
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            if (siteUrl.contains("https://www.facebook.com")) {
-                if (getOpenFacebookIntent(mContext, siteUrl).contains("https://www.facebook.com")){
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                if (siteUrl.contains("https://www.facebook.com")) {
+                    if (getOpenFacebookIntent(mContext, siteUrl).contains("https://www.facebook.com")) {
+                        intent.setData(Uri.parse(siteUrl));
+                    } else {
+                        intent.setData(Uri.parse(getOpenFacebookIntent(mContext, siteUrl)));
+                    }
+                } else {
                     intent.setData(Uri.parse(siteUrl));
                 }
-                else{
-                    intent.setData(Uri.parse(getOpenFacebookIntent(mContext, siteUrl)));
-                }
-            } else {
-                intent.setData(Uri.parse(siteUrl));
+
+                rv.setOnClickFillInIntent(R.id.clickicon_widget, intent);
+
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+                //rv.setEmptyView(R.id.favoritelist_widget, R.id.favorite_notice_widget);
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+                onDataSetChanged();
             }
-
-            rv.setOnClickFillInIntent(R.id.clickicon, intent);
-
-            return rv;
-        }catch(NullPointerException e){
-            e.printStackTrace();
-            rv.setEmptyView(R.id.favoritelist_widget, R.id.favoritelist_widget);
-            return rv;
         }
+        return rv;
 
     }
 
     @Override
     public void onDataSetChanged() {
-        if(MainActivity.keylist != null)
-            this.keylist = MainActivity.keylist;
-        else {
-            keylist = new ArrayList<Integer>();
-            keylist.add(0);
-        }
+        new FavoriteLoadTask().execute(MainActivity.id);
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy(){
     }
 
     @Override
     public int getCount() {
+        if(keylist.size()>0) {
+            if (keylist.get(0) == 0)
+                return 0;
+        }
+        else
+            return 0;
+
         return keylist.size();
     }
 
@@ -141,6 +169,96 @@ class FavoriteWidgetServiceFactory implements RemoteViewsService.RemoteViewsFact
     public boolean hasStableIds() {
         return true;
     }
+
+
+
+    class FavoriteLoadTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String data = "";
+            String ID = (String)strings[0];
+
+            String serverUrl = "https://server.allofgist.com/favoriteload.php";
+            String postParameters = "id="+ID;
+
+            try{
+                URL url = new URL(serverUrl);
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+
+                httpsURLConnection.setReadTimeout(5000);
+                httpsURLConnection.setConnectTimeout(5000);
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.connect();
+
+
+                OutputStream outputStream = httpsURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpsURLConnection.getResponseCode();
+                Log.d("phptest","POST response code - "+responseStatusCode);
+
+                InputStream inputStream;
+                if(responseStatusCode == httpsURLConnection.HTTP_OK){
+                    inputStream = httpsURLConnection.getInputStream();
+                }
+                else{
+                    inputStream = httpsURLConnection.getErrorStream();
+                }
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream,"UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuffer sb = new StringBuffer();
+                String line = null;
+
+                while((line = bufferedReader.readLine())!=null){
+                    sb.append(line);
+                }
+
+                data = sb.toString();
+                bufferedReader.close();
+
+            }catch (Exception e){
+                Log.d("phptest", "Signup: Error", e);
+            }
+            return data;
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            int status=1;
+            if(s.equals("")) {
+                //GrayToast(getApplicationContext(), "서버 접속을 실패하였습니다.");
+            }
+            else{
+                if(getCount()==0)
+                    status = 0;
+                String[] splitFavorite = s.split(",");
+
+                keylist = new ArrayList<Integer>();
+                for (int i=0; i<splitFavorite.length; i++)
+                    keylist.add(Integer.parseInt(splitFavorite[i]));
+                if(keylist.size()>1){
+                    keylist.remove(Integer.valueOf(0));
+                }
+
+
+
+                //위젯 업데이트
+                if(status==0) {
+                    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+                    int appWidgetIds[] = appWidgetManager.getAppWidgetIds(new ComponentName(mContext, FavoriteWidget.class));
+                    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.favoritelist_widget);
+                    status=1;
+                }
+            }
+        }
+    }
+
 
     public void setData(){
         itemList = new ArrayList<Site>();
