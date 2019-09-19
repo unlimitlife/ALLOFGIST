@@ -42,6 +42,21 @@ public class SignupActivity extends AppCompatActivity {
     PopupWindow popupWindow;
     TextView noticeTextView;
     TextView okTextView;
+    IDCheckTask idCheckTask;
+    Signup task;
+
+    @Override
+    protected void onPause() {
+        popupView = null;
+        popupWindow = null;
+        noticeTextView.setText(null);
+        okTextView.setText(null);
+
+        idCheckTask.cancel(false);
+        task.cancel(false);
+
+        super.onPause();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +74,7 @@ public class SignupActivity extends AppCompatActivity {
         noticeTextView = (TextView)popupView.findViewById(R.id.notice_text);
         okTextView = (TextView)popupView.findViewById(R.id.notice_ok_textview);
         popupWindow.setBackgroundDrawable(new ColorDrawable(Color.argb(80,0,0,0)));
+        idCheckTask = new IDCheckTask();
 
 
         Button buttonInsert = (Button)findViewById(R.id.button_main_insert);
@@ -72,7 +88,7 @@ public class SignupActivity extends AppCompatActivity {
                 String emailId = mEditTextEmailId.getText().toString();
 
                 if(password.equals(passwordCheck)&&!password.isEmpty()&&!passwordCheck.isEmpty()&&!name.isEmpty()&&!emailId.isEmpty()&&!nickname.isEmpty()){
-                    new IDCheckTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,name,emailId);
+                    idCheckTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,name,emailId);
                 }
                 else if (!password.equals(passwordCheck)&&!password.isEmpty()&&!passwordCheck.isEmpty()&&!name.isEmpty()&&!emailId.isEmpty()){
                     GrayToast(SignupActivity.this,"비밀번호가 일치하지 않습니다.");
@@ -138,6 +154,8 @@ public class SignupActivity extends AppCompatActivity {
                 String line = null;
 
                 while((line = bufferedReader.readLine())!=null){
+                    if(isCancelled())
+                        return null;
                     sb.append(line);
                 }
 
@@ -157,7 +175,7 @@ public class SignupActivity extends AppCompatActivity {
             super.onPostExecute(result);
 
             progressDialog.dismiss();
-            noticeTextView.setText("인증 메일을 확인해주세요.\n(메일 도착까지 시간이 좀 걸립니다.)");
+            noticeTextView.setText("인증 메일을 확인해주세요.\n* 메일 도착까지 시간이 좀 걸립니다.\n** 10분안에 메일이 도착 안 할시 개발자 이메일(unlimitlife@gist.ac.kr)로 연락주세요.");
             popupWindow.showAtLocation(popupView, Gravity.CENTER,0,0);
             okTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -211,6 +229,8 @@ public class SignupActivity extends AppCompatActivity {
                 String line = null;
 
                 while((line = bufferedReader.readLine())!=null){
+                    if(isCancelled())
+                        return null;
                     sb.append(line);
                 }
 
@@ -232,7 +252,7 @@ public class SignupActivity extends AppCompatActivity {
                 String passwordCheck = mEditTextPasswordCheck.getText().toString();
                 String emailId = mEditTextEmailId.getText().toString();
 
-                Signup task = new Signup();
+                task = new Signup();
                 task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"https://" + IP_ADDRESS + "/insert.php", nickname,name,password,emailId);
 
                 mEditTextNickname.setText("");

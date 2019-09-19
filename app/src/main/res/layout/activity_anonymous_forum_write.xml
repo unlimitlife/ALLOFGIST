@@ -5,38 +5,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".AnonymousForumActivity_Write">
+    tools:context=".AnonymousForumActivity_Write"
+    android:background="@color/white">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/gist_red">
+        android:layout_height="70dp"
+        android:background="@color/white">
         <ImageButton
             android:id="@+id/write_back_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/left_arrow_white"
-            android:background="@color/gist_red"
+            android:layout_width="42.5dp"
+            android:layout_height="42.5dp"
+            android:src="@drawable/clear_back_blue"
+            android:background="@color/white"
             android:layout_centerVertical="true"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="12.5dp"
             android:layout_alignParentStart="true"/>
-        <Button
-            android:id="@+id/write_submit_button"
-            android:layout_width="70dp"
-            android:layout_height="35dp"
-            android:text="@string/submit_button"
-            android:textColor="#FFFFFF"
-            android:textSize="15sp"
-            android:fontFamily="@font/noto_sans"
-            android:includeFontPadding="false"
-            android:background="@drawable/forum_write_button_design"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="16dp"/>
     </RelativeLayout>
+
+    <EditText
+        android:id="@+id/write_title"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#FFFFFF"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:hint="@string/write_title"
+        android:textColorHint="@color/gist_blue"
+        android:inputType="text"
+        android:textSize="17.5sp"
+        android:textColor="#000000"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#FFFFFF">
+        android:background="#FFFFFF"
+        android:layout_marginStart="30dp">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,103 +51,107 @@
                 android:layout_height="25dp"
                 android:text="@string/write_nickname_question"
                 android:background="#FFFFFF"
-                android:fontFamily="@font/noto_sans"
-                android:includeFontPadding="false"
-                android:textColor="#000000"
-                android:textSize="15sp"
-                android:gravity="bottom"
-                android:layout_marginLeft="16dp"/>
+                android:textColor="@color/warm_grey"
+                android:textSize="16sp"
+                android:fontFamily="@font/nanumsquare_r"
+                android:gravity="bottom"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="15dp"
                 android:background="#FFFFFF"
                 android:textSize="10sp"
-                android:layout_marginLeft="16dp"
                 android:gravity="center"
-                android:fontFamily="@font/noto_sans"
-                android:includeFontPadding="false"
-                android:textColor="#a3a3a3"
+                android:textColor="#bababa"
+                android:fontFamily="@font/nanumsquare_r"
                 android:text="@string/write_nickname_notice"/>
         </LinearLayout>
         <Switch
             android:id="@+id/nickname_select"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:shadowColor="@color/gist_red"
+            android:shadowColor="@color/gist_blue"
             android:background="#FFFFFF"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="16dp"/>
+            android:layout_marginRight="24dp"/>
     </RelativeLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/gist_dark_gray"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#FFFFFF">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:background="#FFFFFF"
-            android:hint="@string/write_writer"
-            android:layout_marginStart="16dp"
-            android:textSize="15sp"
-            android:fontFamily="@font/noto_sans"
-            android:includeFontPadding="false"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:gravity="center_vertical"/>
+        android:background="#FFFFFF"
+        android:layout_marginStart="30dp">
         <TextView
             android:id="@+id/nickname_textview"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:fontFamily="@font/noto_sans"
-            android:includeFontPadding="false"
-            android:layout_marginEnd="20dp"
+            android:layout_height="60dp"
+            android:background="#FFFFFF"
+            android:text="@string/write_writer"
+            android:textColor="@color/warm_grey"
+            android:textSize="14sp"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            android:textColor="#a3a3a3"
-            android:text="@string/write_noname"
-            android:textSize="15sp"/>
+            android:gravity="center_vertical"/>
     </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/gist_dark_gray"/>
-    <EditText
-        android:id="@+id/write_title"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="#FFFFFF"
-        android:fontFamily="@font/noto_sans"
-        android:includeFontPadding="false"
-        android:paddingLeft="16dp"
-        android:hint="@string/write_title"
-        android:inputType="text"
-        android:textSize="15sp"
-        android:textColor="#000000"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/gist_dark_gray"/>
 
     <EditText
         android:id="@+id/write_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:background="#FFFFFF"
-        android:fontFamily="@font/noto_sans"
         android:gravity="top|left"
         android:hint="@string/write_hint"
-        android:includeFontPadding="false"
         android:inputType="textMultiLine"
-        android:paddingLeft="16dp"
+        android:paddingLeft="30dp"
         android:paddingTop="16dp"
-        android:paddingRight="16dp"
-        android:textColor="#000000"
-        android:textSize="15sp" />
+        android:textColorHint="#bababa"
+        android:paddingRight="30dp"
+        android:textColor="@color/warm_grey"
+        android:textSize="14sp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/blank"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/bulletin_board_reset_button"
+            android:layout_width="141.5dp"
+            android:layout_height="46.5dp"
+            android:background="@drawable/blue_corner_round_box"
+            android:text="@string/reset_calculator"
+            android:textColor="@color/gist_blue"
+            android:fontFamily="@font/nanumsquare_b"
+            android:gravity="center"
+            android:textSize="15sp" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/blank"
+            android:layout_weight="0.7"/>
+        <Button
+            android:id="@+id/write_submit_button"
+            android:layout_width="141.5dp"
+            android:layout_height="46.5dp"
+            android:background="@drawable/bulletin_board_ok_blue_grad"
+            android:text="@string/submit_button"
+            android:textColor="@color/white"
+            android:fontFamily="@font/nanumsquare_b"
+            android:layout_gravity="end"
+            android:gravity="center"
+            android:textSize="15sp" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/blank"
+            android:layout_weight="1"/>
+    </LinearLayout>
 </LinearLayout>

@@ -26,39 +26,30 @@
     <string name="title_activity_add_schedule">AddSchedule</string>
 
     <!-- Strings related to edittext(id,pw) in start screen -->
-    <string name="edittext_id_hint"><font size="13">Id</font></string>
-    <string name="edittext_pw_hint"><font size="13">Password</font></string>
+    <string name="edittext_id_hint"><font size="15">ID</font></string>
+    <string name="edittext_pw_hint"><font size="15">Password</font></string>
 
     <!-- Strings related to textview in signup screen -->
-    <string name="textview_nickname_signup"><font size="13">Nickname </font></string>
-    <string name="textview_id_signup"><font size="13">Id</font></string>
-    <string name="textview_pw_signup"><font size="13">Password</font></string>
-    <string name="textview_pw_check_signup"><font size="13">Password Check</font></string>
-    <string name="textview_email_signup"><font size="13">Google Email</font></string>
+    <string name="textview_nickname_signup"><font size="15">Nickname </font></string>
+    <string name="textview_id_signup"><font size="15">ID</font></string>
+    <string name="textview_pw_signup"><font size="15">Password</font></string>
+    <string name="textview_pw_check_signup"><font size="15">Password Check</font></string>
+    <string name="textview_email_signup"><font size="15">Google Email</font></string>
 
-    <!-- Strings related to navigation drawer layout -->
-    <string name="credit_calculator_main">학점 계산기</string>
-    <string name="user_information_main">회원정보</string>
-    <string name="edit_nickname_main">닉네임 변경</string>
-    <string name="delete_user_main">회원 탈퇴</string>
-    <string name="logout_main">로그아웃</string>
 
     <!-- Strings related to textview in MainActivity screen -->
     <string name="title_main">ALL OF GIST</string>
     <string name="favorite_site_main">즐겨찾는 사이트</string>
     <string name="diary_main">일정관리</string>
-    <string name="allsite_main">전체 사이트</string>
-    <string name="food_diary_main">식단표</string>
-    <string name="anonymous_forum_main">익명 게시판</string>
-    <string name="favorite_setting_main">즐겨찾기 관리</string>
+    <string name="allsite_main">Websites</string>
+    <string name="website_search_hint">예) Zeus, Email</string>
+    <string name="allsite_tutorial_main">Information</string>
+    <string name="food_diary_main">Carte</string>
+    <string name="anonymous_forum_main">Bulletin board</string>
+    <string name="favorite_setting_main">즐겨찾기 관리하기</string>
     <string name="advertisement_main">홍보판</string>
     <string name="favorite_notice_main">즐겨찾기를 추가해주세요.</string>
-    <string name="logout_notice">정말 로그아웃 하시겠습니까?</string>
-    <string name="nv_header_hello">안녕하세요!</string>
-    <string name="nickname_notice">닉네임 변경</string>
-    <string name="delete_user_notice">정말 탈퇴 하시겠습니까?</string>
-    <string name="engineer_name_notice">개발자 &#58; 이동건</string>
-    <string name="engineer_address_notice">연락처 &#58; 010-8636-5629 &#124; unlimitlife&#64;gist.ac.kr</string>
+
 
     <!-- Strings related to edittext in signup screen -->
     <string name="title_signup">Sign up</string>
@@ -77,11 +68,26 @@
     <string name="apply_button">Apply</string>
     <string name="title_tutorial">Tutorial</string>
 
+    <!-- Strings related to MyMenu -->
+    <string name="title_my">My</string>
+    <string name="logout_notice">정말 로그아웃 하시겠습니까?</string>
+    <string name="my_hello">안녕하세요</string>
+    <string name="my_hey">님</string>
+    <string name="profile_notice">프로필 편집</string>
+    <string name="delete_user_notice">정말 탈퇴 하시겠습니까?</string>
+    <string name="credit_calculator_main">학점 계산기</string>
+    <string name="user_information_main">회원정보</string>
+    <string name="delete_user_main">회원 탈퇴</string>
+    <string name="logout_main">로그아웃</string>
+
+    <!-- Strings related to MyEditProfileMenu -->
+    <string name="title_edit_profile">프로필 편집하기</string>
+    <string name="check_main">확인</string>
 
     <!-- Strings related to CalendarMain -->
-    <string name="title_calendar_main">Calendar</string>
+    <string name="title_calendar_main">Schedule</string>
     <!-- Strings related to AcademicCalendarList -->
-    <string name="title_academic_calendar">학사일정</string>
+    <string name="title_academic_calendar">Academic calendar</string>
 
     <!-- Strings related to major site set popup menu -->
     <string name="jungijeonja">전기전자컴퓨터공학부</string>
@@ -95,17 +101,18 @@
     <string name="nanobio">나노바이오재료전자공학과</string>
 
     <!-- Strings related to food diary-->
-    <string name="first_restaurant_first_floor">제1학생식당 1층</string>
-    <string name="first_restaurant_second_floor">제1학생식당 2층</string>
+    <string name="title_food_diary">Carte</string>
+    <string name="first_restaurant_first_floor">제1학생식당 (1F)</string>
+    <string name="first_restaurant_second_floor">제1학생식당 (2F)</string>
     <string name="second_restaurant">제2학생식당</string>
     <string name="notice_food_diary">하단의 버튼을 눌러주세요.</string>
 
     <!-- Strings related to menuButton in anonymous forum preview -->
     <string name="title_preview">GIST</string>
     <string name="menu_button_home">홈</string>
-    <string name="menu_button_best">인기글</string>
+    <string name="menu_button_best">인기글 게시판</string>
     <string name="menu_button_overview">전체글</string>
-    <string name="menu_button_search">검색</string>
+    <string name="menu_button_search">검색하기</string>
     <string name="menu_button_write">글쓰기</string>
     <string name="devider">"  |  "</string>
 
@@ -118,13 +125,13 @@
     <string name="comment_hint">댓글 입력</string>
 
     <!-- Strings related to anonymous forum write -->
-    <string name="submit_button">등록</string>
-    <string name="edit_button">수정</string>
+    <string name="submit_button">게시하기</string>
+    <string name="edit_button">수정하기</string>
     <string name="write_nickname_question">닉네임으로 게시할까요?</string>
     <string name="write_nickname_notice">미선택시, 닉네임 대신 \'익명\'으로 게시됩니다.</string>
     <string name="write_noname">익명</string>
-    <string name="write_writer">게시자</string>
-    <string name="write_title">제목</string>
+    <string name="write_writer">작성자&#032;|&#032;익명</string>
+    <string name="write_title">제목을 적어주세요.</string>
     <string name="write_hint"><font size="12">여기를 눌러 글을 작성할 수 있습니다.\n\nGIST 익명 게시판이 오랫동안 유지될 수 있도록 아래의 내용은 꼭 지켜주세요 :)\n\n[이용 규칙]\n1. 욕설, 비하, 음란물, 개인정보가 포함된 게시물 게시\n2. 특정인이나 단체/지역을 비방하는 행위\n3. 규제가 필요할 정도의 과도한 도배\n\n위의 유의사항을 위배한 게시물이 등록 시 삭제 및 차단 조치가 될 수 있습니다.</font></string>
 
     <!-- Strings related to anonymous forum search classification menu -->
@@ -162,7 +169,7 @@
     <string name="title_activity_user_setting">UserSetting</string>
 
     <!-- Strings related to Credit Calculator -->
-    <string name="title_credit_calculator">Calculator</string>
+    <string name="title_credit_calculator">GPA calculator</string>
     <string name="type_classification">Type</string>
     <string name="title_classification">Title</string>
     <string name="credits_classification">Credits</string>
@@ -171,20 +178,24 @@
     <string name="notice_edit_reset">수정 작업을 취소하시겠습니까?</string>
     <string name="notice_delete_log">해당 기록을 삭제하시겠습니까?</string>
     <string name="reset_calculator">초기화</string>
-    <string name="add_calculator">과목 추가</string>
+    <string name="add_calculator">과목 추가하기</string>
     <string name="save_log_calculator">기록 저장</string>
     <string name="edit_log_calculator">기록 수정</string>
     <string name="watch_log_calculator">기록 보기</string>
-    <string name="hint_title_calculator">제목 - ex) 2019학년 1학기</string>
+    <string name="hint_title_calculator">2019학년 2학기</string>
+    <string name="total_credits_main_default">Completed Credits &#58; 000 &#47; 000</string>
+    <!--<string name="total_credits_main_default">Completed Credits : 000 &#47; 000</string>-->
+
 
     <!-- Strings related to AddCreditCalculator-->
-    <string name="calculator_add_popup_title">과목 추가</string>
-    <string name="calculator_edit_popup_title">과목 수정</string>
+    <string name="calculator_add_popup_title">과목 추가하기</string>
+    <string name="calculator_edit_popup_title">과목 수정하기</string>
     <string name="calculator_add_popup_save">저장</string>
-    <string name="calculator_add_popup_input_type">구분</string>
-    <string name="calculator_add_popup_input_title">과목명</string>
-    <string name="calculator_add_popup_input_credits">학점</string>
-    <string name="calculator_add_popup_input_grade">점수</string>
+    <string name="calculator_add_popup_input_type">Type</string>
+    <string name="calculator_add_popup_input_title">Title</string>
+    <string name="calculator_add_popup_input_credits">Credit</string>
+    <string name="calculator_add_popup_input_grade">Grade</string>
+    <string name="calculator_edit">수정</string>
 
     <!-- Strings related to Calculator add Credits_Popup_Menu -->
     <string name="credit_five">5</string>
@@ -212,4 +223,8 @@
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
     <string name="configure">Configure</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <!-- Strings related to School Mapw -->
+    <string name="title_school_map">School map</string>
 </resources>

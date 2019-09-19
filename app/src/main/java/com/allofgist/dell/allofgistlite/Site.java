@@ -49,6 +49,41 @@ public class Site {
         msite_imagesource = imagesource;
     }
 
+
+
+    public Site(String name, String url, int imagesource, String explanation){
+        msite_name = name;
+        msite_url = url;
+        msite_imagesource = imagesource;
+        msite_explanation = explanation;
+    }
+
+    public Site(String name, String urlf, String urly, int imagesource, String explanation){
+        msite_name = name;
+        msite_urlF = urlf;
+        msite_urlY = urly;
+        msite_imagesource = imagesource;
+        msite_explanation = explanation;
+    }
+
+    public Site(String name, String urlw, String urlb, String urlf, String urli,int imagesource, String explanation){
+        msite_name = name;
+        msite_urlW = urlw;
+        msite_urlB = urlb;
+        msite_urlF = urlf;
+        msite_urlI = urli;
+        msite_imagesource = imagesource;
+        msite_explanation = explanation;
+    }
+
+
+
+
+
+
+
+
+
     public String getMsite_name() {
         return this.msite_name;
     }

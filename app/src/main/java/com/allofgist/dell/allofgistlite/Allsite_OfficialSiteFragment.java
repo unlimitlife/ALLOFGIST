@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -47,6 +49,7 @@ public class Allsite_OfficialSiteFragment extends Fragment {
 
     //GridView 데이터 연결
     private GridView siteList;
+    //private RecyclerView siteList;
     private SiteAdapter siteAdapter;
 
     private String id;
@@ -69,7 +72,7 @@ public class Allsite_OfficialSiteFragment extends Fragment {
         itemList = new ArrayList<Site>();
         setData(itemList);
 
-
+        //GRIDVIEW MODE
         //GridView 데이터 연결
         siteList = (GridView) rootView.findViewById(R.id.allsites);
         siteAdapter = new SiteAdapter(getActivity(),itemList);
@@ -124,6 +127,69 @@ public class Allsite_OfficialSiteFragment extends Fragment {
             }
         });
 
+
+
+        //RECYCLERVIEW MODE
+        /*
+        siteList = (RecyclerView) rootView.findViewById(R.id.allsites);
+        siteAdapter = new SiteAdapter(itemList);
+        siteList.setAdapter(siteAdapter);
+        siteList.setLayoutManager(new LinearLayoutManager(getContext()));
+
+
+        siteList.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), siteList, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                final Site site = itemList.get(position);
+                if (site.getMsite_name().equals( "학과별 사이트")) {
+                    PopupMenu popupMj = new PopupMenu(getActivity(), view);
+                    MenuInflater menuInflater = new MenuInflater(getActivity());
+                    menuInflater.inflate(R.menu.major_site_set_popup_menu, popupMj.getMenu());
+                    popupMj.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            for (int i = 0; i < major_set.size(); i++) {
+                                if (major_set.get(i).getMsite_name().equals(menuItem.getTitle().toString()))
+                                    openWebPage(major_set.get(i).getMsite_url());
+                            }
+                            return false;
+                        }
+                    });
+                    popupMj.show();
+                } else if (site.getMsite_name().equals( "GIST home")) {
+                    PopupMenu popupIFWB = new PopupMenu(getActivity(), view);
+                    MenuInflater menuInflater = new MenuInflater(getActivity());
+                    menuInflater.inflate(R.menu.insta_facebook_web_blog_popup_menu, popupIFWB.getMenu());
+                    popupIFWB.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            switch (menuItem.getItemId()) {
+                                case R.id.webIFWB:
+                                    openWebPage(site.getMsite_urlW());
+                                    break;
+                                case R.id.blogIFWB:
+                                    openWebPage(site.getMsite_urlB());
+                                    break;
+                                case R.id.facebookIFWB:
+                                    openWebPage(site.getMsite_urlF());
+                                    break;
+                                case R.id.instaIFWB:
+                                    openWebPage(site.getMsite_urlI());
+                                    break;
+                            }
+                            return false;
+                        }
+                    });
+                    popupIFWB.show();
+                } else
+                    openWebPage(site.getMsite_url());
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+            }
+        }));*/
+
         return rootView;
     }
 
@@ -154,7 +220,7 @@ public class Allsite_OfficialSiteFragment extends Fragment {
             View view = convertView;
 
             if(view==null){
-                view = LayoutInflater.from(getContext()).inflate(R.layout.gridviewitem_allsites, parent, false);
+                view = LayoutInflater.from(getContext()).inflate(R.layout.gridviewitem_allsites_w_img, parent, false);
 
                 siteHolder = new SiteHolder(view);
                 view.setTag(siteHolder);
@@ -166,7 +232,6 @@ public class Allsite_OfficialSiteFragment extends Fragment {
             siteHolder = new SiteHolder(view);
 
             siteHolder.mTextView.setText(itemList.get(position).getMsite_name());
-
             // 비트맵 동그랗게 사이즈 맞게 줄이는 메소드 이용
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
@@ -176,6 +241,7 @@ public class Allsite_OfficialSiteFragment extends Fragment {
             options.inSampleSize = setSimpleSize(options,REQUEST_WIDTH, REQUEST_HEIGHT);
             options.inJustDecodeBounds = false;
             Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),itemList.get(position).getMsite_imagesource(),options);
+
             siteHolder.mImageView.setBackground(getContext().getDrawable(R.drawable.circle_layout));
             //siteHolder.mImageView.setBackground(new ShapeDrawable(new OvalShape()));
             siteHolder.mImageView.setClipToOutline(true);
@@ -184,6 +250,8 @@ public class Allsite_OfficialSiteFragment extends Fragment {
             //mGlideRequestManager.load(bitmap).into(siteHolder.mImageView);
             siteHolder.mImageView.setImageBitmap(getCircledBitmap(bitmap));
             siteHolder.mLinearlayout.setBackgroundResource(R.drawable.item_unselected_state);
+
+
 
 
             return view;
@@ -216,10 +284,7 @@ public class Allsite_OfficialSiteFragment extends Fragment {
             if (getOpenFacebookIntent(getContext(), url).contains("https://www.facebook.com")){
                 /*String facebookurl = url.replaceFirst("www.", "m.");
                 if(!facebookurl.startsWith("https"))
-                    facebookurl = "https://"+facebookurl;
-                Intent webView = new Intent(MainActivity.this, web_interface.class);
-                webView.putExtra("Url", facebookurl);
-                startActivity(webView);*/
+                    facebookurl = "https://"+facebookurl;*/
                 Intent chrome = new Intent(Intent.ACTION_VIEW);
                 chrome.setData(Uri.parse(url));
                 startActivity(chrome);
@@ -230,9 +295,6 @@ public class Allsite_OfficialSiteFragment extends Fragment {
                 startActivity(facebookIntent);
             }
         } else {
-            /*Intent webView = new Intent(MainActivity.this, web_interface.class);
-            webView.putExtra("Url", url);
-            startActivity(webView);*/
             Intent chrome = new Intent(Intent.ACTION_VIEW);
             chrome.setData(Uri.parse(url));
             startActivity(chrome);
@@ -273,7 +335,36 @@ public class Allsite_OfficialSiteFragment extends Fragment {
         }
         return size;
     }
-    @Override
+
+    /*@Override
+    public void onPause() {
+        int count = siteList.getCount();
+        for (int i =0; i<count; i++){
+            try {
+                ViewGroup viewGroup = (ViewGroup) siteList.getChildAt(i);
+                int childSize = viewGroup.getChildCount();
+                for (int j = 0; j < childSize; j++) {
+                    if (viewGroup.getChildAt(j) instanceof ImageView) {
+                        ((ImageView) viewGroup.getChildAt(j)).setImageBitmap(null);
+                    }
+                    else if (viewGroup.getChildAt(j) instanceof TextView) {
+                        ((TextView) viewGroup.getChildAt(j)).setText(null);
+                    }
+                    else if (viewGroup.getChildAt(j) instanceof LinearLayout) {
+                        ((LinearLayout) viewGroup.getChildAt(j)).setBackground(null);
+                    }
+                }
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }
+        }
+
+        itemList = null;
+        major_set = null;
+
+        super.onPause();
+    }*/
+    /*@Override
     public void onDestroy() {
         Log.d("OOMTEST", "onDestroy");
         int count = siteList.getCount();
@@ -292,7 +383,7 @@ public class Allsite_OfficialSiteFragment extends Fragment {
         }
 
         super.onDestroy();
-    }
+    }*/
 
     public static void recycleBitmap(ImageView iv) {
         Drawable d = iv.getDrawable();
@@ -334,4 +425,49 @@ public class Allsite_OfficialSiteFragment extends Fragment {
         major_set.add(new Site("융합기술원", "https://iit.gist.ac.kr/"));
         major_set.add(new Site("나노바이오재료전자공학과", "https://wcu.gist.ac.kr/"));
     }
+/*
+    static class SiteAdapter extends RecyclerView.Adapter<SiteAdapter.SiteHolder>{
+
+        private ArrayList<Site> itemList;
+        private SiteHolder siteHolder;
+
+        public SiteAdapter(ArrayList<Site> itemList){
+            this.itemList = itemList;
+        }
+
+        @Override
+        public int getItemCount() {
+            return itemList.size();
+        }
+
+        @NonNull
+        @Override
+        public SiteHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+            View view = null;
+            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.gridviewitem_allsites_text,viewGroup,false);
+
+            siteHolder= new SiteHolder(view);
+            return siteHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull SiteHolder siteHolder, int position) {
+
+            siteHolder.title.setText(itemList.get(position).getMsite_name());
+        }
+
+        public static class SiteHolder extends RecyclerView.ViewHolder{
+
+            LinearLayout icon;
+            TextView title;
+
+            public SiteHolder(View view){
+                super(view);
+                icon = (LinearLayout) view.findViewById(R.id.clickicon);
+                title = (TextView)view.findViewById(R.id.name);
+
+            }
+        }
+
+    }*/
 }

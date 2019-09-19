@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/search_overall"
+        android:title="전체"/>
+    <item
+        android:id="@+id/search_official"
+        android:title="공식"/>
+    <item
+        android:id="@+id/search_organ"
+        android:title="조직"/>
+    <item
+        android:id="@+id/search_circle"
+        android:title="동아리"/>
+</menu>

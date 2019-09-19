@@ -2,7 +2,6 @@ package com.allofgist.dell.allofgistlite;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -12,13 +11,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,11 +31,16 @@ import javax.net.ssl.HttpsURLConnection;
 public class AcademicFragment extends Fragment {
     private int mPageNumber;
     private ViewGroup mLeak;
+    private TextView month;
+    private TextView year;
+    private ImageButton back;
+    private ImageButton foward;
     // get currentMonth
     private HashMap<Integer,ArrayList<CalendarContext>> calendarData;
     RecyclerView context;
 
     private MyAsyncTask setdata;
+    ProgressBar progressBar;
 
 
     public static AcademicFragment create(int pageNumber) {
@@ -61,8 +67,15 @@ public class AcademicFragment extends Fragment {
         //setdata = new MyAsyncTask(this);
 
         context = (RecyclerView) mLeak.findViewById(R.id.calendar_context);
+        progressBar = (ProgressBar)mLeak.findViewById(R.id.academic_calendar_progress_bar);
+        /*month = (TextView) mLeak.findViewById(R.id.month_tv_academic_list);
+        year = (TextView) mLeak.findViewById(R.id.year_tv_academic_list);
+        back = (ImageButton) mLeak.findViewById(R.id.back_academic_list);
+        foward = (ImageButton) mLeak.findViewById(R.id.foward_academic_list);*/
+
         setdata = new MyAsyncTask();
         setdata.execute();
+        progressBar.setVisibility(View.VISIBLE);
 
         return mLeak;
     }
@@ -82,7 +95,7 @@ public class AcademicFragment extends Fragment {
         @NonNull
         @Override
         public CalendarHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.calendar_list_item, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.listviewitem_academic_calendar, viewGroup, false);
 
             CalendarHolder calendarHolder = new CalendarHolder(view);
             return calendarHolder;
@@ -92,9 +105,23 @@ public class AcademicFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull CalendarHolder calendarHolder, int position) {
 
-            calendarHolder.dateView.setText(calendarContext.get(position).getDate_title());
-            calendarHolder.contextView.setText(calendarContext.get(position).getContext());
+            progressBar.setVisibility(View.GONE);
+            String date = calendarContext.get(position).getDate_title();
+            date = date.replaceAll("-",".");
+            if(date.indexOf('~')!=-1) {
+                String date_start = date.substring(0, date.indexOf('('));
+                String date_end = date.substring(date.indexOf('~'),date.length()-3);
+                calendarHolder.dateStartView.setText(date_start);
+                calendarHolder.dateEndView.setText(date_end);
+                calendarHolder.dateEndView.setVisibility(View.VISIBLE);
+                calendarHolder.contextView.setText(calendarContext.get(position).getContext());
+            }
+            else{
+                calendarHolder.dateStartView.setText(date.substring(0,date.indexOf('(')));
+                calendarHolder.dateEndView.setVisibility(View.GONE);
+                calendarHolder.contextView.setText(calendarContext.get(position).getContext());
 
+            }
         }
 
         @Override
@@ -104,12 +131,15 @@ public class AcademicFragment extends Fragment {
 
         public class CalendarHolder extends RecyclerView.ViewHolder{
             public TextView contextView;
-            public TextView dateView;
+            public TextView dateStartView;
+            public TextView dateEndView;
 
             public CalendarHolder(View view){
                 super(view);
                 contextView = (TextView)view.findViewById(R.id.diary_context_textview);
-                dateView = (TextView)view.findViewById(R.id.diary_compelete_date_textview);
+                dateStartView = (TextView)view.findViewById(R.id.diary_compelete_date_textview_start);
+                dateEndView = (TextView)view.findViewById(R.id.diary_compelete_date_textview_end);
+
             }
         }
     }
@@ -243,6 +273,7 @@ public class AcademicFragment extends Fragment {
     public void GrayToast(Context context, String message){
         Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
         View toastView = toast.getView();
+        toastView.setPadding(8,8,8,8);
         toastView.setBackgroundResource(R.drawable.gray_toast_design);
         toast.show();
     }
@@ -254,4 +285,25 @@ public class AcademicFragment extends Fragment {
         if(setdata!=null)
             setdata.cancel(true);
     }
+
+    /*@Override
+    public void onPause() {
+        int count = context.getChildCount();
+        for (int i =0; i<count; i++){
+            try {
+                ViewGroup viewGroup = (ViewGroup) context.getChildAt(i);
+                int childSize = viewGroup.getChildCount();
+                for (int j = 0; j < childSize; j++) {
+                    if (viewGroup.getChildAt(j) instanceof TextView) {
+                        ((TextView) viewGroup.getChildAt(j)).setText(null);
+                    }
+                }
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }
+        }
+        calendarData = null;
+        setdata.cancel(false);
+        super.onPause();
+    }*/
 }

@@ -1,144 +1,178 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/calendarMainScreen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="#FFFFFF">
+    android:background="@color/white_gray">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/blank">
+        <RelativeLayout
+            android:id="@+id/top_window_bar_gpa_calculator"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_alignParentTop="true"
+            android:background="@color/white">
+
+            <ImageButton
+                android:id="@+id/calendar_back_button"
+                android:layout_width="42.5dp"
+                android:layout_height="42.5dp"
+                android:layout_marginStart="12.5dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:background="@color/white"
+                android:src="@drawable/back_button_gray" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:layout_centerInParent="true">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:text="@string/title_calendar_main"
+                    android:textSize="17.5sp"
+                    android:gravity="center"
+                    android:fontFamily="@font/nanumsquare_b"
+                    android:textColor="@color/warm_grey"
+                    android:background="@color/white"/>
+            </LinearLayout>
+
+
+            <ImageButton
+                android:id="@+id/calendar_delete_button"
+                android:layout_width="42.5dp"
+                android:layout_height="42.5dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="12.5dp"
+                android:background="@color/white"
+                android:src="@drawable/trash_button_selector" />
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:background="@drawable/grey_shadow_line"/>
+    </LinearLayout>
+
 
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/noto_sans"
-        android:includeFontPadding="false"
         android:background="#ffffff"
+        android:paddingTop="12dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="16dp"
         app:mcv_showOtherDates="defaults"
         app:mcv_selectionColor="#eeeeee"
-        app:mcv_tileHeight="35dp"
-        app:mcv_tileWidth="50dp"
-        app:mcv_leftArrowMask="@drawable/left_arrow_gray"
-        app:mcv_rightArrowMask="@drawable/right_arrow_gray"
-        app:mcv_arrowColor="#BDBDBD"
+        app:mcv_tileHeight="39dp"
+        app:mcv_tileWidth="52dp"
+        app:mcv_arrowColor="@color/blank"
         app:mcv_headerTextAppearance="@style/CalendarHeadText"
         app:mcv_weekDayTextAppearance="@style/CalendarWeekText"
         app:mcv_dateTextAppearance="@style/CalendarDayText"
         />
     <View
         android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="@drawable/grey_shadow_line"/>
+    <View
+        android:layout_width="match_parent"
         android:layout_height="16dp"
-        android:background="#FFFFFF"/>
+        android:background="@color/white_gray"/>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@drawable/category_box_unselected_design"
+        android:background="@color/white_gray"
         android:layout_marginStart="13dp"
         android:layout_marginEnd="13dp">
         <TextView
-            android:id="@+id/date_text"
+            android:id="@+id/date_text_day"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
             android:layout_marginLeft="16dp"
-            android:background="#FFFFFF"
-            android:fontFamily="@font/noto_sans"
-            android:includeFontPadding="false"
             android:gravity="center"
-            android:textColor="@color/gist_dark_gray"
-            android:textSize="15sp"
+            android:background="@color/white_gray"
+            android:textColor="@color/warm_grey"
+            android:fontFamily="@font/nanumsquare_r"
+            android:textSize="25sp"
             android:textStyle="bold"
+            tools:text="15일"
             />
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:background="#FFFFFF"
-            android:layout_weight="1"
-            android:layout_margin="1dp">
-            <ImageButton
-                android:id="@+id/watchAcademic"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="#FFFFFF"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="8dp"
-                android:layout_centerVertical="true"
-                android:src="@drawable/academic_calendar_gray"/>
-        </RelativeLayout>
+        <TextView
+            android:id="@+id/date_text_day_week"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white_gray"
+            android:textColor="@color/warm_grey"
+            android:textSize="12.5sp"
+            android:layout_marginStart="9dp"
+            android:fontFamily="@font/nanumsquare_l"
+            tools:text="목요일"/>
     </LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="16dp"
-        android:background="#FFFFFF"/>
+        android:background="@color/white_gray"/>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#FFFFFF">
+        android:background="@color/white_gray">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="#FFFFFF">
+            android:background="@color/white_gray">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/category_box_unselected_design"
-                android:layout_marginStart="13dp"
-                android:layout_marginEnd="13dp"
+                android:background="@color/white_gray"
                 android:layout_marginBottom="8dp"
                 android:padding="0.5dp">
                 <ListView
                     android:id="@+id/calendar_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#FFFFFF" />
+                    android:background="@color/white_gray" />
             </LinearLayout>
         </LinearLayout>
+        <TextView
+            android:id="@+id/no_schedule_notice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="일정이 존재하지 않습니다.\n새로운 일정을 작성해보세요!"
+            android:textSize="14sp"
+            android:fontFamily="@font/nanumsquare_r"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"
+            android:layout_marginTop="60dp"/>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="#00ffffff"
+            android:background="@color/blank"
             android:layout_gravity="right|bottom"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="8dp">
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:paddingTop="1dp"
-                android:paddingLeft="2dp"
-                android:paddingRight="2dp"
-                android:paddingBottom="6dp">
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/gotoToday"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:backgroundTint="@color/white_gray"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:elevation="1dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:elevation="7dp"
-                    android:fontFamily="@font/noto_sans"
-                    android:includeFontPadding="false"
-                    android:text="오늘"
-                    android:textColor="@color/gist_dark_gray" />
-            </FrameLayout>
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:clipChildren="false"
+                android:background="@color/blank"
                 android:clipToPadding="false"
                 android:paddingTop="1dp"
                 android:paddingLeft="2dp"
@@ -148,7 +182,7 @@
                     android:id="@+id/addSchedule"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:backgroundTint="@color/gist_red"
+                    app:backgroundTint="@color/gist_blue"
                     android:src="@drawable/add_button"
                     android:foreground="?android:attr/selectableItemBackground"/>
             </FrameLayout>

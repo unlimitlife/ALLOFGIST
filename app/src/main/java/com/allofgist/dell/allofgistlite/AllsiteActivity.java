@@ -1,6 +1,7 @@
 package com.allofgist.dell.allofgistlite;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -41,9 +42,10 @@ public class AllsiteActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager fmViewPager;
 
+    private Button searchButton;
     private ImageButton beforeButton;
 
-    Button siteTutorialButton;
+    ImageButton siteTutorialButton;
     View popupView;
     PopupWindow siteTutorialPopupWindow;
     RecyclerView siteTutorialList;
@@ -54,6 +56,7 @@ public class AllsiteActivity extends AppCompatActivity {
 
     //login information
     private String id;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +139,14 @@ public class AllsiteActivity extends AppCompatActivity {
             }
         });
 
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent allsiteSearchActivity = new Intent(AllsiteActivity.this, AllsiteActivity_Search.class);
+                startActivity(allsiteSearchActivity);
+            }
+        });
+
     }
 
     private class PagerAdapter extends FragmentStatePagerAdapter {
@@ -201,7 +212,7 @@ public class AllsiteActivity extends AppCompatActivity {
 
             View view = null;
 
-            view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.recyclerviewiem_site_tutorial, parent, false);
+            view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.recyclerviewitem_site_tutorial, parent, false);
 
             tutorialHolder = new TutorialHolder(view);
 
@@ -271,19 +282,20 @@ public class AllsiteActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(getString(R.string.tab_organization_text))));
         tabLayout.addTab(tabLayout.newTab().setCustomView(createTabView(getString(R.string.tab_circle_text))));
 
+        searchButton = (Button)findViewById(R.id.search_websites);
 
         fmViewPager = (ViewPager)findViewById(R.id.allsite_switch_layout);
         fmViewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
         fmViewPager.setOffscreenPageLimit(2);
 
-        beforeButton = (ImageButton)findViewById(R.id.allsite_back_button);
+        beforeButton = (ImageButton)findViewById(R.id.websites_back_button);
 
-        siteTutorialButton = (Button)findViewById(R.id.allsite_tutorial);
+        siteTutorialButton = (ImageButton)findViewById(R.id.websites_tutorial);
         popupView = getLayoutInflater().inflate(R.layout.site_tutorial_popup_window,null);
         siteTutorialPopupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
         siteTutorialPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.argb(76,220,35,20)));
         siteTutorialList = (RecyclerView)popupView.findViewById(R.id.recyclerview_site_tuorial);
-        siteTutorialBackbutton = (ImageButton)popupView.findViewById(R.id.site_tutorial_back_button);
+        siteTutorialBackbutton = (ImageButton)popupView.findViewById(R.id.websites_tutorial_back_button);
         tutorialListAdapter = new TutorialListAdapter(getApplicationContext());
         linearLayoutManager = new LinearLayoutManager(getApplicationContext());
 
@@ -357,6 +369,32 @@ public class AllsiteActivity extends AppCompatActivity {
         major_set.add(new Site("융합기술원", "https://iit.gist.ac.kr/"));
         major_set.add(new Site("나노바이오재료전자공학과", "https://wcu.gist.ac.kr/"));*/
     }
+
+
+/*
+    @Override
+    public void onPause() {
+        int count = siteTutorialList.getChildCount();
+        for (int i =0; i<count; i++){
+            try {
+                ViewGroup viewGroup = (ViewGroup) siteTutorialList.getChildAt(i);
+                int childSize = viewGroup.getChildCount();
+                for (int j = 0; j < childSize; j++) {
+                    if (viewGroup.getChildAt(j) instanceof ImageView) {
+                        ((ImageView) viewGroup.getChildAt(j)).setImageBitmap(null);
+                    }
+                    else if (viewGroup.getChildAt(j) instanceof TextView) {
+                        ((TextView) viewGroup.getChildAt(j)).setText(null);
+                    }
+                }
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }
+        }
+        itemList = null;
+
+        super.onPause();
+    }*/
 
 
 }

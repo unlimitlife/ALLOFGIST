@@ -1,137 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:orientation="vertical"
-    tools:context=".AnonymousForumActivity_Preview">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".AllsiteActivity"
+    android:background="@color/white_gray">
 
     <RelativeLayout
+        android:id="@+id/top_window_bar_bulletin_board"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/white">
+        android:layout_height="70dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/shadow">
 
-        <TextView
-            android:id="@+id/title_anonymous_forum_preview"
+        <ImageButton
+            android:id="@+id/bulletin_board_back_button"
+            android:layout_width="42.5dp"
+            android:layout_height="42.5dp"
+            android:layout_marginStart="12.5dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="@color/white"
+            android:src="@drawable/back_button_gray" />
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/title_preview"
-            android:textSize="25sp"
-            android:textColor="@color/gist_dark_gray"
-            android:fontFamily="@font/noto_sans"
-            android:includeFontPadding="false"
-            android:layout_centerInParent="true"
-            />
+            android:background="@color/white"
+            android:layout_centerInParent="true">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="@string/anonymous_forum_main"
+                android:textSize="17.5sp"
+                android:gravity="center"
+                android:fontFamily="@font/nanumsquare_b"
+                android:textColor="@color/warm_grey"
+                android:background="@color/white"/>
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/bulletin_board_more"
+            android:layout_width="42.5dp"
+            android:layout_height="42.5dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="12.5dp"
+            android:background="@color/white"
+            android:src="@drawable/more_vert_gray" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/status_bar_bulletin_board"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_below="@id/top_window_bar_bulletin_board"
+        android:background="@color/white">
+        <RelativeLayout
+            android:layout_width="135.8dp"
+            android:layout_height="24dp"
+            android:background="@drawable/blue_corner_little_round_box"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toLeftOf="@id/under_arrow_bulletin_board"
+                android:layout_marginStart="9.5dp"
+                tools:text="전체 보기"
+                android:textSize="12.5sp"
+                android:gravity="center_vertical"
+                android:fontFamily="@font/nanumsquare_r"
+                android:textColor="@color/warm_grey"/>
+            <ImageView
+                android:id="@+id/under_arrow_bulletin_board"
+                android:layout_width="13.3dp"
+                android:layout_height="6.1dp"
+                android:src="@drawable/under_arrow_blue"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="7.9dp"/>
+
+        </RelativeLayout>
+
     </RelativeLayout>
 
     <com.allofgist.dell.allofgistlite.NonSwipeableViewPager
         android:id="@+id/anonymous_forum_preview_switch_layout"
-        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
+        android:layout_below="@id/status_bar_bulletin_board"
         android:tag="fragment_container"
-        android:background="#ECECEC"/>
+        android:background="#E4E4E4"/>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/write_bulletin_board"
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        app:backgroundTint="@color/gist_blue"
+        android:src="@drawable/pencil_white"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="22dp"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/forum_gray"/>
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/top_bar_layout_design"
-        >
-        <TableRow
-            android:background="#FFFFFF">
-            <LinearLayout
-                android:id="@+id/button_home"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="55dp"
-                android:background="#FFFFFF"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:foreground="?android:attr/selectableItemBackground">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/home_red"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/noto_sans"
-                    android:includeFontPadding="false"
-                    android:textColor="@color/gist_dark_gray"
-                    android:text="@string/menu_button_home"/>
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/button_best"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="55dp"
-                android:background="@drawable/anonymous_forum_best_background_selector"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:foreground="?android:attr/selectableItemBackground">
-                <ImageView
-                    android:id="@+id/button_best_imageview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/anonymous_forum_best_icon_selector" />
-                <TextView
-                    android:id="@+id/button_best_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/noto_sans"
-                    android:textColor="@color/gist_dark_gray"
-                    android:includeFontPadding="false"
-                    android:text="@string/menu_button_best"/>
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/button_search"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="55dp"
-                android:background="#FFFFFF"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:foreground="?android:attr/selectableItemBackground">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/search_red"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/noto_sans"
-                    android:textColor="@color/gist_dark_gray"
-                    android:includeFontPadding="false"
-                    android:text="@string/menu_button_search"/>
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/button_write"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="55dp"
-                android:background="#FFFFFF"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:foreground="?android:attr/selectableItemBackground">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/write_red"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/gist_dark_gray"
-                    android:fontFamily="@font/noto_sans"
-                    android:includeFontPadding="false"
-                    android:text="@string/menu_button_write"/>
-            </LinearLayout>
 
-        </TableRow>
-    </TableLayout>
-</LinearLayout>
+</RelativeLayout>

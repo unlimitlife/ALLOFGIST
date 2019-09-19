@@ -1,317 +1,433 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:background="#FFFFFF">
-<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:orientation="vertical">
+    android:background="@color/white_gray">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/gist_red">
-        <ImageButton
-            android:id="@+id/clear"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="8dp"
-            android:layout_centerVertical="true"
-            android:background="@color/gist_red"
-            android:src="@drawable/clear_back_white"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:text="일정"
-            android:fontFamily="@font/noto_sans"
-            android:includeFontPadding="false"
-            android:textSize="18sp"
-            android:textColor="#FFFFFF"
-            android:layout_centerInParent="true"
-            android:gravity="center"/>
-        <ImageButton
-            android:id="@+id/check"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="8dp"
-            android:layout_centerVertical="true"
-            android:background="@color/gist_red"
-            android:src="@drawable/check_white"/>
-    </RelativeLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/edit_diary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:layout_gravity="center"
-            android:inputType="text"
-            android:textColor="@color/gist_dark_gray"
-            android:fontFamily="@font/noto_sans"
-            android:includeFontPadding="false"
-            android:hint="일정을 입력하세요."/>
-    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white_gray"
         android:orientation="vertical">
-        <TextView
+
+
+        <RelativeLayout
+            android:id="@+id/top_window_bar_websites_tutorial"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#FFFFFF"
-            android:paddingLeft="16dp"
-            android:gravity="center_vertical"
-            android:text="완료일"
-            android:fontFamily="@font/noto_sans"
-            android:includeFontPadding="false"
-            android:textSize="16sp"/>
-        <Button
-            android:id="@+id/datebutton"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="#FFFFFF"
-            android:textColor="@color/gist_dark_gray"/>
-        <DatePicker
-            android:id="@+id/datepicker"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="-30dp"
-            android:layout_marginBottom="-30dp"
-            android:background="#f1f1f1"
-            android:visibility="gone"
-            android:calendarTextColor="@color/gist_dark_gray"
-            android:datePickerMode="spinner"
-            android:calendarViewShown="false"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#FFFFFF"
-            android:paddingLeft="16dp"
-            android:gravity="center_vertical"
-            android:text="완료시간"
-            android:textSize="16sp"/>
-        <Button
-            android:id="@+id/timebutton"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="#FFFFFF"
-            android:textColor="@color/gist_dark_gray"/>
-        <TimePicker
-            android:id="@+id/timepicker"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="-30dp"
-            android:layout_marginBottom="-30dp"
-            android:background="#f1f1f1"
-            android:amPmTextColor="@color/gist_dark_gray"
-            android:numbersTextColor="@color/gist_dark_gray"
-            android:visibility="gone"
-            android:timePickerMode="spinner"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <!--<LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/shadow">
+
+            <ImageButton
+                android:id="@+id/clear"
+                android:layout_width="42.5dp"
+                android:layout_height="42.5dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="12.5dp"
+                android:background="@color/white"
+                android:src="@drawable/clear_back_blue" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="#FFFFFF"
-                android:paddingLeft="16dp"
-                android:gravity="center_vertical"
-                android:text="알림"
-                android:textSize="16sp"/>
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:layout_toRightOf="@id/clear"
+                android:background="@color/white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@color/white"
+                    android:fontFamily="@font/nanumsquare_b"
+                    android:gravity="center"
+                    android:text="일정 추가하기"
+                    android:textColor="@color/warm_grey"
+                    android:textSize="17.5sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:background="@color/blank" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="23.5dp"
+                android:layout_marginEnd="22.5dp"
+                android:src="@drawable/pencil_blue" />
+
+            <EditText
+                android:id="@+id/edit_diary"
+                android:layout_width="match_parent"
+                android:layout_height="46.5dp"
+                android:layout_gravity="center"
+                android:background="@drawable/blue_corner_little_round_box"
+                android:hint="일정을 입력하세요."
+                android:inputType="text"
+                android:fontFamily="@font/nanumsquare_r"
+                android:paddingStart="16dp"
+                android:textColor="@color/warm_grey"
+                android:textColorHint="#a2a2a2"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:background="@color/blank" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="top"
+            android:background="@color/white_gray"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="23.5dp"
+                android:layout_marginEnd="22.5dp"
+                android:layout_marginTop="4dp"
+                android:src="@drawable/clock_blue" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/blue_corner_little_round_box"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/blank"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/blank"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="16dp"
+                        android:text="완료일"
+                        android:fontFamily="@font/nanumsquare_r"
+                        android:textColor="#a2a2a2"
+                        android:textSize="16sp" />
+
+                    <Button
+                        android:id="@+id/datebutton"
+                        android:layout_width="match_parent"
+                        android:layout_height="46.5dp"
+                        android:background="@color/blank"
+                        android:fontFamily="@font/nanumsquare_r"
+                        android:textColor="@color/warm_grey" />
+
+                    <DatePicker
+                        android:id="@+id/datepicker"
+                        android:layout_width="256.5dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="-30dp"
+                        android:layout_marginBottom="-30dp"
+                        android:background="@color/blank"
+                        android:fontFamily="@font/nanumsquare_r"
+                        android:calendarTextColor="@color/warm_grey"
+                        android:calendarViewShown="false"
+                        android:datePickerMode="spinner"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:background="@color/blank" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@color/blank">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/blank"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="16dp"
+                        android:text="완료시간"
+                        android:textColor="#a2a2a2"
+                        android:fontFamily="@font/nanumsquare_r"
+                        android:textSize="16sp" />
+
+                    <Button
+                        android:id="@+id/timebutton"
+                        android:layout_width="match_parent"
+                        android:layout_height="46.5dp"
+                        android:background="@color/blank"
+                        android:fontFamily="@font/nanumsquare_r"
+                        android:textColor="@color/warm_grey" />
+
+                    <TimePicker
+                        android:id="@+id/timepicker"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="-30dp"
+                        android:layout_marginBottom="-30dp"
+                        android:amPmTextColor="@color/warm_grey"
+                        android:background="@color/blank"
+                        android:numbersTextColor="@color/warm_grey"
+                        android:fontFamily="@font/nanumsquare_r"
+                        android:timePickerMode="spinner"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:background="@color/blank" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <!--<LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="#FFFFFF"
+                            android:paddingLeft="16dp"
+                            android:gravity="center_vertical"
+                            android:text="알림"
+                            android:textSize="16sp"/>
+
+                    </LinearLayout>
+                    <Button
+                        android:id="@+id/alarmbutton"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:background="#FFFFFF"
+                        android:textColor="@color/gist_dark_gray"
+                        android:text="없음"
+                        android:gravity="center"/>
+
+                    <TableLayout
+                        android:id="@+id/alarmtable"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#f1f1f1"
+                        android:visibility="gone">
+
+                        <TableRow>
+
+                            <Button
+                                android:id="@+id/zero_ago"
+                                android:layout_height="60dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/alarm_button_color_selector"
+                                android:textColor="@drawable/alarm_button_text_color_selector"
+                                android:gravity="center"
+                                android:text="정시" />
+
+                            <Button
+                                android:id="@+id/fiveminute_ago"
+                                android:layout_height="60dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/alarm_button_color_selector"
+                                android:textColor="@drawable/alarm_button_text_color_selector"
+                                android:gravity="center"
+                                android:text="5분 전" />
+
+                            <Button
+                                android:id="@+id/tenminute_ago"
+                                android:layout_height="60dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/alarm_button_color_selector"
+                                android:textColor="@drawable/alarm_button_text_color_selector"
+                                android:gravity="center"
+                                android:text="10분 전" />
+
+                            <Button
+                                android:id="@+id/fifteenminute_ago"
+                                android:layout_height="60dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/alarm_button_color_selector"
+                                android:textColor="@drawable/alarm_button_text_color_selector"
+                                android:gravity="center"
+                                android:text="15분 전" />
+                        </TableRow>
+
+                        <TableRow>
+
+                            <Button
+                                android:id="@+id/thirteenminute_ago"
+                                android:layout_height="60dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/alarm_button_color_selector"
+                                android:textColor="@drawable/alarm_button_text_color_selector"
+                                android:gravity="center"
+                                android:text="30분 전" />
+
+                            <Button
+                                android:id="@+id/onehour_ago"
+                                android:layout_height="60dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/alarm_button_color_selector"
+                                android:textColor="@drawable/alarm_button_text_color_selector"
+                                android:gravity="center"
+                                android:text="1시간 전" />
+
+                            <Button
+                                android:id="@+id/twohour_ago"
+                                android:layout_height="60dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/alarm_button_color_selector"
+                                android:textColor="@drawable/alarm_button_text_color_selector"
+                                android:gravity="center"
+                                android:text="2시간 전" />
+
+                            <Button
+                                android:id="@+id/threehour_ago"
+                                android:layout_height="60dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/alarm_button_color_selector"
+                                android:textColor="@drawable/alarm_button_text_color_selector"
+                                android:gravity="center"
+                                android:text="3시간 전" />
+                        </TableRow>
+
+                        <TableRow>
+
+                            <Button
+                                android:id="@+id/twelvehour_ago"
+                                android:layout_height="60dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/alarm_button_color_selector"
+                                android:textColor="@drawable/alarm_button_text_color_selector"
+                                android:gravity="center"
+                                android:text="12시간 전" />
+
+                            <Button
+                                android:id="@+id/oneday_ago"
+                                android:layout_height="60dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/alarm_button_color_selector"
+                                android:textColor="@drawable/alarm_button_text_color_selector"
+                                android:gravity="center"
+                                android:text="1일 전" />
+
+                            <Button
+                                android:id="@+id/twoday_ago"
+                                android:layout_height="60dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/alarm_button_color_selector"
+                                android:textColor="@drawable/alarm_button_text_color_selector"
+                                android:gravity="center"
+                                android:text="2일 전" />
+
+                            <Button
+                                android:id="@+id/no_alarm"
+                                android:layout_height="60dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/alarm_button_color_selector"
+                                android:textColor="@drawable/alarm_button_text_color_selector"
+                                android:gravity="center"
+                                android:text="없음" />
+                        </TableRow>
+                    </TableLayout>-->
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@color/blank"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/blank"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="16dp"
+                        android:text="반복"
+                        android:textColor="#a2a2a2"
+                        android:fontFamily="@font/nanumsquare_r"
+                        android:textSize="16sp" />
+
+                    <Button
+                        android:id="@+id/repeatbutton"
+                        android:layout_width="match_parent"
+                        android:layout_height="46.5dp"
+                        android:background="@color/blank"
+                        android:gravity="center"
+                        android:text="없음"
+                        android:fontFamily="@font/nanumsquare_r"
+                        android:textColor="@color/warm_grey" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:background="@color/blank" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/white_gray"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/check"
+                android:layout_width="141.5dp"
+                android:layout_height="46.5dp"
+                android:background="@drawable/blue_filed_round_box"
+                android:fontFamily="@font/nanumsquare_b"
+                android:gravity="center"
+                android:text="@string/calculator_add_popup_save"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
 
         </LinearLayout>
-        <Button
-            android:id="@+id/alarmbutton"
+
+        <View
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="#FFFFFF"
-            android:textColor="@color/gist_dark_gray"
-            android:text="없음"
-            android:gravity="center"/>
-
-        <TableLayout
-            android:id="@+id/alarmtable"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#f1f1f1"
-            android:visibility="gone">
-
-            <TableRow>
-
-                <Button
-                    android:id="@+id/zero_ago"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/alarm_button_color_selector"
-                    android:textColor="@drawable/alarm_button_text_color_selector"
-                    android:gravity="center"
-                    android:text="정시" />
-
-                <Button
-                    android:id="@+id/fiveminute_ago"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/alarm_button_color_selector"
-                    android:textColor="@drawable/alarm_button_text_color_selector"
-                    android:gravity="center"
-                    android:text="5분 전" />
-
-                <Button
-                    android:id="@+id/tenminute_ago"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/alarm_button_color_selector"
-                    android:textColor="@drawable/alarm_button_text_color_selector"
-                    android:gravity="center"
-                    android:text="10분 전" />
-
-                <Button
-                    android:id="@+id/fifteenminute_ago"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/alarm_button_color_selector"
-                    android:textColor="@drawable/alarm_button_text_color_selector"
-                    android:gravity="center"
-                    android:text="15분 전" />
-            </TableRow>
-
-            <TableRow>
-
-                <Button
-                    android:id="@+id/thirteenminute_ago"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/alarm_button_color_selector"
-                    android:textColor="@drawable/alarm_button_text_color_selector"
-                    android:gravity="center"
-                    android:text="30분 전" />
-
-                <Button
-                    android:id="@+id/onehour_ago"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/alarm_button_color_selector"
-                    android:textColor="@drawable/alarm_button_text_color_selector"
-                    android:gravity="center"
-                    android:text="1시간 전" />
-
-                <Button
-                    android:id="@+id/twohour_ago"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/alarm_button_color_selector"
-                    android:textColor="@drawable/alarm_button_text_color_selector"
-                    android:gravity="center"
-                    android:text="2시간 전" />
-
-                <Button
-                    android:id="@+id/threehour_ago"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/alarm_button_color_selector"
-                    android:textColor="@drawable/alarm_button_text_color_selector"
-                    android:gravity="center"
-                    android:text="3시간 전" />
-            </TableRow>
-
-            <TableRow>
-
-                <Button
-                    android:id="@+id/twelvehour_ago"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/alarm_button_color_selector"
-                    android:textColor="@drawable/alarm_button_text_color_selector"
-                    android:gravity="center"
-                    android:text="12시간 전" />
-
-                <Button
-                    android:id="@+id/oneday_ago"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/alarm_button_color_selector"
-                    android:textColor="@drawable/alarm_button_text_color_selector"
-                    android:gravity="center"
-                    android:text="1일 전" />
-
-                <Button
-                    android:id="@+id/twoday_ago"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/alarm_button_color_selector"
-                    android:textColor="@drawable/alarm_button_text_color_selector"
-                    android:gravity="center"
-                    android:text="2일 전" />
-
-                <Button
-                    android:id="@+id/no_alarm"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/alarm_button_color_selector"
-                    android:textColor="@drawable/alarm_button_text_color_selector"
-                    android:gravity="center"
-                    android:text="없음" />
-            </TableRow>
-        </TableLayout>-->
+            android:layout_height="16dp"
+            android:background="@color/white_gray" />
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="반복"
-            android:textSize="16sp"
-            android:paddingLeft="16dp"
-            android:gravity="center_vertical"/>
-        <Button
-            android:id="@+id/repeatbutton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#FFFFFF"
-            android:text="없음"
-            android:textColor="@color/gist_dark_gray"
-            android:gravity="center"/>
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="#FFFFFF"/>
-    <ImageButton
-        android:id="@+id/delete_diary"
-        android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        android:src="@drawable/garbage_gray_button"
-        android:layout_gravity="center" />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="16dp"
-        android:background="#FFFFFF"/>
-</LinearLayout>
 </ScrollView>

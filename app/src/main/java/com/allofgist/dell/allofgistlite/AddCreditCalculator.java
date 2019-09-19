@@ -17,6 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
@@ -28,24 +30,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 
-import static com.allofgist.dell.allofgistlite.CreditCalculator.calculatorData;
-import static com.allofgist.dell.allofgistlite.CreditCalculator.creditCalculatorAdapter;
+import static com.allofgist.dell.allofgistlite.CreditCalculatorAddMain.calculatorData;
 
 public class AddCreditCalculator extends AppCompatActivity {
 
     TextView title;
-    View loadPopupView;
-    PopupWindow loadPopupWindow;
-    TextView titleTextView;
-    Button closeButton;
-    RecyclerView loadList;
-    LoadListAdapter typeLoadAdapter;
-    LoadListAdapter titleLoadAdapter;
+    //View loadPopupView;
+    //PopupWindow loadPopupWindow;
+    //TextView titleTextView;
+    //Button closeButton;
+    //RecyclerView loadList;
+    //LoadListAdapter typeLoadAdapter;
+    //LoadListAdapter titleLoadAdapter;
 
     View deletePopupView;
     PopupWindow deletePopupWindow;
@@ -53,20 +50,27 @@ public class AddCreditCalculator extends AppCompatActivity {
     TextView noticeOk;
     TextView noticeCancel;
 
-    EditText typeAddPopup;
-    Button typeReloadButton;
+    ImageButton backButton;
+
+    String type;
+    Button common;
+    Button basic;
+    Button major;
+    Button minor;
+    Button research;
     EditText titleAddPopup;
-    Button titleReloadButton;
-    Button gradeAddPopup;
+    FrameLayout gradeAddPopup;
+    TextView gradeAddTV;
     PopupMenu gradePopupMenu;
-    Button creditsAddPopup;
+    FrameLayout creditsAddPopup;
+    TextView creditsAddTV;
     PopupMenu creditsPopupMenu;
     Button saveButton;
 
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
-    ArrayList<String> typeList;
-    ArrayList<String> titleList;
+    /*ArrayList<String> typeList;
+    ArrayList<String> titleList;*/
 
     ArrayList<String> DEFAULTSET;
     Calculator currentCalculator;
@@ -83,21 +87,132 @@ public class AddCreditCalculator extends AppCompatActivity {
 
         InitialSetting();
 
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        common.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                common.setSelected(true);
+                basic.setSelected(false);
+                major.setSelected(false);
+                minor.setSelected(false);
+                research.setSelected(false);
+                type="공통";
+            }
+        });
+
+        basic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                common.setSelected(false);
+                basic.setSelected(true);
+                major.setSelected(false);
+                minor.setSelected(false);
+                research.setSelected(false);
+                type="기초";
+            }
+        });
+
+        major.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                common.setSelected(false);
+                basic.setSelected(false);
+                major.setSelected(true);
+                minor.setSelected(false);
+                research.setSelected(false);
+                type="전공";
+            }
+        });
+
+        minor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                common.setSelected(false);
+                basic.setSelected(false);
+                major.setSelected(false);
+                minor.setSelected(true);
+                research.setSelected(false);
+                type="부전공";
+            }
+        });
+
+        research.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                common.setSelected(false);
+                basic.setSelected(false);
+                major.setSelected(false);
+                minor.setSelected(false);
+                research.setSelected(true);
+                type="연구";
+            }
+        });
 
         editmode = getIntent().getIntExtra("EDIT_CALCULATOR",0);
         if(editmode==1){
 
             title.setText(R.string.calculator_edit_popup_title);
-            saveButton.setText(R.string.edit_button);
+            saveButton.setText(R.string.calculator_edit);
             deleteButton.setVisibility(View.VISIBLE);
             try {
                 currentCalculator = getIntent().getExtras().getParcelable("CALCULATOR_LOAD_DATA");
                 currentCalculatorPosition = getIntent().getIntExtra("CALCULATOR_LOAD_DATA_POSITION",123456789);
 
-                typeAddPopup.setText(currentCalculator.getType());
+                switch (currentCalculator.getType()){
+                    case "공통":
+                        common.setSelected(true);
+                        basic.setSelected(false);
+                        major.setSelected(false);
+                        minor.setSelected(false);
+                        research.setSelected(false);
+                        type="공통";
+                        break;
+
+                    case "기초":
+                        common.setSelected(false);
+                        basic.setSelected(true);
+                        major.setSelected(false);
+                        minor.setSelected(false);
+                        research.setSelected(false);
+                        type="기초";
+                        break;
+
+                    case "전공":
+                        common.setSelected(false);
+                        basic.setSelected(false);
+                        major.setSelected(true);
+                        minor.setSelected(false);
+                        research.setSelected(false);
+                        type="전공";
+                        break;
+
+                    case "부전공":
+                        common.setSelected(false);
+                        basic.setSelected(false);
+                        major.setSelected(false);
+                        minor.setSelected(true);
+                        research.setSelected(false);
+                        type="부전공";
+                        break;
+
+                    case "연구":
+                        common.setSelected(false);
+                        basic.setSelected(false);
+                        major.setSelected(false);
+                        minor.setSelected(false);
+                        research.setSelected(true);
+                        type="연구";
+                        break;
+                }
                 titleAddPopup.setText(currentCalculator.getTitle());
-                gradeAddPopup.setText(currentCalculator.getGrade());
-                creditsAddPopup.setText(currentCalculator.getCredits());
+                gradeAddTV.setText(currentCalculator.getGrade());
+                creditsAddTV.setText(currentCalculator.getCredits());
 
             }catch (NullPointerException e){
                 e.printStackTrace();
@@ -112,8 +227,8 @@ public class AddCreditCalculator extends AppCompatActivity {
                     noticeOk.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            CreditCalculator.calculatorData.remove(currentCalculatorPosition);
-                            CreditCalculator.creditCalculatorAdapter.notifyDataSetChanged();
+                            CreditCalculatorAddMain.calculatorData.remove(currentCalculatorPosition);
+                            CreditCalculatorAddMain.creditCalculatorAdapter.notifyDataSetChanged();
                             deletePopupWindow.dismiss();
                             finish();
                         }
@@ -125,7 +240,7 @@ public class AddCreditCalculator extends AppCompatActivity {
         }
 
 
-        typeReloadButton.setOnClickListener(new View.OnClickListener() {
+        /*typeReloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 titleTextView.setText(R.string.load_type_top_bar);
@@ -165,7 +280,7 @@ public class AddCreditCalculator extends AppCompatActivity {
 
 
             }
-        });
+        });*/
 
         gradeAddPopup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,31 +294,31 @@ public class AddCreditCalculator extends AppCompatActivity {
                         int itemId = item.getItemId();
                         switch (itemId){
                             case R.id.grade_aplus :
-                                gradeAddPopup.setText(item.getTitle());
+                                gradeAddTV.setText(item.getTitle());
                                 break;
                             case R.id.grade_azero :
-                                gradeAddPopup.setText(item.getTitle());
+                                gradeAddTV.setText(item.getTitle());
                                 break;
                             case R.id.grade_bplus :
-                                gradeAddPopup.setText(item.getTitle());
+                                gradeAddTV.setText(item.getTitle());
                                 break;
                             case R.id.grade_bzero :
-                                gradeAddPopup.setText(item.getTitle());
+                                gradeAddTV.setText(item.getTitle());
                                 break;
                             case R.id.grade_cplus :
-                                gradeAddPopup.setText(item.getTitle());
+                                gradeAddTV.setText(item.getTitle());
                                 break;
                             case R.id.grade_czero :
-                                gradeAddPopup.setText(item.getTitle());
+                                gradeAddTV.setText(item.getTitle());
                                 break;
                             case R.id.grade_dplus :
-                                gradeAddPopup.setText(item.getTitle());
+                                gradeAddTV.setText(item.getTitle());
                                 break;
                             case R.id.grade_dzero :
-                                gradeAddPopup.setText(item.getTitle());
+                                gradeAddTV.setText(item.getTitle());
                                 break;
                             case R.id.grade_f :
-                                gradeAddPopup.setText(item.getTitle());
+                                gradeAddTV.setText(item.getTitle());
                                 break;
                             default:
                                 break;
@@ -227,22 +342,22 @@ public class AddCreditCalculator extends AppCompatActivity {
                         int itemId = item.getItemId();
                         switch (itemId){
                             case R.id.credit_five :
-                                creditsAddPopup.setText(item.getTitle());
+                                creditsAddTV.setText(item.getTitle());
                                 break;
                             case R.id.credit_four :
-                                creditsAddPopup.setText(item.getTitle());
+                                creditsAddTV.setText(item.getTitle());
                                 break;
                             case R.id.credit_three :
-                                creditsAddPopup.setText(item.getTitle());
+                                creditsAddTV.setText(item.getTitle());
                                 break;
                             case R.id.credit_two :
-                                creditsAddPopup.setText(item.getTitle());
+                                creditsAddTV.setText(item.getTitle());
                                 break;
                             case R.id.credit_one :
-                                creditsAddPopup.setText(item.getTitle());
+                                creditsAddTV.setText(item.getTitle());
                                 break;
                             case R.id.credit_zero :
-                                creditsAddPopup.setText(item.getTitle());
+                                creditsAddTV.setText(item.getTitle());
                                 break;
                             default:
                                 break;
@@ -259,45 +374,45 @@ public class AddCreditCalculator extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(typeAddPopup.getText().toString().isEmpty())
-                    GrayToast(getApplicationContext(),"구분을 입력해주세요.");
-                else if(titleAddPopup.getText().toString().isEmpty())
+                if(titleAddPopup.getText().toString().isEmpty())
                     GrayToast(getApplicationContext(),"과목명을 입력해주세요.");
-                else if(creditsAddPopup.getText().toString().isEmpty())
+                else if(gradeAddTV.getText().toString().isEmpty())
                     GrayToast(getApplicationContext(),"점수를 입력해주세요.");
-                else if(gradeAddPopup.getText().toString().isEmpty())
+                else if(creditsAddTV.getText().toString().isEmpty())
                     GrayToast(getApplicationContext(),"학점을 입력해주세요.");
                 else{
                     if(editmode==1) {
                         try {
-                            CreditCalculator.calculatorData.remove(currentCalculatorPosition);
+                            CreditCalculatorAddMain.calculatorData.remove(currentCalculatorPosition);
                         } catch (IndexOutOfBoundsException e) {
                             e.printStackTrace();
                             GrayToast(AddCreditCalculator.this, "개발자에게 연락을 취해주세요.");
                         }
                     }
-                    calculatorData.add(new Calculator(typeAddPopup.getText().toString(),
+                    calculatorData.add(new Calculator(type,
                             titleAddPopup.getText().toString(),
-                            creditsAddPopup.getText().toString(),
-                            gradeAddPopup.getText().toString()));
+                            creditsAddTV.getText().toString(),
+                            gradeAddTV.getText().toString()));
 
-                    if(!typeList.contains(typeAddPopup.getText().toString()))
+                    /*if(!typeList.contains(typeAddPopup.getText().toString()))
                         typeList.add(typeAddPopup.getText().toString());
                     if(!titleList.contains(titleAddPopup.getText().toString()))
                         titleList.add(titleAddPopup.getText().toString());
 
                     setStringArrayPref(AddCreditCalculator.this,"TYPE_LIST",typeList);
-                    setStringArrayPref(AddCreditCalculator.this,"TITLE_LIST",titleList);
+                    setStringArrayPref(AddCreditCalculator.this,"TITLE_LIST",titleList);*/
 
-                    CreditCalculator.creditCalculatorAdapter.notifyDataSetChanged();
-                    typeAddPopup.setText("");
+                    CreditCalculatorAddMain.creditCalculatorAdapter.notifyDataSetChanged();
+                    type="공통";
                     titleAddPopup.setText("");
-                    gradeAddPopup.setText("");
-                    creditsAddPopup.setText("");
+                    gradeAddTV.setText("");
+                    creditsAddTV.setText("");
+                    finish();
                 }
-                finish();
             }
         });
+
+
 
         noticeCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -306,7 +421,7 @@ public class AddCreditCalculator extends AppCompatActivity {
             }
         });
 
-        loadList.addOnItemTouchListener(new RecyclerItemClickListener(AddCreditCalculator.this, loadList, new RecyclerItemClickListener.OnItemClickListener() {
+        /*loadList.addOnItemTouchListener(new RecyclerItemClickListener(AddCreditCalculator.this, loadList, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 try {
@@ -360,9 +475,9 @@ public class AddCreditCalculator extends AppCompatActivity {
                     }
                 });
             }
-        }));
+        }));*/
     }
-    public class LoadListAdapter extends RecyclerView.Adapter<LoadListAdapter.LoadHolder>{
+    /*public class LoadListAdapter extends RecyclerView.Adapter<LoadListAdapter.LoadHolder>{
 
         private LoadHolder loadHolder;
         ArrayList<String> list;
@@ -411,37 +526,42 @@ public class AddCreditCalculator extends AppCompatActivity {
                 loadText = (TextView)view.findViewById(R.id.load_list_text);
             }
         }
-    }
+    }*/
 
     public void InitialSetting(){
 
         title = (TextView)findViewById(R.id.title_textView_add_calculator);
 
-        loadPopupView = getLayoutInflater().inflate(R.layout.load_type_title_calculator_popup_window,null);
+        /*loadPopupView = getLayoutInflater().inflate(R.layout.load_type_title_calculator_popup_window,null);
         loadPopupWindow = new PopupWindow(loadPopupView,LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT,true);
         titleTextView = (TextView)loadPopupView.findViewById(R.id.title_load_popup);
         closeButton = (Button)loadPopupView.findViewById(R.id.close_load_popup);
         loadList = (RecyclerView)loadPopupView.findViewById(R.id.load_list);
 
-        loadPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.argb(80,0,0,0)));
+        loadPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.argb(80,0,0,0)));*/
 
 
-        typeAddPopup = (EditText)findViewById(R.id.type_add_calculator);
-        typeReloadButton = (Button)findViewById(R.id.calculator_type_reload_button);
+        backButton = (ImageButton)findViewById(R.id.gpa_calculator_add_add_back_button);
+        common = (Button)findViewById(R.id.type_common);
+        basic = (Button)findViewById(R.id.type_basic);
+        major = (Button)findViewById(R.id.type_major);
+        minor = (Button)findViewById(R.id.type_minor);
+        research = (Button)findViewById(R.id.type_research);
         titleAddPopup = (EditText)findViewById(R.id.title_add_calculator);
-        titleReloadButton = (Button)findViewById(R.id.calculator_title_reload_button);
-        gradeAddPopup = (Button)findViewById(R.id.grade_add_calculator);
-        creditsAddPopup = (Button)findViewById(R.id.credits_add_calculator);
+        gradeAddPopup = (FrameLayout)findViewById(R.id.grade_add_calculator);
+        gradeAddTV = (TextView)findViewById(R.id.grade_add_calculator_tv);
+        creditsAddPopup = (FrameLayout)findViewById(R.id.credits_add_calculator);
+        creditsAddTV = (TextView)findViewById(R.id.credits_add_calculator_tv);
 
-        saveButton = (Button)findViewById(R.id.save_calculator);
+        saveButton = (Button)findViewById(R.id.save_calcuator);
 
         DEFAULTSET = new ArrayList<String>();
         DEFAULTSET.add("");
 
-        typeList = new ArrayList<String>();
+        /*typeList = new ArrayList<String>();
         titleList = new ArrayList<String>();
         typeList = getStringArrayPref(AddCreditCalculator.this,"TYPE_LIST");
-        titleList = getStringArrayPref(AddCreditCalculator.this,"TITLE_LIST");
+        titleList = getStringArrayPref(AddCreditCalculator.this,"TITLE_LIST");*/
 
         deletePopupView = getLayoutInflater().inflate(R.layout.notice_plus_cancel_popup_window,null);
         deletePopupWindow = new PopupWindow(deletePopupView, RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT,true);
@@ -453,6 +573,8 @@ public class AddCreditCalculator extends AppCompatActivity {
 
         deleteButton = (Button)findViewById(R.id.delete_calculator);
         deleteButton.setVisibility(View.GONE);
+        common.setSelected(true);
+        type="공통";
     }
 
     private void setStringArrayPref(Context context, String key, ArrayList<String> list){

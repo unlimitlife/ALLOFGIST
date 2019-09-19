@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,12 +39,12 @@ import javax.net.ssl.HttpsURLConnection;
 public class AnonymousForum_BestviewFragment extends Fragment {
 
     private String id;
-    ProgressBar progressBar;
+    //ProgressBar progressBar;
 
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.KOREA);
     SimpleDateFormat datetimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.KOREA);
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd",Locale.KOREA);
-    SimpleDateFormat monthdayformat = new SimpleDateFormat("MM.dd",Locale.KOREA);
+    SimpleDateFormat monthdayformat = new SimpleDateFormat("yy.MM.dd",Locale.KOREA);
 
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView contentList;
@@ -53,10 +54,49 @@ public class AnonymousForum_BestviewFragment extends Fragment {
     ForumListAdapter forumListAdapter;
 
 
+    ForumLoadTask forumLoadTask;
+    ViewsUploadTask viewsUploadTask;
+
+
     public AnonymousForum_BestviewFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onPause() {
+        int count = contentList.getChildCount();
+        for (int i =0; i<count; i++){
+            try {
+                ViewGroup viewGroup = (ViewGroup) contentList.getChildAt(i);
+                int childSize = viewGroup.getChildCount();
+                for (int j = 0; j < childSize; j++) {
+                    if (viewGroup.getChildAt(j) instanceof TextView) {
+                        ((TextView) viewGroup.getChildAt(j)).setText(null);
+                    }
+                }
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }
+        }
+
+        forumLoadTask.cancel(false);
+        viewsUploadTask.cancel(false);
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(true);
+                forumList = new ArrayList<Forum>();
+                forumLoadTask = new ForumLoadTask();
+                forumLoadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,1+"");
+            }
+        });
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -84,21 +124,24 @@ public class AnonymousForum_BestviewFragment extends Fragment {
             @Override
             public void onRefresh() {
                 forumList = new ArrayList<Forum>();
-                contentList.setOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+                contentList.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
                     @Override
                     public void onLoadMore(int current_page) {
-                        new ForumLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,current_page+"");
+                        forumLoadTask = new ForumLoadTask();
+                        forumLoadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,current_page+"");
                     }
                 });
 
-                new ForumLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,1+"");
+                forumLoadTask = new ForumLoadTask();
+                forumLoadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,1+"");
             }
         });
 
-        contentList.setOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+        contentList.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int current_page) {
-                new ForumLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,current_page+"");
+                forumLoadTask = new ForumLoadTask();
+                forumLoadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,current_page+"");
             }
         });
 
@@ -106,7 +149,7 @@ public class AnonymousForum_BestviewFragment extends Fragment {
                 new RecyclerItemClickListener(getContext(), contentList, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        new ViewsUploadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,position+"",forumList.get(position).getNum()+"");
+                        viewsUploadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,position+"",forumList.get(position).getNum()+"");
                     }
 
                     @Override
@@ -117,9 +160,9 @@ public class AnonymousForum_BestviewFragment extends Fragment {
         );
 
 
-        if(!swipeRefreshLayout.isRefreshing())
-            progressBar.setVisibility(View.VISIBLE);
-        new ForumLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,1+"");
+        /*if(!swipeRefreshLayout.isRefreshing())
+            progressBar.setVisibility(View.VISIBLE);*/
+        //forumLoadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,1+"");
 
         return rootView;
 
@@ -159,7 +202,7 @@ public class AnonymousForum_BestviewFragment extends Fragment {
             Forum convertForum = forumList.get(position);
             forumHolder.title.setText(convertForum.getTitle());
             if(convertForum.getComments()>0) {
-                forumHolder.commentNumber.setText(("[" + convertForum.getComments() + "]"));
+                forumHolder.commentNumber.setText((convertForum.getComments()+""));
                 forumHolder.commentNumber.setVisibility(View.VISIBLE);
             }
             else
@@ -244,6 +287,8 @@ public class AnonymousForum_BestviewFragment extends Fragment {
                 StringBuffer stringBuffer = new StringBuffer();
                 while ((line = bufferedReader.readLine()) != null) {
                     stringBuffer.append(line+"\n");
+                    if(forumLoadTask.isCancelled())
+                        return jsonArray;
                 }
 
                 data = stringBuffer.toString();
@@ -291,14 +336,14 @@ public class AnonymousForum_BestviewFragment extends Fragment {
                 if(isFirstPage) {
                     contentList.setAdapter(forumListAdapter);
                     contentList.setLayoutManager(layoutManager);
-                    if(progressBar.getVisibility()==View.VISIBLE)
-                        progressBar.setVisibility(View.GONE);
+                    /*if(progressBar.getVisibility()==View.VISIBLE)
+                        progressBar.setVisibility(View.GONE);*/
                     if(swipeRefreshLayout.isRefreshing())
                         swipeRefreshLayout.setRefreshing(false);
                 }
                 else {
-                    if(progressBar.getVisibility()==View.VISIBLE)
-                        progressBar.setVisibility(View.GONE);
+                    /*if(progressBar.getVisibility()==View.VISIBLE)
+                        progressBar.setVisibility(View.GONE);*/
                     forumListAdapter.notifyDataSetChanged();
                 }
 
@@ -354,6 +399,8 @@ public class AnonymousForum_BestviewFragment extends Fragment {
                 StringBuffer stringBuffer = new StringBuffer();
                 while((line = bufferedReader.readLine())!=null){
                     stringBuffer.append(line);
+                    if(viewsUploadTask.isCancelled())
+                        return jsonArray;
                 }
 
                 data = stringBuffer.toString().trim();
@@ -420,7 +467,9 @@ public class AnonymousForum_BestviewFragment extends Fragment {
     public void initialSetting(View rootView){
         swipeRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.anonymous_forum_preview_swipe_layout);
         contentList = (RecyclerView)rootView.findViewById(R.id.anonymous_forum_preview_content_list);
-        progressBar = (ProgressBar)rootView.findViewById(R.id.anonymous_forum_preview_progress_bar);
-        progressBar.setVisibility(View.GONE);
+        forumLoadTask = new ForumLoadTask();
+        viewsUploadTask = new ViewsUploadTask();
+        /*progressBar = (ProgressBar)rootView.findViewById(R.id.anonymous_forum_preview_progress_bar);
+        progressBar.setVisibility(View.GONE);*/
     }
 }

@@ -1,91 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".Tutorial"
-    android:background="#ffffff">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".AllsiteActivity"
+    android:background="@color/white_gray">
+
     <RelativeLayout
+        android:id="@+id/top_window_bar_websites"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:layout_height="70dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/shadow">
+
         <ImageButton
-            android:id="@+id/allsite_back_button"
+            android:id="@+id/websites_back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:background="#FFFFFF"
-            android:src="@drawable/close_red"
-            android:layout_centerVertical="true"
             android:layout_alignParentStart="true"
-            />
-        <TextView
-            android:id="@+id/selectText"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="12.5dp"
+            android:background="@color/white"
+            android:src="@drawable/back_button_gray" />
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/title_main"
-            android:textSize="20sp"
-            android:layout_centerInParent="true"
-            android:textColor="@color/gist_red"
-            android:fontFamily="@font/noto_sans"
-            android:includeFontPadding="false"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"/>
+            android:background="@color/white"
+            android:layout_centerInParent="true">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="@string/allsite_main"
+                android:textSize="17.5sp"
+                android:gravity="center"
+                android:fontFamily="@font/nanumsquare_b"
+                android:textColor="@color/warm_grey"
+                android:background="@color/white"/>
+        </LinearLayout>
+
+
+        <ImageButton
+            android:id="@+id/websites_tutorial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="12.5dp"
+            android:background="@color/white"
+            android:src="@drawable/information_icon_selector" />
     </RelativeLayout>
 
+    <LinearLayout
+        android:id="@+id/search_layout_allsite"
+        android:layout_width="297.5dp"
+        android:layout_height="46.5dp"
+        android:layout_below="@id/top_window_bar_websites"
+        android:background="@drawable/shadow_white_round_box"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:layout_marginTop="18.5dp">
 
+        <ImageView
+            android:layout_width="20.3dp"
+            android:layout_height="20.7dp"
+            android:background="@color/blank"
+            android:src="@drawable/icon_search"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="14.7dp"/>
+        <Button
+            android:id="@+id/search_websites"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:hint="@string/website_search_hint"
+            android:layout_marginStart="8dp"
+            android:fontFamily="@font/nanumsquare_r"
+            android:textSize="14sp"
+            android:textColorHint="#bababa"
+            android:background="@color/blank"
+            android:gravity="center_vertical"/>
+        
+    </LinearLayout>
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout_allsite"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/white"
-        android:fontFamily="@font/noto_sans"
-        android:includeFontPadding="false"
+        android:layout_height="45dp"
+        android:background="@color/white_gray"
         app:tabGravity="fill"
         app:tabMode="fixed"
-        app:tabTextColor="@color/gist_dark_gray"
-        app:tabSelectedTextColor="@color/gist_red"
+        app:tabTextColor="@color/warm_grey"
+        app:tabSelectedTextColor="@color/gist_blue"
         app:tabRippleColor="@null"
         app:tabIndicatorHeight="0dp"
+        app:tabTextAppearance="@style/tab_text"
+        app:tabBackground="@color/white_gray"
+        android:layout_marginTop="26.5dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_below="@id/search_layout_allsite"
         />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="#E4E4E4"/>
     <android.support.v4.view.ViewPager
         android:id="@+id/allsite_switch_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         android:background="@color/white_gray"
-        android:layout_gravity="center_horizontal"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:background="#FFFFFF">
-
-        <Button
-            android:id="@+id/allsite_tutorial"
-            android:layout_width="200dp"
-            android:layout_height="36dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:text="@string/title_tutorial"
-            android:background="@drawable/roundable_ok_button_design"
-            android:textColor="@color/white"
-            android:fontFamily="@font/noto_sans"
-            android:includeFontPadding="false"
-            android:textSize="16sp"
-            android:gravity="center"
-            />
-    </LinearLayout>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="39dp"
+        android:layout_below="@id/tab_layout_allsite"/>
 
 
-
-</LinearLayout>
+</RelativeLayout>

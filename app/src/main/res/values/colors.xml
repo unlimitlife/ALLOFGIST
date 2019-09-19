@@ -14,7 +14,10 @@
     <color name="border_line_gray">#E4E4E4</color>
     <color name="gist_light_gray">#878785</color>
     <color name="gist_dark_gray">#4F5B54</color>
+    <color name="warm_grey">#707070</color>
     <color name="gist_red">#DC2314</color>
+    <color name="gist_blue">#0EAFF3</color>
+    <color name="gist_sky_blue">#ccf1fe</color>
 
     <!--Calendar dot-->
     <color name="first_dot">#DC2314</color>

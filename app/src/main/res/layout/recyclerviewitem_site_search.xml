@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/anonymous_preview_box_design">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:paddingStart="12dp">
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/image_site_search"
+            android:scaleType="centerCrop"
+            android:background="@color/blank"
+            android:padding="0.5dp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="16dp"
+            android:background="@color/blank">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/name_site_search"
+                    tools:text="Gistsite"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:gravity="center_horizontal"
+                    android:textColor="#6c6c6c"
+                    android:background="@color/blank"
+                    android:fontFamily="@font/nanumsquare_b"
+                    android:textSize="12.5sp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/class_site_search"
+                    tools:text="공식"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:gravity="center_horizontal"
+                    android:textColor="@color/gist_blue"
+                    android:background="@color/blank"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/nanumsquare_r"
+                    android:textSize="10sp"
+                    />
+
+            </LinearLayout>
+            <TextView
+                android:id="@+id/explanation_site_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:ellipsize="end"
+                android:textSize="11sp"
+                android:textColor="#a2a2a2"
+                android:fontFamily="@font/nanumsquare_r"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="2dp"
+                tools:text="GIST와 관련된 모든 사이트가 연뎔되어있는 메인 사이트 입니다."
+                android:background="@color/blank"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

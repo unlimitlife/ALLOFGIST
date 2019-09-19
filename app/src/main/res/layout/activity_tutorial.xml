@@ -6,71 +6,77 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Tutorial"
-    android:background="#ffffff">
-    <TextView
-        android:id="@+id/selectText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/title_favorite"
-        android:textSize="20sp"
-        android:textColor="@color/gist_red"
-        android:fontFamily="@font/noto_sans"
-        android:includeFontPadding="false"
-        android:layout_gravity="center"
-        android:textStyle="bold"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"/>
+    android:background="@color/white_gray">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@drawable/shadow">
+
+        <TextView
+            android:id="@+id/title_textView_add_calculator"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:background="@color/white"
+            android:textColor="@color/warm_grey"
+            android:fontFamily="@font/nanumsquare_r"
+            android:text="튜토리얼"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:layout_marginStart="10dp"
+            />
+
+    </RelativeLayout>
 
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout_tutorial"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/white"
-        android:fontFamily="@font/noto_sans"
-        android:includeFontPadding="false"
+        android:layout_height="45dp"
+        android:background="@color/white_gray"
         app:tabGravity="fill"
         app:tabMode="fixed"
-        app:tabTextColor="@color/gist_dark_gray"
-        app:tabSelectedTextColor="@color/gist_red"
+        app:tabTextColor="@color/warm_grey"
+        app:tabSelectedTextColor="@color/gist_blue"
         app:tabRippleColor="@null"
         app:tabIndicatorHeight="0dp"
+        app:tabTextAppearance="@style/tab_text"
+        app:tabBackground="@color/white_gray"
+        android:layout_marginTop="26.5dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
         />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="#E4E4E4"/>
     <android.support.v4.view.ViewPager
         android:id="@+id/tutorial_switch_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="@color/white_gray"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="39dp"/>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:background="#FFFFFF">
+        android:background="@color/white_gray"
+        android:layout_marginBottom="37dp">
 
         <Button
             android:id="@+id/next"
-            android:layout_width="200dp"
-            android:layout_height="36dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:text="@string/apply_button"
-            android:background="@drawable/roundable_ok_button_design"
+            android:layout_width="250dp"
+            android:layout_height="46.5dp"
+            android:text="다음"
+            android:textSize="15sp"
             android:textColor="@color/white"
-            android:fontFamily="@font/noto_sans"
-            android:includeFontPadding="false"
-            android:textSize="16sp"
+            android:fontFamily="@font/nanumsquare_b"
             android:gravity="center"
+            android:background="@drawable/blue_filed_round_box"
             />
     </LinearLayout>
-
-
-
 </LinearLayout>

@@ -1,37 +1,41 @@
 package com.allofgist.dell.allofgistlite;
 
 import android.content.Intent;
-import android.graphics.Color;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import static com.allofgist.dell.allofgistlite.MainActivity.MultipleColorInOneText;
+//import static com.allofgist.dell.allofgistlite.MainActivity.MultipleColorInOneText;
 
 public class AnonymousForumActivity_Preview extends AppCompatActivity {
 
-    String Title = "<font color=#DC2314>G</font><font color=#4F5B54>IST</font>";
     TextView titleAnonymousForum;
 
     String id;
     Bundle bundle;
-    LinearLayout buttonHome;
-    LinearLayout buttonBest;
-    ImageView imageViewBest;
-    TextView textViewBest;
-    int bestButtonClick;
-    LinearLayout buttonSearch;
-    LinearLayout buttonWrite;
+    //LinearLayout buttonHome;
+    //LinearLayout buttonBest;
+    //ImageView imageViewBest;
+    //TextView textViewBest;
+    //int bestButtonClick;
+    //LinearLayout buttonSearch;
+    //LinearLayout buttonWrite;
+    ImageButton backButton;
+    ImageButton moreButton;
+
+    private FloatingActionButton writeButton;
 
     private Fragment OverviewFragment;
-    private Fragment BestviewFragment;
+    //private Fragment BestviewFragment;
 
     private NonSwipeableViewPager fmViewPager;
     PagerAdapter pagerAdapter;
@@ -42,7 +46,7 @@ public class AnonymousForumActivity_Preview extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_anonymous_forum_preview);
 
-        bestButtonClick = 0;
+        //bestButtonClick = 0;
 
         id = getIntent().getStringExtra("ID");
         bundle = new Bundle();
@@ -50,12 +54,12 @@ public class AnonymousForumActivity_Preview extends AppCompatActivity {
 
         OverviewFragment = new AnonymousForum_OverviewFragment();
         OverviewFragment.setArguments(bundle);
-        BestviewFragment = new AnonymousForum_BestviewFragment();
-        BestviewFragment.setArguments(bundle);
+        //BestviewFragment = new AnonymousForum_BestviewFragment();
+        //BestviewFragment.setArguments(bundle);
 
         initialSetting();
 
-        MultipleColorInOneText(Title,titleAnonymousForum);
+        //MultipleColorInOneText(Title,titleAnonymousForum);
 
         pagerAdapter = new PagerAdapter(getSupportFragmentManager());
         fmViewPager.setAdapter(pagerAdapter);
@@ -64,7 +68,7 @@ public class AnonymousForumActivity_Preview extends AppCompatActivity {
 
 
 
-        buttonHome.setOnClickListener(new View.OnClickListener(){
+        /*buttonHome.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 finish();
@@ -120,6 +124,55 @@ public class AnonymousForumActivity_Preview extends AppCompatActivity {
             }
         });
 
+*/
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        moreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popupMine = new PopupMenu(getApplicationContext(), v);
+                MenuInflater menuInflater = new MenuInflater(getApplicationContext());
+                menuInflater.inflate(R.menu.anonymous_forum_preview_more_popup_menu, popupMine.getMenu());
+                popupMine.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.bestview:
+                                Intent BestViewActivity = new Intent(AnonymousForumActivity_Preview.this, AnonymousForumActivity_Preview_Bestview.class);
+                                BestViewActivity.putExtra("ID",id);
+                                startActivity(BestViewActivity);
+                                break;
+
+                            case R.id.search:
+                                Intent searchActivity = new Intent(AnonymousForumActivity_Preview.this, AnonymousForumActivity_Search.class);
+                                searchActivity.putExtra("ID",id);
+                                startActivity(searchActivity);
+                                break;
+
+                            default:
+                                break;
+                        }
+                        return false;
+                    }
+                });
+                popupMine.show();
+            }
+        });
+
+        writeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent writeActivity = new Intent(AnonymousForumActivity_Preview.this, AnonymousForumActivity_Write.class);
+                writeActivity.putExtra("ID",id);
+                startActivity(writeActivity);
+
+            }
+        });
 
     }
 
@@ -136,8 +189,9 @@ public class AnonymousForumActivity_Preview extends AppCompatActivity {
             switch(position){
                 case 0:
                     return OverviewFragment;
-                case 1:
-                    return BestviewFragment ;
+                //case 1:
+                    //return OverviewFragment;
+                    //return BestviewFragment ;
                 default:
                     return null;
             }
@@ -147,20 +201,22 @@ public class AnonymousForumActivity_Preview extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 2;
+            return 1;
         }
     }
 
     public void initialSetting(){
 
-        titleAnonymousForum = (TextView)findViewById(R.id.title_anonymous_forum_preview);
+        backButton = (ImageButton)findViewById(R.id.bulletin_board_back_button);
+        moreButton = (ImageButton)findViewById(R.id.bulletin_board_more);
+        writeButton = (FloatingActionButton)findViewById(R.id.write_bulletin_board);
 
-        buttonHome = (LinearLayout)findViewById(R.id.button_home);
+        /*buttonHome = (LinearLayout)findViewById(R.id.button_home);
         buttonSearch = (LinearLayout)findViewById(R.id.button_search);
         buttonWrite = (LinearLayout)findViewById(R.id.button_write);
         buttonBest = (LinearLayout)findViewById(R.id.button_best);
         textViewBest = (TextView)findViewById(R.id.button_best_textview);
-        imageViewBest = (ImageView)findViewById(R.id.button_best_imageview);
+        imageViewBest = (ImageView)findViewById(R.id.button_best_imageview);*/
 
         fmViewPager = (NonSwipeableViewPager) findViewById(R.id.anonymous_forum_preview_switch_layout);
 

@@ -3,39 +3,52 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF">
+
     <RelativeLayout
+        android:id="@+id/top_window_bar_gpa_calculator"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/gist_red">
+        android:layout_height="70dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/shadow">
+
         <ImageButton
             android:id="@+id/back"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="8dp"
+            android:layout_width="42.5dp"
+            android:layout_height="42.5dp"
+            android:layout_marginStart="12.5dp"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:background="@color/gist_red"
-            android:src="@drawable/left_arrow_white"/>
-        <TextView
+            android:background="@color/white"
+            android:src="@drawable/back_button_gray" />
+
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:text="반복"
-            android:textSize="18sp"
-            android:textColor="#FFFFFF"
-            android:fontFamily="@font/noto_sans"
-            android:includeFontPadding="false"
-            android:layout_centerInParent="true"
-            android:gravity="center"/>
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:layout_centerInParent="true">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="반복"
+                android:textSize="17.5sp"
+                android:gravity="center"
+                android:fontFamily="@font/nanumsquare_b"
+                android:textColor="@color/warm_grey"
+                android:background="@color/white"/>
+        </LinearLayout>
+
+
         <ImageButton
             android:id="@+id/checkR"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="8dp"
+            android:layout_width="42.5dp"
+            android:layout_height="42.5dp"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:background="@color/gist_red"
-            android:src="@drawable/check_white"/>
+            android:layout_marginEnd="12.5dp"
+            android:background="@color/white"
+            android:src="@drawable/check_gray" />
     </RelativeLayout>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -57,8 +70,7 @@
                 android:text="반복 일정인가요?"
                 android:textColor="#a3a3a3"
                 android:textSize="18sp"
-                android:fontFamily="@font/noto_sans"
-                android:includeFontPadding="false"
+                android:fontFamily="@font/nanumsquare_r"
                 android:layout_marginLeft="16dp"
                 android:layout_gravity="center_vertical" />
         </LinearLayout>
@@ -84,10 +96,9 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
                     android:text="매일 반복"
+                    android:fontFamily="@font/nanumsquare_r"
                     android:textSize="18sp"
-                    android:fontFamily="@font/noto_sans"
-                    android:includeFontPadding="false"
-                    android:textColor="@color/gist_dark_gray"
+                    android:textColor="@color/warm_grey"
                     android:layout_margin="20dp" />
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -103,19 +114,17 @@
                         android:inputType="textMultiLine|textNoSuggestions|number"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="16dp"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:hint="1"
-                        android:gravity="center"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"/>
+                        android:gravity="center"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="8dp"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:text="일마다"
-                        android:textColor="#818181"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"/>
+                        android:textColor="#818181"/>
                     <View
                         android:layout_width="0dp"
                         android:layout_height="1dp"
@@ -127,10 +136,9 @@
                         android:layout_height="30dp"
                         android:layout_marginRight="16dp"
                         android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:text="종료일"
                         android:textColor="#818181"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"
                         android:background="@drawable/repeat_window_end_date_button_design"/>
                 </LinearLayout>
             </RelativeLayout>
@@ -156,11 +164,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
+                    android:fontFamily="@font/nanumsquare_r"
                     android:text="매주 반복"
                     android:textSize="18sp"
-                    android:fontFamily="@font/noto_sans"
-                    android:includeFontPadding="false"
-                    android:textColor="@color/gist_dark_gray"
+                    android:textColor="@color/warm_grey"
                     android:layout_margin="20dp" />
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -175,19 +182,17 @@
                         android:background="#e4e4e4"
                         android:inputType="textMultiLine|textNoSuggestions|number"
                         android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:layout_marginLeft="16dp"
                         android:hint="1"
-                        android:gravity="center"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"/>
+                        android:gravity="center"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="8dp"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:text="주마다"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"
                         android:textColor="#818181"/>
                     <View
                         android:layout_width="0dp"
@@ -200,10 +205,9 @@
                         android:layout_height="30dp"
                         android:layout_marginRight="16dp"
                         android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:text="종료일"
                         android:textColor="#818181"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"
                         android:background="@drawable/repeat_window_end_date_button_design"/>
                 </LinearLayout>
             </RelativeLayout>
@@ -229,11 +233,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
+                    android:fontFamily="@font/nanumsquare_r"
                     android:text="매월 반복"
                     android:textSize="18sp"
-                    android:textColor="@color/gist_dark_gray"
-                    android:fontFamily="@font/noto_sans"
-                    android:includeFontPadding="false"
+                    android:textColor="@color/warm_grey"
                     android:layout_margin="20dp" />
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -249,9 +252,8 @@
                         android:inputType="textMultiLine|textNoSuggestions|number"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="16dp"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:hint="1"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"
                         android:gravity="center"/>
                     <TextView
                         android:layout_width="wrap_content"
@@ -259,8 +261,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="8dp"
                         android:text="개월마다"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:textColor="#818181"/>
                     <View
                         android:layout_width="0dp"
@@ -272,11 +273,10 @@
                         android:layout_width="60dp"
                         android:layout_height="30dp"
                         android:layout_marginRight="16dp"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:layout_gravity="center_vertical"
                         android:text="종료일"
                         android:textColor="#818181"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"
                         android:background="@drawable/repeat_window_end_date_button_design"/>
                 </LinearLayout>
             </RelativeLayout>
@@ -301,12 +301,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
+                    android:fontFamily="@font/nanumsquare_r"
                     android:layout_alignParentLeft="true"
                     android:text="매년 (몇월 몇일) 반복"
                     android:textSize="18sp"
-                    android:fontFamily="@font/noto_sans"
-                    android:includeFontPadding="false"
-                    android:textColor="@color/gist_dark_gray"
+                    android:textColor="@color/warm_grey"
                     android:layout_margin="20dp" />
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -323,12 +322,11 @@
                         android:id="@+id/year_end_date_button"
                         android:layout_width="60dp"
                         android:layout_height="30dp"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:layout_marginRight="16dp"
                         android:layout_gravity="center_vertical"
                         android:text="종료일"
                         android:textColor="#818181"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"
                         android:background="@drawable/repeat_window_end_date_button_design"/>
                 </LinearLayout>
             </RelativeLayout>
@@ -344,14 +342,13 @@
             android:id="@+id/end_date_text_window"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/nanumsquare_r"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="60dp"
             android:layout_centerVertical="true"
             android:background="#FFFFFF"
             android:textSize="18sp"
-            android:fontFamily="@font/noto_sans"
-            android:includeFontPadding="false"
-            android:textColor="@color/gist_dark_gray"/>
+            android:textColor="@color/warm_grey"/>
         <ImageButton
             android:id="@+id/end_date_datepicker_close_button"
             android:layout_width="wrap_content"
@@ -382,8 +379,7 @@
                         android:background="@drawable/repeat_button_color_selector"
                         android:gravity="center"
                         android:text="없음"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:textColor="@drawable/repeat_button_text_color_selector"/>
 
                     <Button
@@ -393,8 +389,7 @@
                         android:background="@drawable/repeat_button_color_selector"
                         android:gravity="center"
                         android:text="매일"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:textColor="@drawable/repeat_button_text_color_selector" />
 
                     <Button
@@ -403,20 +398,18 @@
                         android:layout_weight="1"
                         android:background="@drawable/repeat_button_color_selector"
                         android:gravity="center"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:text="매주"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"
                         android:textColor="@drawable/repeat_button_text_color_selector" />
 
                     <Button
                         android:id="@+id/month_repeat"
                         android:layout_height="60dp"
                         android:layout_weight="1"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:background="@drawable/repeat_button_color_selector"
                         android:gravity="center"
                         android:text="매월"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"
                         android:textColor="@drawable/repeat_button_text_color_selector" />
 
                     <Button
@@ -424,10 +417,9 @@
                         android:layout_height="60dp"
                         android:layout_weight="1"
                         android:background="@drawable/repeat_button_color_selector"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:gravity="center"
                         android:text="매년"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"
                         android:textColor="@drawable/repeat_button_text_color_selector" />
                 </TableRow>
             </TableLayout>
@@ -447,9 +439,8 @@
                         android:layout_height="36dp"
                         android:text="월"
                         android:gravity="center"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:layout_margin="3dp"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"
                         android:textColor="@drawable/repeat_week_day_of_the_week_button_text_selector"
                         android:background="@drawable/repeat_week_day_of_the_week_button_selector"/>
 
@@ -459,9 +450,8 @@
                         android:layout_height="36dp"
                         android:text="화"
                         android:gravity="center"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:layout_margin="3dp"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"
                         android:textColor="@drawable/repeat_week_day_of_the_week_button_text_selector"
                         android:background="@drawable/repeat_week_day_of_the_week_button_selector"/>
 
@@ -470,19 +460,17 @@
                         android:layout_width="36dp"
                         android:layout_height="36dp"
                         android:text="수"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:gravity="center"
                         android:layout_margin="3dp"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"
                         android:textColor="@drawable/repeat_week_day_of_the_week_button_text_selector"
                         android:background="@drawable/repeat_week_day_of_the_week_button_selector"/>
                     <Button
                         android:id="@+id/repeat_week_thu"
                         android:layout_width="36dp"
                         android:layout_height="36dp"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:text="목"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"
                         android:gravity="center"
                         android:layout_margin="3dp"
                         android:textColor="@drawable/repeat_week_day_of_the_week_button_text_selector"
@@ -493,9 +481,8 @@
                         android:layout_width="36dp"
                         android:layout_height="36dp"
                         android:text="금"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:gravity="center"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"
                         android:layout_margin="3dp"
                         android:textColor="@drawable/repeat_week_day_of_the_week_button_text_selector"
                         android:background="@drawable/repeat_week_day_of_the_week_button_selector"/>
@@ -504,10 +491,9 @@
                         android:id="@+id/repeat_week_sat"
                         android:layout_width="36dp"
                         android:layout_height="36dp"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:text="토"
                         android:gravity="center"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"
                         android:layout_margin="3dp"
                         android:textColor="@drawable/repeat_week_day_of_the_week_button_text_selector"
                         android:background="@drawable/repeat_week_day_of_the_week_button_selector"/>
@@ -516,11 +502,10 @@
                         android:id="@+id/repeat_week_sun"
                         android:layout_width="36dp"
                         android:layout_height="36dp"
+                        android:fontFamily="@font/nanumsquare_r"
                         android:text="일"
                         android:gravity="center"
                         android:layout_margin="3dp"
-                        android:fontFamily="@font/noto_sans"
-                        android:includeFontPadding="false"
                         android:textColor="@drawable/repeat_week_day_of_the_week_button_text_selector"
                         android:background="@drawable/repeat_week_day_of_the_week_button_selector"/>
                 </TableRow>
@@ -533,10 +518,9 @@
             android:visibility="gone"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="-30dp"
+            android:fontFamily="@font/nanumsquare_r"
             android:layout_marginBottom="-30dp"
             android:background="#f1f1f1"
-            android:fontFamily="@font/noto_sans"
-            android:includeFontPadding="false"
             android:datePickerMode="spinner"
             android:calendarViewShown="false" />
 

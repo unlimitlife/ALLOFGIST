@@ -47,6 +47,8 @@ public class CircleSiteFragment extends Fragment {
         // Required empty public constructor
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -111,7 +113,7 @@ public class CircleSiteFragment extends Fragment {
             View view = convertView;
 
             if(view==null){
-                view = LayoutInflater.from(getContext()).inflate(R.layout.gridviewitem_allsites, parent, false);
+                view = LayoutInflater.from(getContext()).inflate(R.layout.gridviewitem_allsites_w_img, parent, false);
 
                 siteHolder = new SiteHolder(view);
                 view.setTag(siteHolder);

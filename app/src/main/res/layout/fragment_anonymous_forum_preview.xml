@@ -17,7 +17,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/forum_gray"/>
-            <ProgressBar
+            <!--<ProgressBar
                 android:id="@+id/anonymous_forum_preview_progress_bar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
                 android:layout_marginTop="16dp"
                 android:visibility="gone"
                 android:indeterminate="true"
-                android:indeterminateDuration="650"/>
+                android:indeterminateDuration="650"/>-->
         </FrameLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>

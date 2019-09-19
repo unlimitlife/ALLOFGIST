@@ -48,6 +48,22 @@ public class StartScreen extends AppCompatActivity {
     TextView titleView;
     ImageView titleIcon;
 
+    loginDB lDB;
+    TutorialCheck tutorialCheck;
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //다음화면으로 갈떄 현재 액티비티를 종료
+        titleView.setText(null);
+        titleIcon.setImageBitmap(null);
+        lDB.cancel(false);
+        tutorialCheck.cancel(false);
+        finish();
+    }
+
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,19 +75,31 @@ public class StartScreen extends AppCompatActivity {
         login_pw = (EditText) findViewById(R.id.login_input_PASSWORD);
         titleView = (TextView) findViewById(R.id.GIST);
         titleIcon = (ImageView) findViewById(R.id.title_startscreen);
-        BitmapFactory.Options options = new BitmapFactory.Options();
+        lDB = new loginDB();
+        tutorialCheck = new TutorialCheck();
+
+
+        /*BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.gist,options);
-        BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.gist,options);
-        BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.gist,options);
+        BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.logo_start_screen,options);
+        BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.logo_start_screen,options);
+        BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.logo_start_screen,options);
         options.inSampleSize = setSimpleSize(options,REQUEST_WIDTH, REQUEST_HEIGHT);
         options.inJustDecodeBounds = false;
-        Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.gist,options);
+        Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.logo_start_screen,options);
         //siteHolder.mImageView.setBackground(new ShapeDrawable(new OvalShape()));
         titleIcon.setClipToOutline(true);
         titleIcon.requestLayout();
 
-        titleIcon.setImageBitmap(bitmap);
+        titleIcon.setImageBitmap(bitmap);*/
+
+
+
+
+
+
+
+
         //Glide.with(getApplicationContext()).load(getDrawable(R.drawable.gist)).into(titleIcon);
         //MultipleColorInOneText(Title,titleView);
 
@@ -105,7 +133,6 @@ public class StartScreen extends AppCompatActivity {
                     Log.e("err", e.getMessage());
                 }
 
-                loginDB lDB = new loginDB();
                 lDB.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, id, pw);
 
             }
@@ -155,6 +182,8 @@ public class StartScreen extends AppCompatActivity {
                 String line = null;
                 StringBuffer buff = new StringBuffer();
                 while ((line = in.readLine()) != null) {
+                    if(isCancelled())
+                        return 0;
                     buff.append(line + "\n");
                 }
 
@@ -193,7 +222,7 @@ public class StartScreen extends AppCompatActivity {
 
             if (result == 1) {
                 Log.e("RESULT", "성공적으로 처리되었습니다!");
-                TutorialCheck tutorialCheck = new TutorialCheck();
+                tutorialCheck = new TutorialCheck();
                 tutorialCheck.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, id);
 
             } else if (result == 0) {
@@ -249,6 +278,8 @@ public class StartScreen extends AppCompatActivity {
                 String line = null;
                 StringBuffer buff = new StringBuffer();
                 while ((line = in.readLine()) != null) {
+                    if(isCancelled())
+                        return 0;
                     buff.append(line + "\n");
                 }
 
@@ -305,13 +336,6 @@ public class StartScreen extends AppCompatActivity {
             }
         }
 
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        //다음화면으로 갈떄 현재 액티비티를 종료
-        finish();
     }
 
     public void AutoLoginCheck(){

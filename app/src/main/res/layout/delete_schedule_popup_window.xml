@@ -22,10 +22,9 @@
                 android:background="#FFFFFF"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:text="반복 일정 삭제"
-                android:textColor="#000000"
+                android:textColor="@color/warm_grey"
+                android:fontFamily="@font/nanumsquare_r"
                 android:textSize="20sp"
-                android:fontFamily="@font/noto_sans"
-                android:includeFontPadding="false"
                 android:layout_margin="16dp"/>
             <TextView
                 android:id="@+id/all_delete"
@@ -34,10 +33,9 @@
                 android:background="#FFFFFF"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:text="전체 반복 일정 삭제"
-                android:textColor="#000000"
+                android:textColor="@color/warm_grey"
+                android:fontFamily="@font/nanumsquare_r"
                 android:textSize="16sp"
-                android:fontFamily="@font/noto_sans"
-                android:includeFontPadding="false"
                 android:layout_margin="16dp"/>
 
         </LinearLayout>
@@ -56,10 +54,9 @@
                 android:background="#FFFFFF"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:text="삭제"
-                android:textColor="#000000"
+                android:textColor="@color/warm_grey"
+                android:fontFamily="@font/nanumsquare_r"
                 android:textSize="20sp"
-                android:fontFamily="@font/noto_sans"
-                android:includeFontPadding="false"
                 android:layout_marginTop="24dp"
                 android:layout_marginLeft="24dp"
                 android:layout_marginBottom="12dp"/>
@@ -69,10 +66,9 @@
                 android:background="#FFFFFF"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:text="일정을 삭제하시겠습니까?"
-                android:textColor="#000000"
+                android:textColor="@color/warm_grey"
+                android:fontFamily="@font/nanumsquare_r"
                 android:textSize="16sp"
-                android:fontFamily="@font/noto_sans"
-                android:includeFontPadding="false"
                 android:layout_marginLeft="24dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -91,9 +87,8 @@
                     android:layout_height="wrap_content"
                     android:background="#FFFFFF"
                     android:text="취소"
-                    android:fontFamily="@font/noto_sans"
-                    android:includeFontPadding="false"
-                    android:textColor="#000000"
+                    android:fontFamily="@font/nanumsquare_r"
+                    android:textColor="@color/warm_grey"
                     android:textSize="16sp"
                     android:layout_marginRight="32dp"
                     android:layout_marginBottom="20dp"/>
@@ -102,11 +97,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="확인"
-                    android:textColor="#000000"
+                    android:fontFamily="@font/nanumsquare_r"
+                    android:textColor="@color/warm_grey"
                     android:background="#FFFFFF"
                     android:textSize="16sp"
-                    android:fontFamily="@font/noto_sans"
-                    android:includeFontPadding="false"
                     android:layout_marginRight="32dp"
                     android:layout_marginBottom="20dp"/>
             </LinearLayout>

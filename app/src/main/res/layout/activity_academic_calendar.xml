@@ -4,35 +4,98 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AcademicCalendarActivity">
+    tools:context=".AcademicCalendarActivity"
+    android:background="@color/white_gray">
 
     <RelativeLayout
         android:id="@+id/top_window_bar_academic_list"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="70dp"
         android:layout_alignParentTop="true"
-        android:background="@color/gist_dark_gray">
+        android:background="@drawable/shadow">
+
+        <ImageButton
+            android:id="@+id/academic_calendar_back_button"
+            android:layout_width="42.5dp"
+            android:layout_height="42.5dp"
+            android:layout_marginStart="12.5dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="@color/white"
+            android:src="@drawable/back_button_gray" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/gist_dark_gray"
+            android:background="@color/white"
             android:layout_centerInParent="true">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:text="@string/title_academic_calendar"
-                android:textSize="20sp"
-                android:fontFamily="@font/noto_sans"
-                android:includeFontPadding="false"
-                android:textColor="#FFFFFF"
-                android:background="@color/gist_dark_gray"
-                android:textStyle="bold"/>
+                android:textSize="17.5sp"
+                android:gravity="center"
+                android:fontFamily="@font/nanumsquare_b"
+                android:textColor="@color/warm_grey"
+                android:background="@color/white"/>
         </LinearLayout>
     </RelativeLayout>
-    <android.support.v4.view.ViewPager
-        android:id="@+id/calenderPager"
+    <RelativeLayout
+        android:layout_marginTop="16dp"
+        android:id="@+id/status_bar_academic_list"
         android:layout_below="@id/top_window_bar_academic_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </android.support.v4.view.ViewPager>
+        android:layout_height="wrap_content"
+        android:background="@color/white_gray">
+        <ImageButton
+            android:id="@+id/back_academic_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/back_arrow"
+            android:background="@color/white_gray"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="32dp"
+            />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerInParent="true">
+            <TextView
+                android:id="@+id/month_tv_academic_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:textColor="@color/warm_grey"
+                tools:text="7월"
+                android:fontFamily="@font/nanumsquare_r"/>
+            <TextView
+                android:id="@+id/year_tv_academic_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12.5sp"
+                android:textColor="@color/warm_grey"
+                tools:text="2019년"
+                android:layout_marginStart="5dp"
+                android:fontFamily="@font/nanumsquare_l"/>
+        </LinearLayout>
+        <ImageButton
+            android:id="@+id/foward_academic_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/foward_arrow"
+            android:background="@color/white_gray"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="32dp"
+            />
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/calenderPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white_gray"
+        android:layout_below="@id/status_bar_academic_list"/>
 </RelativeLayout>

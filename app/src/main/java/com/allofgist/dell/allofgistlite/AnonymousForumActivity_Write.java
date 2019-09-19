@@ -9,10 +9,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -37,6 +39,7 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
 
     ImageButton backButton;
     Button submitButton;
+    Button resetButton;
     Switch selectNicknameButton;
     EditText titleEditText;
     EditText contentEditText;
@@ -56,6 +59,26 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
     TextView noticeText;
     TextView noticeCancel;
     TextView noticeOk;
+
+    NickNameLoadTask nickNameLoadTask;
+    ForumInsertTask forumInsertTask;
+    ForumEditTask forumEditTask;
+
+
+    @Override
+    public void onPause() {
+        nickNameLoadTask.cancel(false);
+        forumEditTask.cancel(false);
+        forumInsertTask.cancel(false);
+
+        popupView = null;
+        popupWindow = null;
+        noticePopupWindow = null;
+        currentForum = null;
+
+        super.onPause();
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -93,7 +116,7 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
                 selectNicknameButton.setChecked(false);
             else
                 selectNicknameButton.setChecked(true);
-            nicknameTextView.setText(currentForum.getNickname());
+            nicknameTextView.setText("작성자 | "+currentForum.getNickname());
             titleEditText.setText(currentForum.getTitle());
             contentEditText.setText(currentForum.getContent());
             submitButton.setText(R.string.edit_button);
@@ -101,7 +124,7 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
         }catch(NullPointerException e){
             e.printStackTrace();
             selectNicknameButton.setChecked(false);
-            nicknameTextView.setText("익명");
+            nicknameTextView.setText("작성자 | 익명");
             titleEditText.setText("");
             contentEditText.setText("");
             submitButton.setText(R.string.submit_button);
@@ -119,10 +142,10 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    new NickNameLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id);
+                    nickNameLoadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id);
                 }
                 else
-                    nicknameTextView.setText("익명");
+                    nicknameTextView.setText("작성자 | 익명");
             }
         });
 
@@ -163,24 +186,60 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
                             id,
                             titleEditText.getText().toString(),
                             contentEditText.getText().toString(),
-                            nicknameTextView.getText().toString(),
+                            nicknameTextView.getText().toString().substring(6),
                             new Date(Calendar.getInstance().getTimeInMillis()));
                     try{
                         if(editmode) {
                             forum.setUpload_datetime(currentForum.getUpload_datetime());
-                            new ForumEditTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, forum.getId(), forum.getTitle(), forum.getContent(), forum.getNickname(), currentForum.getNum() + "");
+                            forumEditTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, forum.getId(), forum.getTitle(), forum.getContent(), forum.getNickname(), currentForum.getNum() + "");
                         }
                         else{
                             forum.setUpload_datetime(new Date(Calendar.getInstance().getTimeInMillis()));
-                            new ForumInsertTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,forum.getId(),forum.getTitle(),forum.getContent(),forum.getNickname(),datetimeformat.format(forum.getUpload_datetime()));
+                            forumInsertTask = new ForumInsertTask();
+                            forumInsertTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,forum.getId(),forum.getTitle(),forum.getContent(),forum.getNickname(),datetimeformat.format(forum.getUpload_datetime()));
                         }
                     }catch (NullPointerException e){
                         e.printStackTrace();
                         forum.setUpload_datetime(new Date(Calendar.getInstance().getTimeInMillis()));
-                        new ForumInsertTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,forum.getId(),forum.getTitle(),forum.getContent(),forum.getNickname(),datetimeformat.format(forum.getUpload_datetime()));
+                        forumInsertTask = new ForumInsertTask();
+                        forumInsertTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,forum.getId(),forum.getTitle(),forum.getContent(),forum.getNickname(),datetimeformat.format(forum.getUpload_datetime()));
                     }
 
                 }
+            }
+        });
+
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(submitButton.getText().equals(getString(R.string.edit_button))) {
+                    noticeText.setText(R.string.notice_edit_reset);
+                    noticePopupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+                    noticeOk.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            titleEditText.setText("");
+                            selectNicknameButton.setChecked(false);
+                            contentEditText.setText("");
+                            noticePopupWindow.dismiss();
+                        }
+                    });
+
+                }else{
+                    noticeText.setText(R.string.notice_reset);
+                    noticePopupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+                    noticeOk.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            titleEditText.setText("");
+                            selectNicknameButton.setChecked(false);
+                            contentEditText.setText("");
+                            noticePopupWindow.dismiss();
+                        }
+                    });
+                }
+
             }
         });
     }
@@ -188,6 +247,7 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
     public void initialSetting(){
         backButton = (ImageButton)findViewById(R.id.write_back_button);
         submitButton = (Button)findViewById(R.id.write_submit_button);
+        resetButton = (Button)findViewById(R.id.bulletin_board_reset_button);
         selectNicknameButton = (Switch)findViewById(R.id.nickname_select);
         titleEditText = (EditText)findViewById(R.id.write_title);
         contentEditText = (EditText)findViewById(R.id.write_content);
@@ -200,6 +260,11 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
         noticeOk = (TextView)popupView.findViewById(R.id.notice_plus_ok_textview);
         noticeCancel = (TextView)popupView.findViewById(R.id.notice_plus_cancel_textview);
         noticePopupWindow.setBackgroundDrawable(new ColorDrawable(Color.argb(80,0,0,0)));
+
+        forumInsertTask = new ForumInsertTask();
+        forumEditTask = new ForumEditTask();
+        nickNameLoadTask = new NickNameLoadTask();
+
     }
 
 
@@ -242,6 +307,8 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
                 String line = null;
 
                 while ((line = bufferedReader.readLine()) != null) {
+                    if(isCancelled())
+                        return null;
                     sb.append(line);
                 }
 
@@ -258,7 +325,7 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String nickname) {
-            nicknameTextView.setText(nickname);
+            nicknameTextView.setText("작성자 | "+nickname);
         }
     }
 
@@ -307,6 +374,8 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
                 String line = null;
 
                 while((line = bufferedReader.readLine()) != null){
+                    if(isCancelled())
+                        return null;
                     sb.append(line);
                 }
 
@@ -371,6 +440,8 @@ public class AnonymousForumActivity_Write extends AppCompatActivity {
                 String line = null;
 
                 while((line = bufferedReader.readLine()) != null){
+                    if(isCancelled())
+                        return null;
                     stringBuffer.append(line);
                 }
                 data = stringBuffer.toString();

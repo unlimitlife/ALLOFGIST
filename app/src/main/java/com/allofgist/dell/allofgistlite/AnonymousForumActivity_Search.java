@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,7 +54,7 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
     RelativeLayout searchClassificationLayout;
     TextView searchClassificationText;
 
-    CheckBox searchOnlyBestCheckBox;
+    Switch searchOnlyBestCheckBox;
     TextView searchOnlyBestText;
 
     EditText searchEditText;
@@ -72,6 +73,36 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd",Locale.KOREA);
     SimpleDateFormat monthdayformat = new SimpleDateFormat("MM.dd",Locale.KOREA);
 
+
+
+    SearchIdLoadTask searchIdLoadTask;
+    ViewsUploadTask viewsUploadTask;
+
+    /*@Override
+    public void onPause() {
+        int count = searchList.getChildCount();
+        for (int i =0; i<count; i++){
+            try {
+                ViewGroup viewGroup = (ViewGroup) searchList.getChildAt(i);
+                int childSize = viewGroup.getChildCount();
+                for (int j = 0; j < childSize; j++) {
+                    if (viewGroup.getChildAt(j) instanceof ImageView) {
+                        ((ImageView) viewGroup.getChildAt(j)).setImageBitmap(null);
+                    }
+                    else if (viewGroup.getChildAt(j) instanceof TextView) {
+                        ((TextView) viewGroup.getChildAt(j)).setText(null);
+                    }
+                }
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }
+        }
+        searchIdLoadTask.cancel(false);
+        viewsUploadTask.cancel(false);
+
+        forumList = null;
+        super.onPause();
+    }*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,7 +122,8 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
                 searchClassificationText.setText(R.string.writer_search);
                 searchEditText.setText(getIntent().getStringExtra("NICKNAME"));
                 forumList = new ArrayList<Forum>();
-                new SearchIdLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ID_TAG);
+                searchIdLoadTask = new SearchIdLoadTask();
+                searchIdLoadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ID_TAG);
             }
         }catch (NullPointerException e){
             e.printStackTrace();
@@ -188,7 +220,8 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
                 }
                 try{
                     if (!ID_TAG.equals("")) {
-                        new SearchIdLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, searchEditText.getText().toString(), ID_TAG);
+                        searchIdLoadTask = new SearchIdLoadTask();
+                        searchIdLoadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, searchEditText.getText().toString(), ID_TAG);
                     }
                 }catch(NullPointerException e){
                     e.printStackTrace();
@@ -217,12 +250,19 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
                     else {
                         forumList = new ArrayList<Forum>();
                         progressBar.setVisibility(View.VISIBLE);
-                        new SearchLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, condition, onlyBest + "", searchEditText.getText().toString());
+                        searchIdLoadTask = new SearchIdLoadTask();
+                        searchIdLoadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, condition, onlyBest + "", searchEditText.getText().toString());
                     }
                 }
             }
         });
 
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
     public class ForumListAdapter extends RecyclerView.Adapter<ForumListAdapter.ForumHolder>{
 
@@ -399,7 +439,8 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
                         new RecyclerItemClickListener(getApplicationContext(), searchList, new RecyclerItemClickListener.OnItemClickListener() {
                             @Override
                             public void onItemClick(View view, int position) {
-                                new ViewsUploadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,position+"",forumList.get(position).getNum()+"");
+                                viewsUploadTask = new ViewsUploadTask();
+                                viewsUploadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,position+"",forumList.get(position).getNum()+"");
                             }
 
                             @Override
@@ -460,8 +501,11 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
                 String line = null;
 
                 StringBuffer stringBuffer = new StringBuffer();
-                while((line=bufferedReader.readLine())!=null)
-                    stringBuffer.append(line+"\n");
+                while((line=bufferedReader.readLine())!=null) {
+                    if(isCancelled())
+                        return jsonArray;
+                    stringBuffer.append(line + "\n");
+                }
 
                 data = stringBuffer.toString();
                 bufferedReader.close();
@@ -509,7 +553,8 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
                         new RecyclerItemClickListener(getApplicationContext(), searchList, new RecyclerItemClickListener.OnItemClickListener() {
                             @Override
                             public void onItemClick(View view, int position) {
-                                new ViewsUploadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,position+"",forumList.get(position).getNum()+"");
+                                viewsUploadTask = new ViewsUploadTask();
+                                viewsUploadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,position+"",forumList.get(position).getNum()+"");
                             }
 
                             @Override
@@ -579,6 +624,8 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
                 StringBuffer stringBuffer = new StringBuffer();
                 while((line = bufferedReader.readLine())!=null){
                     stringBuffer.append(line);
+                    if(isCancelled())
+                        return jsonArray;
                 }
 
                 data = stringBuffer.toString().trim();
@@ -638,7 +685,7 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
         searchClassificationLayout = (RelativeLayout)findViewById(R.id.anonymous_forum_search_classification_layout);
         searchClassificationText = (TextView)findViewById(R.id.anonymous_forum_search_classification_text);
 
-        searchOnlyBestCheckBox = (CheckBox)findViewById(R.id.anonymous_forum_search_only_best_checkbox);
+        searchOnlyBestCheckBox = (Switch)findViewById(R.id.anonymous_forum_search_only_best_checkbox);
         searchOnlyBestText = (TextView)findViewById(R.id.anonymous_forum_search_only_best_text);
 
         searchEditText =  (EditText)findViewById(R.id.anonymous_forum_search_text);
@@ -653,6 +700,9 @@ public class AnonymousForumActivity_Search extends AppCompatActivity {
 
         noResultNotice = (LinearLayout)findViewById(R.id.no_search_result_notice);
         noResultNotice.setVisibility(View.GONE);
+
+        searchIdLoadTask = new SearchIdLoadTask();
+        viewsUploadTask = new ViewsUploadTask();
     }
 
 

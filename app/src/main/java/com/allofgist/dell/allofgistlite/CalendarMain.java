@@ -1,12 +1,15 @@
 package com.allofgist.dell.allofgistlite;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -71,14 +74,20 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class CalendarMain extends AppCompatActivity {
 
+    private DatePickerDialog.OnDateSetListener callbackMethod;
+
     private String id = "LOGIN_ERROR";
     private MaterialCalendarView calendarView;
-    private ImageButton watchAcademic;
+
+    private ImageButton backButton_main;
+    private ImageButton deleteButton_main;
+    private TextView noticeView;
 
     //요일 저장하는 배열
     String[] day = {"일", "월", "화", "수", "목", "금", "토"};
 
-    private TextView textDate;
+    private TextView textDate_day;
+    private TextView textDate_day_week;
 
     //캘린더 하단 리스트뷰 항목들
     private ListView calendarList;
@@ -97,7 +106,6 @@ public class CalendarMain extends AppCompatActivity {
     private Hashtable<CalendarDay, Integer> dotData;
     private ArrayList<Date> isDot;
 
-    private FloatingActionButton gotoToday;
 
     //일정 추가 관련
     private FloatingActionButton addSchedule;
@@ -105,7 +113,7 @@ public class CalendarMain extends AppCompatActivity {
     private PopupWindow addScheduleRepeatScreen;
 
     private ImageButton clearBack;
-    private ImageButton check;
+    private Button check;
     private PopupWindow deleteSchedulePopupWindow;
     private LinearLayout repeatDeleteLayout;
     private LinearLayout noRepeatDeleteLayout;
@@ -125,7 +133,7 @@ public class CalendarMain extends AppCompatActivity {
     private InputMethodManager imm;
 
     //일정 삭제 관련
-    private ImageButton deleteButton;
+    private View popupViewD;
 
     /*//알람 버튼 선언
     private Button zeroAgo;
@@ -235,6 +243,9 @@ public class CalendarMain extends AppCompatActivity {
             finish();
         }
 
+        noticeView = (TextView)findViewById(R.id.no_schedule_notice);
+
+
         calendarView = (MaterialCalendarView) findViewById(R.id.calendarView);
         calendarView.state().edit()
                 .setFirstDayOfWeek(Calendar.SUNDAY)
@@ -248,28 +259,30 @@ public class CalendarMain extends AppCompatActivity {
                 new SaturdayDecorator());
 
 
-        oneColor.add(Color.rgb(220,35,20));
 
-        twoColor.add(Color.rgb(253,77,36));
-        twoColor.add(Color.rgb(220,35,20));
+        oneColor.add(Color.rgb(23,193,255));
 
-        threeColor.add(Color.rgb(253,129,97));
-        threeColor.add(Color.rgb(253,77,36));
-        threeColor.add(Color.rgb(220,35,20));
+        twoColor.add(Color.rgb(23,193,255));
+        twoColor.add(Color.rgb(23,193,255));
 
-        fourColor.add(Color.rgb(255,151,130));
-        fourColor.add(Color.rgb(253,129,97));
-        fourColor.add(Color.rgb(253,77,36));
-        fourColor.add(Color.rgb(220,35,20));
+        threeColor.add(Color.rgb(23,193,255));
+        threeColor.add(Color.rgb(23,193,255));
+        threeColor.add(Color.rgb(23,193,255));
 
-        fiveColor.add(Color.rgb(255,191,148));
-        fiveColor.add(Color.rgb(255,151,130));
-        fiveColor.add(Color.rgb(253,129,97));
-        fiveColor.add(Color.rgb(253,77,36));
-        fiveColor.add(Color.rgb(220,35,20));
+        fourColor.add(Color.rgb(23,193,255));
+        fourColor.add(Color.rgb(23,193,255));
+        fourColor.add(Color.rgb(23,193,255));
+        fourColor.add(Color.rgb(23,193,255));
+
+        fiveColor.add(Color.rgb(23,193,255));
+        fiveColor.add(Color.rgb(23,193,255));
+        fiveColor.add(Color.rgb(23,193,255));
+        fiveColor.add(Color.rgb(23,193,255));
+        fiveColor.add(Color.rgb(23,193,255));
 
         //날짜 제목
-        textDate = (TextView) findViewById(R.id.date_text);
+        textDate_day = (TextView) findViewById(R.id.date_text_day);
+        textDate_day_week = (TextView) findViewById(R.id.date_text_day_week);
 
         //하단 리스트 관련
         calendarList = (ListView) findViewById(R.id.calendar_list);
@@ -287,7 +300,7 @@ public class CalendarMain extends AppCompatActivity {
         final View popupViewR = getLayoutInflater().inflate(R.layout.add_schedule_repeat_button_popup_window, null);
         addScheduleRepeatScreen = new PopupWindow(popupViewR, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
 
-        final View popupViewD = getLayoutInflater().inflate(R.layout.delete_schedule_popup_window, null);
+        popupViewD = getLayoutInflater().inflate(R.layout.delete_schedule_popup_window, null);
         deleteSchedulePopupWindow = new PopupWindow(popupViewD, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
 
         repeatDeleteLayout = (LinearLayout)popupViewD.findViewById(R.id.repeat_delete_layout);
@@ -331,7 +344,6 @@ public class CalendarMain extends AppCompatActivity {
                     datePicker.setVisibility(View.GONE);
                     timePicker.setVisibility(View.GONE);
                     //alarmTable.setVisibility(View.GONE);
-                    deleteButton.setVisibility(View.VISIBLE);
 
                     noRepeat.setSelected(false);
                     dayRepeat.setSelected(false);
@@ -1026,63 +1038,24 @@ public class CalendarMain extends AppCompatActivity {
                                 addScheduleScreen.dismiss();
                             }
                         });
-                        //삭제 버튼
-                        deleteButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                noRepeatDeleteLayout.setVisibility(View.GONE);
-                                repeatDeleteLayout.setVisibility(View.GONE);
-                                if (!deleteSchedulePopupWindow.isShowing()) {
-                                    if(schedule.getRepeat_period().equals("없음")) {
-                                        noRepeatDeleteLayout.setVisibility(View.VISIBLE);
-                                        deleteSchedulePopupWindow.showAtLocation(popupViewD, Gravity.CENTER, 0, 0);
-                                        noRepeatBackTextView.setOnClickListener(new View.OnClickListener(){
-                                            @Override
-                                            public void onClick(View view) {
-                                                deleteSchedulePopupWindow.dismiss();
-                                            }
-                                        });
-                                        noRepeatOkTextView.setOnClickListener(new View.OnClickListener(){
-                                            @Override
-                                            public void onClick(View view) {
-                                                new DeleteDiaryTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id,schedule.getNum()+"");
-                                                deleteSchedulePopupWindow.dismiss();
-                                                addScheduleScreen.dismiss();
-                                            }
-                                        });
-                                    }
-                                    else {
-                                        repeatDeleteLayout.setVisibility(View.VISIBLE);
-                                        deleteSchedulePopupWindow.showAtLocation(popupViewD, Gravity.CENTER, 0, 0);
-                                        allDeleteTextView.setOnClickListener(new View.OnClickListener(){
-                                            @Override
-                                            public void onClick(View view) {
-                                                new DeleteDiaryTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id,schedule.getNum()+"");
-                                                deleteSchedulePopupWindow.dismiss();
-                                                addScheduleScreen.dismiss();
-                                            }
-                                        });
-
-                                    }
-                                }
-                            }
-                        });
                     }
                 }
             }
         });
 
         //시작날짜를 현재 날짜로 설정
-        textDate.setText(Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + ". " + day[Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1]);
+        textDate_day.setText(Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "일");
+        textDate_day_week.setText(day[Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1]+"요일");
         calendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date1, boolean selected) {
                 int dayNum = calendarView.getSelectedDate().getCalendar().get(Calendar.DAY_OF_WEEK);
-                textDate.setText(calendarView.getSelectedDate().getDay() + ". " + day[dayNum - 1]);
+                textDate_day.setText(calendarView.getSelectedDate().getDay() + "일");
+                textDate_day_week.setText(day[dayNum - 1]+"요일");
                 calendarListDate_pre = new ArrayList<Schedule>();
                 calendarListData = new Hashtable<Date, ArrayList<Schedule>>();
                 String completedate = date.format(calendarView.getSelectedDate().getDate());
-                Log.e("completedate","taskinput"+completedate);
+                Log.e("completedate","taskinput"+completedate+"selected:"+selected);
                 ScheduleLoadTask scheduleLoadTask = new ScheduleLoadTask();
                 scheduleLoadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id,completedate);
 
@@ -1109,27 +1082,33 @@ public class CalendarMain extends AppCompatActivity {
         });
 
 
-        //학사 일정
-        watchAcademic = (ImageButton) findViewById(R.id.watchAcademic);
-        watchAcademic.setOnClickListener(new View.OnClickListener() {
+        backButton_main = (ImageButton)findViewById(R.id.calendar_back_button);
+        backButton_main.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                startActivity(new Intent(CalendarMain.this, AcademicCalendarActivity.class));
+            public void onClick(View v) {
+                finish();
             }
         });
 
-        gotoToday = (FloatingActionButton) findViewById(R.id.gotoToday);
-        gotoToday.setOnClickListener(new View.OnClickListener(){
+        deleteButton_main = (ImageButton)findViewById(R.id.calendar_delete_button);
+        deleteButton_main.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Calendar calendar = Calendar.getInstance();
-                calendarView.setSelectedDate(CalendarDay.from(calendar.getTime()));
-                calendarView.setCurrentDate(CalendarDay.from(calendar.getTime()),true);
-                String completedate = date.format(calendar.getTime());
-                calendarListAdapter.calendarAdapterData.clear();
-                calendarListAdapter.notifyDataSetChanged();
-                textDate.setText(Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + ". " + day[Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1]);
-                new ScheduleLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id,completedate);
+            public void onClick(View v) {
+                if (!calendarListAdapter.isDeleteVisibility()) {
+                    calendarListAdapter.updateDeleteVisibility(true);
+                    calendarListAdapter.updateLayoutSelected(true);
+                    deleteButton_main.setSelected(true);
+                    calendarListAdapter.notifyDataSetChanged();
+                }
+                else {
+                    calendarListAdapter.updateDeleteVisibility(false);
+                    calendarListAdapter.updateLayoutSelected(false);
+                    deleteButton_main.setSelected(false);
+                    calendarListAdapter.notifyDataSetChanged();
+                }
+
+
+
             }
         });
 
@@ -1152,10 +1131,13 @@ public class CalendarMain extends AppCompatActivity {
                 dateClick = 0;
                 timeClick = 0;
                 //alarmClick = 0;
+
+
                 datePicker.setVisibility(View.GONE);
                 timePicker.setVisibility(View.GONE);
+
+
                 //alarmTable.setVisibility(View.GONE);
-                deleteButton.setVisibility(View.GONE);
 
                 noRepeat.setSelected(false);
                 dayRepeat.setSelected(false);
@@ -1832,34 +1814,6 @@ public class CalendarMain extends AppCompatActivity {
         });
 
 
-        //위아래 제스쳐
-        //ListView calendarList = (ListView)findViewById(R.id.calendar_list);
-
-        /*watchAcademic.setOnTouchListener(new View.OnTouchListener(){
-            private float initialY, finalY;
-
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-
-                switch (motionEvent.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        initialY = motionEvent.getY();
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        finalY = motionEvent.getY();
-
-                        //위로 스와이프
-                        if (finalY>initialY) {
-                            Toast.makeText(CalendarMain.this,"위로 스와이프",Toast.LENGTH_SHORT).show();
-                        }
-                        if (finalY<initialY) {
-                            Toast.makeText(CalendarMain.this,"아래로 스와이프",Toast.LENGTH_SHORT).show();
-                        }
-                        break;
-                }
-                return false;
-            }
-        });*/
 
 
     }
@@ -2021,7 +1975,7 @@ public class CalendarMain extends AppCompatActivity {
 
         @Override
         public void decorate(DayViewFacade view) {
-            view.addSpan(new ForegroundColorSpan(Color.RED));
+            view.addSpan(new ForegroundColorSpan(Color.rgb(23,193,255)));
         }
     }
 
@@ -2042,9 +1996,11 @@ public class CalendarMain extends AppCompatActivity {
 
         @Override
         public void decorate(DayViewFacade view) {
-            view.addSpan(new ForegroundColorSpan(Color.BLUE));
+            view.addSpan(new ForegroundColorSpan(Color.rgb(23,193,255)));
         }
     }
+
+
 
     //현재 날짜에 초록색 색깔 넣기
     public class OneDayDecorator implements DayViewDecorator {
@@ -2099,7 +2055,7 @@ public class CalendarMain extends AppCompatActivity {
 
         public OneDotDecorator(){
             color = new ArrayList<Integer>();
-            color.add(Color.rgb(220,35,20));
+            color.add(Color.rgb(23,193,255));
         }
 
         @Override
@@ -2124,8 +2080,8 @@ public class CalendarMain extends AppCompatActivity {
 
         public TwoDotDecorator(){
             color = new ArrayList<Integer>();
-            color.add(Color.rgb(220,35,20));
-            color.add(Color.rgb(220,45,30));
+            color.add(Color.rgb(23,193,255));
+            color.add(Color.rgb(23,193,255));
         }
 
         @Override
@@ -2150,9 +2106,9 @@ public class CalendarMain extends AppCompatActivity {
 
         public ThreeDotDecorator(){
             color = new ArrayList<Integer>();
-            color.add(Color.rgb(220,35,20));
-            color.add(Color.rgb(220,45,30));
-            color.add(Color.rgb(220,55,40));
+            color.add(Color.rgb(23,193,255));
+            color.add(Color.rgb(23,193,255));
+            color.add(Color.rgb(23,193,255));
         }
 
         @Override
@@ -2177,10 +2133,10 @@ public class CalendarMain extends AppCompatActivity {
 
         public FourDotDecorator(){
             color = new ArrayList<Integer>();
-            color.add(Color.rgb(220,35,20));
-            color.add(Color.rgb(220,45,30));
-            color.add(Color.rgb(220,55,40));
-            color.add(Color.rgb(253,77,36));
+            color.add(Color.rgb(23,193,255));
+            color.add(Color.rgb(23,193,255));
+            color.add(Color.rgb(23,193,255));
+            color.add(Color.rgb(23,193,255));
         }
 
         @Override
@@ -2205,11 +2161,11 @@ public class CalendarMain extends AppCompatActivity {
 
         public FiveDotDecorator(){
             color = new ArrayList<Integer>();
-            color.add(Color.rgb(220,35,20));
-            color.add(Color.rgb(220,45,30));
-            color.add(Color.rgb(220,55,40));
-            color.add(Color.rgb(253,77,36));
-            color.add(Color.rgb(220,75,60));
+            color.add(Color.rgb(23,193,255));
+            color.add(Color.rgb(23,193,255));
+            color.add(Color.rgb(23,193,255));
+            color.add(Color.rgb(23,193,255));
+            color.add(Color.rgb(23,193,255));
         }
 
         @Override
@@ -2278,7 +2234,7 @@ public class CalendarMain extends AppCompatActivity {
 
         //일정 추가
         clearBack = (ImageButton) view.findViewById(R.id.clear);
-        check = (ImageButton) view.findViewById(R.id.check);
+        check = (Button) view.findViewById(R.id.check);
         edit_diary = (EditText) view.findViewById(R.id.edit_diary);
         datePicker = (DatePicker) view.findViewById(R.id.datepicker);
         dateButton = (Button) view.findViewById(R.id.datebutton);
@@ -2288,8 +2244,6 @@ public class CalendarMain extends AppCompatActivity {
         //alarmButton = (Button) view.findViewById(R.id.alarmbutton);
         repeatButton = (Button) view.findViewById(R.id.repeatbutton);
 
-        //일정 삭제 관련
-        deleteButton = (ImageButton) view.findViewById(R.id.delete_diary);
     }
 
 
@@ -2910,6 +2864,8 @@ public class CalendarMain extends AppCompatActivity {
     public class CalendarListAdapter extends BaseAdapter{
 
         private ArrayList<Schedule> calendarAdapterData;
+        Boolean isVisible = false;
+        Boolean isSelected = false;
 
         public CalendarListAdapter(ArrayList<Schedule> calendarAdapterData){
             this.calendarAdapterData = calendarAdapterData;
@@ -2934,23 +2890,119 @@ public class CalendarMain extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             if(convertView == null){
                 LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.calendar_list_item, parent, false);
+                convertView = inflater.inflate(R.layout.listviewitem_schedule, parent, false);
             }
 
-            TextView contextTextView = (TextView)convertView.findViewById(R.id.diary_context_textview);
-            TextView dateTextView = (TextView)convertView.findViewById(R.id.diary_compelete_date_textview);
+            LinearLayout layout = (LinearLayout)convertView.findViewById(R.id.layout_schedule_item);
+            TextView contextTextView = (TextView)convertView.findViewById(R.id.diary_context_textview_schedule);
+            TextView dateTextView_hour = (TextView)convertView.findViewById(R.id.diary_compelete_date_textview_hour);
+            TextView dateTextView_minute = (TextView)convertView.findViewById(R.id.diary_compelete_date_textview_minute);
+            ImageButton deleteButton = (ImageButton)convertView.findViewById(R.id.log_item_delete_schedule);
 
             contextTextView.setText(calendarAdapterData.get(position).getContext());
-            if(calendarAdapterData.get(position).getCompleteDateTime_numeric()==null)
-                dateTextView.setText("");
-            else {
-                String subtext = calendarAdapterData.get(position).getCompleteDateTime_text();
-                String[] subtextSplit = subtext.split("년 ");
-                dateTextView.setText(subtextSplit[1]);
+            if(calendarAdapterData.get(position).getCompleteDateTime_numeric()==null) {
+                layout.setVisibility(View.GONE);
+                noticeView.setVisibility(View.VISIBLE);
             }
+            else {
+                layout.setVisibility(View.VISIBLE);
+                noticeView.setVisibility(View.GONE);
+                String subtext = calendarAdapterData.get(position).getCompleteDateTime_text();
+                String[] subtextSplit = subtext.split("오");
+                String[] check = subtextSplit[1].split(" ");
+                String[] time = check[1].split(":");
+
+                if(check[0].equals("전")){
+                    dateTextView_hour.setText(time[0]);
+                    if (time[1].equals("00")){
+                        dateTextView_minute.setVisibility(View.GONE);
+                    }
+                    else {
+                        dateTextView_minute.setVisibility(View.VISIBLE);
+                        dateTextView_minute.setText(time[1] + "분");
+                    }
+                }
+                if(check[0].equals("후")){
+                    dateTextView_hour.setText((Integer.parseInt(time[0])+12)+"");
+                    if (time[1].equals("00")){
+                        dateTextView_minute.setVisibility(View.GONE);
+                    }
+                    else {
+                        dateTextView_minute.setVisibility(View.VISIBLE);
+                        dateTextView_minute.setText(time[1] + "분");
+                    }
+                }
+            }
+
+            if(isVisible)
+                deleteButton.setVisibility(View.VISIBLE);
+            else
+                deleteButton.setVisibility(View.GONE);
+
+            layout.setSelected(isSelected);
+
+
+            final int i = position;
+
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Schedule schedule = (Schedule) calendarList.getItemAtPosition(i);
+
+                    noRepeatDeleteLayout.setVisibility(View.GONE);
+                    repeatDeleteLayout.setVisibility(View.GONE);
+                    if (!deleteSchedulePopupWindow.isShowing()) {
+                        if(schedule.getRepeat_period().equals("없음")) {
+                            noRepeatDeleteLayout.setVisibility(View.VISIBLE);
+                            deleteSchedulePopupWindow.showAtLocation(popupViewD, Gravity.CENTER, 0, 0);
+                            noRepeatBackTextView.setOnClickListener(new View.OnClickListener(){
+                                @Override
+                                public void onClick(View view) {
+                                    deleteSchedulePopupWindow.dismiss();
+                                }
+                            });
+                            noRepeatOkTextView.setOnClickListener(new View.OnClickListener(){
+                                @Override
+                                public void onClick(View view) {
+                                    new DeleteDiaryTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id,schedule.getNum()+"");
+                                    deleteSchedulePopupWindow.dismiss();
+                                    addScheduleScreen.dismiss();
+                                }
+                            });
+                        }
+                        else {
+                            repeatDeleteLayout.setVisibility(View.VISIBLE);
+                            deleteSchedulePopupWindow.showAtLocation(popupViewD, Gravity.CENTER, 0, 0);
+                            allDeleteTextView.setOnClickListener(new View.OnClickListener(){
+                                @Override
+                                public void onClick(View view) {
+                                    new DeleteDiaryTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id,schedule.getNum()+"");
+                                    deleteSchedulePopupWindow.dismiss();
+                                    addScheduleScreen.dismiss();
+                                }
+                            });
+
+                        }
+                    }
+
+                }
+            });
+
             return convertView;
         }
-    }
 
+
+        public void updateDeleteVisibility(boolean newValue){
+            isVisible = newValue;
+        }
+
+        public void updateLayoutSelected(boolean newValue){
+            isSelected = newValue;
+        }
+
+        public boolean isDeleteVisibility(){
+            return isVisible;
+        }
+    }
 
 }

@@ -3,12 +3,12 @@
     xmlns:tool="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="55dp"
+    android:layout_height="60dp"
     android:gravity="center_vertical"
-    android:background="@drawable/anonymous_preview_box_design">
+    android:background="@drawable/gray_box_selector_press">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
         android:gravity="center_vertical">
@@ -22,6 +22,7 @@
                 android:id="@+id/best_icon_preview"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
                 android:background="@color/forum_gray"
                 android:src="@drawable/star_yellow"
                 android:layout_marginStart="16dp"
@@ -29,17 +30,15 @@
             <TextView
                 android:id="@+id/title_content_preview"
                 android:layout_width="wrap_content"
-                android:layout_height="20dp"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:layout_marginStart="16dp"
                 android:background="@color/forum_gray"
                 android:lines="1"
                 android:ellipsize="end"
                 tool:text="title of content"
-                android:textColor="@color/gist_dark_gray"
-                android:fontFamily="@font/noto_sans"
-                android:includeFontPadding="false"
-                android:textSize="16sp"/>
+                android:textColor="@drawable/gray_white_text_color_selector_press"
+                android:textSize="14sp"/>
         </LinearLayout>
         <TextView
             android:id="@+id/comment_number_preview"
@@ -47,13 +46,12 @@
             android:layout_height="20dp"
             android:background="@color/forum_gray"
             android:layout_marginStart="4dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="20dp"
             android:gravity="center_vertical"
-            tool:text="[13]"
-            android:textColor="@color/gist_red"
-            android:textSize="12sp"
-            android:fontFamily="@font/noto_sans"
-            android:includeFontPadding="false"
+            tool:text="13"
+            android:fontFamily="@font/nanumsquare_eb"
+            android:textColor="@drawable/blue_white_text_color_selector_press"
+            android:textSize="14sp"
             />
 
     </LinearLayout>
@@ -70,10 +68,9 @@
             android:layout_height="16dp"
             android:gravity="center_vertical"
             android:background="@color/forum_gray"
-            android:textColor="#a3a3a3"
-            android:textSize="12sp"
-            android:fontFamily="@font/noto_sans"
-            android:includeFontPadding="false"
+            android:textColor="@drawable/light_gray_white_text_color_selector_press"
+            android:textSize="10sp"
+            android:fontFamily="@font/nanumsquare_r"
             tool:text="익명"/>
         <LinearLayout
             android:layout_width="0dp"
@@ -87,44 +84,43 @@
                 android:gravity="center_vertical"
                 android:layout_marginStart="8dp"
                 android:background="@color/forum_gray"
-                android:textColor="#a3a3a3"
-                android:textSize="12sp"
-                android:fontFamily="@font/noto_sans"
-                android:includeFontPadding="false"
+                android:textColor="@drawable/light_gray_white_text_color_selector_press"
+                android:textSize="10sp"
+                android:fontFamily="@font/nanumsquare_r"
                 tool:text="조회 7"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/devider"
-                android:textSize="12sp"
-                android:textColor="#e1e1e1"/>
+                android:textColor="@drawable/light_gray_white_text_color_selector_press"
+                android:textSize="10sp"
+                android:fontFamily="@font/nanumsquare_r"/>
             <TextView
                 android:id="@+id/likes_number_preview"
                 android:layout_width="wrap_content"
                 android:layout_height="16dp"
                 android:gravity="center_vertical"
                 android:background="@color/forum_gray"
-                android:textColor="#a3a3a3"
-                android:textSize="12sp"
-                android:fontFamily="@font/noto_sans"
-                android:includeFontPadding="false"
+                android:textColor="@drawable/light_gray_white_text_color_selector_press"
+                android:textSize="10sp"
+                android:fontFamily="@font/nanumsquare_r"
                 tool:text="좋아요 3"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/devider"
-                android:textSize="12sp"
-                android:textColor="#e1e1e1"/>
+                android:textColor="@drawable/light_gray_white_text_color_selector_press"
+                android:textSize="10sp"
+                android:fontFamily="@font/nanumsquare_r"/>
             <TextView
                 android:id="@+id/unlikes_number_preview"
                 android:layout_width="wrap_content"
                 android:layout_height="16dp"
                 android:gravity="center_vertical"
                 android:background="@color/forum_gray"
-                android:textColor="#a3a3a3"
-                android:textSize="12sp"
-                android:fontFamily="@font/noto_sans"
-                android:includeFontPadding="false"
+                android:textColor="@drawable/light_gray_white_text_color_selector_press"
+                android:textSize="10sp"
+                android:fontFamily="@font/nanumsquare_r"
                 tool:text="싫어요 3"/>
 
         </LinearLayout>
@@ -135,10 +131,9 @@
             android:gravity="center_vertical"
             android:layout_marginEnd="16dp"
             android:background="@color/forum_gray"
-            android:textColor="#a3a3a3"
-            android:textSize="12sp"
-            android:fontFamily="@font/noto_sans"
-            android:includeFontPadding="false"
+            android:textColor="@drawable/light_gray_white_text_color_selector_press"
+            android:textSize="10sp"
+            android:fontFamily="@font/nanumsquare_r"
             tool:text="10:52"/>
     </LinearLayout>
 </LinearLayout>

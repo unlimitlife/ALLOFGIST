@@ -10,16 +10,14 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.widget.DrawerLayout;
@@ -28,10 +26,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,9 +37,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
@@ -67,7 +63,6 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
@@ -78,7 +73,8 @@ import cn.trinea.android.view.autoscrollviewpager.AutoScrollViewPager;
 
 import static com.allofgist.dell.allofgistlite.Allsite_OfficialSiteFragment.getCircledBitmap;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+//public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity{
 
     String Title = "<font color=#4F5B54>ALL OF </font> <font color=#DC2314>G</font><font color=#4F5B54>IST</font>";
     TextView titleMain;
@@ -91,27 +87,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout drawer;
     android.support.v7.widget.Toolbar toolbar;
     ActionBarDrawerToggle toggle;
-    NavigationView navigationView;
-
-    //닉네임 변경 팝업
-    PopupWindow nicknamePopupWindow;
-    View nicknamePopupView;
-
-    TextView nicknameText;
-    TextView nicknameEditText;
-    TextView nicknameCancel;
-    TextView nicknameOk;
-
-
-    //로그 아웃 팝업
-    PopupWindow noticePopupWindow;
-    View popupView;
-    SharedPreferences auto_login;
-    SharedPreferences.Editor saveUser;
-
-    TextView noticeText;
-    TextView noticeCancel;
-    TextView noticeOk;
 
     private AutoScrollViewPager advertisementList;
     private ArrayList<String> advertisementContentList;
@@ -119,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView favoriteNotice;
     private TextView scheduleText;
     private ListView schedulePreview;
-    private CalendarListAdapter calendarListAdapter;
     private ArrayList<Schedule> calendarListDate_pre;
     private ArrayList<Schedule> alarmListData;
     private ArrayList<AlarmManager> alarmManagers;
@@ -135,12 +109,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RelativeLayout fullscreen;
 
     //하단 메뉴 창 관련
-    private RelativeLayout calendarCategory;
-    private RelativeLayout allsiteCategory;
-    private RelativeLayout foodDiaryCategory;
-    private RelativeLayout favoriteSettingCategory;
-    private RelativeLayout anonymousForumCategory;
-    private RelativeLayout calculatorCategory;
+    private LinearLayout calendarCategory;
+    private LinearLayout allsiteCategory;
+    private LinearLayout foodDiaryCategory;
+    private ImageButton favoriteSettingCategory;
+    private LinearLayout anonymousForumCategory;
+    private LinearLayout calculatorCategory;
+    private LinearLayout academicCalendarCategory;
+    private LinearLayout myButton;
+    private LinearLayout taxiCategory;
+    private LinearLayout schoolMapCategory;
+    private LinearLayout notificationCategory;
+
 
     //사이트 정보
     private List<Site> itemList = null;
@@ -157,27 +137,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private long backPressedTime = 0;
 
 
+    SharedPreferences auto_login;
+    public String auto_login_id;
+
+
     @Override
     protected void onResume() {
         super.onResume();
 
-        setData();
-
-        //오늘의 일정 불러오기
-        Calendar today = Calendar.getInstance();
-        Date todaykey = today.getTime();
-        int dayNum = today.get(Calendar.DAY_OF_WEEK);
-        scheduleText.setText((today.get(Calendar.MONTH)+1)+"월 "+today.get(Calendar.DAY_OF_MONTH)+"일 "+ day[dayNum - 1]+"요일");
-        calendarListDate_pre = new ArrayList<Schedule>();
-        calendarListData = new Hashtable<Date, ArrayList<Schedule>>();
-        String completedate = date.format(todaykey);
-        ScheduleLoadTask scheduleLoadTask = new ScheduleLoadTask();
+        auto_login = getSharedPreferences("AUTO_LOGIN", Activity.MODE_PRIVATE);
+        auto_login_id = auto_login.getString("USER_ID","NO_ID");
+        try {
+            if (auto_login_id.equals("NO_ID")) {
+                finish();
+            }
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
 
         //DB에 저장된 즐겨찾기 key(번호) 저장하는 배열
+        setData();
         keylist = new ArrayList<Integer>();
 
-        scheduleLoadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id,completedate);
+        //scheduleLoadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id,completedate);
 
+        new FavoriteLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, id);
     }
 
     private void unlockScreen() {
@@ -206,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
-    @Override
+    /*@Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int itemId = item.getItemId();
@@ -214,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (itemId == R.id.nav_academic_calendar) {
             startActivity(new Intent(MainActivity.this, AcademicCalendarActivity.class));
         } else if (itemId == R.id.nav_credit_calculator) {
-            Intent calculator = new Intent(MainActivity.this,CreditCalculator.class);
+            Intent calculator = new Intent(MainActivity.this,CreditCalculatorAddMain.class);
             calculator.putExtra("ID",id);
             startActivity(calculator);
         } else if (itemId == R.id.nav_edit_nickname) {
@@ -261,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
+*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -276,16 +260,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         InitialSetting();
-        MultipleColorInOneText(Title,titleMain);
+        //MultipleColorInOneText(Title,titleMain);
 
         setData();
+
+
+
+
+
+
+
+
+/*
+        setMultiplyImages(BitmapFactory.decodeResource(MainActivity.this.getResources(),R.drawable.taxi_ui),BitmapFactory.decodeResource(MainActivity.this.getResources(),R.drawable.multiply_block));
+
+*/
+
+
 
         //UserSetting
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView.setNavigationItemSelectedListener(this);
-        new NickNameLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id);
+        //navigationView.setNavigationItemSelectedListener(this);
 
         //Advertisement Util
         /*AutoScrollAdapter autoScrollAdapter = new AutoScrollAdapter(getApplicationContext(),advertisementContentList);
@@ -295,28 +292,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         new TokenLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "https://server.allofgist.com/tokenload.php",id);
 
-        nicknameCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(nicknamePopupWindow.isShowing())
-                    nicknamePopupWindow.dismiss();
-            }
-        });
 
-        noticeCancel.setOnClickListener(new View.OnClickListener() {
+
+
+
+        myButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(noticePopupWindow.isShowing())
-                    noticePopupWindow.dismiss();
+                Intent myActivity = new Intent(MainActivity.this, MyActivity.class);
+                myActivity.putExtra("ID",id);
+                startActivity(myActivity);
             }
         });
 
         calendarCategory.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Intent calendarMain = new Intent(MainActivity.this,CalendarMain.class);
+                /*Intent calendarMain = new Intent(MainActivity.this,CalendarMain.class);
                 calendarMain.putExtra("ID",id);
-                startActivity(calendarMain);
+                startActivity(calendarMain);*/
+                GrayToast(getApplicationContext(),"추후 업데이트 버전으로 찾아뵙겠습니다.");
             }
         });
 
@@ -359,12 +354,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         calculatorCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent calculatorActivity = new Intent(MainActivity.this, CreditCalculator.class);
+                Intent calculatorActivity = new Intent(MainActivity.this, CreditCalculatorMain.class);
                 calculatorActivity.putExtra("ID",id);
                 startActivity(calculatorActivity);
             }
         });
 
+        academicCalendarCategory.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, AcademicCalendarActivity.class));
+            }
+        });
+
+
+        schoolMapCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent schoolMapActivity = new Intent(MainActivity.this, SchoolMapActivity.class);
+                startActivity(schoolMapActivity);
+            }
+        });
+
+        taxiCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openWebPage("http://gistalk.net/");
+            }
+        });
+
+        notificationCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GrayToast(getApplicationContext(),"추후 업데이트 버전으로 찾아뵙겠습니다.");
+            }
+        });
 
     }
 
@@ -408,10 +432,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (getOpenFacebookIntent(MainActivity.this, url).contains("https://www.facebook.com")){
                 /*String facebookurl = url.replaceFirst("www.", "m.");
                 if(!facebookurl.startsWith("https"))
-                    facebookurl = "https://"+facebookurl;
-                Intent webView = new Intent(MainActivity.this, web_interface.class);
-                webView.putExtra("Url", facebookurl);
-                startActivity(webView);*/
+                    facebookurl = "https://"+facebookurl;*/
                 Intent chrome = new Intent(Intent.ACTION_VIEW);
                 chrome.setData(Uri.parse(url));
                 startActivity(chrome);
@@ -422,9 +443,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(facebookIntent);
             }
         } else {
-            /*Intent webView = new Intent(MainActivity.this, web_interface.class);
-            webView.putExtra("Url", url);
-            startActivity(webView);*/
             Intent chrome = new Intent(Intent.ACTION_VIEW);
             chrome.setData(Uri.parse(url));
             startActivity(chrome);
@@ -508,7 +526,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Site currentsite = mDataBaseset.get(keylist.get(position));
             if(position==0&&currentsite.getMsite_name().equals("")) {
                 favoriteNotice.setVisibility(View.VISIBLE);
-                favoritesHolder.mImageView.setImageResource(R.drawable.default_image);
+                //favoritesHolder.mImageView.setImageResource(R.drawable.default_image);
             }
             else{
                 favoriteNotice.setVisibility(View.GONE);
@@ -626,7 +644,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public FavoritesHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.gridviewitem_allsites, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.gridviewitem_allsites_w_img, parent, false);
             FavoritesHolder favoritesHolder = new FavoritesHolder(view);
 
             return favoritesHolder;
@@ -863,119 +881,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startMyTask(new FavoriteLoadTask(),id);
         }
     }*/
-    public class ScheduleLoadTask extends AsyncTask<String, Integer, JSONArray> {
-
-        JSONArray jsonArray = null;
-
-        @Override
-        protected JSONArray doInBackground(String... params) {
-
-            /* 인풋 파라메터값 생성 */
-            String data = "";
-            String param = "id=" + params[0] +"&complete_date="+params[1];
-            Log.e("POST", param);
-            try {
-                /* 서버연결 */
-                URL url = new URL(
-                        "https://server.allofgist.com/user_diary_schedule_list_load_noalarm.php");
-                HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                conn.setRequestMethod("POST");
-                conn.setDoInput(true);
-                conn.connect();
-
-                /* 안드로이드 -> 서버 파라메터값 전달 */
-                OutputStream outs = conn.getOutputStream();
-                outs.write(param.getBytes("euc-kr"));
-                outs.flush();
-                outs.close();
-
-                /* 서버 -> 안드로이드 파라메터값 전달 */
-                InputStream is = null;
-                BufferedReader in = null;
-                int responseStatusCode = conn.getResponseCode();
-                if (responseStatusCode == conn.HTTP_OK)
-                    is = conn.getInputStream();
-                else
-                    is = conn.getErrorStream();
-
-                in = new BufferedReader(new InputStreamReader(is), 8 * 1024);
-                String line = null;
-                StringBuffer buff = new StringBuffer();
-                while ((line = in.readLine()) != null) {
-                    buff.append(line + "\n");
-                }
-
-                data = buff.toString().trim();
-                in.close();
-
-                /* 서버에서 응답 */
-                Log.e("RECV DATA", data);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                jsonArray = new JSONArray(data);
-            }catch (JSONException e){
-                e.printStackTrace();
-            }
-            if(jsonArray.length()==0)
-                jsonArray=null;
-
-            return jsonArray;
-        }
-
-        @Override
-        protected void onPostExecute(JSONArray jsonArray) {
-            Schedule currentSchedule;
-            try{
-                for (int i = 0; i  < jsonArray.length(); i++){
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    try {
-                        currentSchedule = new Schedule(Integer.parseInt(jsonObject.getString("num")),
-                                jsonObject.getString("context"),
-                                jsonObject.getString("complete_datetime_text"),
-                                datetime.parse(jsonObject.getString("complete_datetime_numeric")),
-                                jsonObject.getString("repeat_period"),
-                                new java.sql.Date(date.parse(jsonObject.getString("repeat_start_date")).getTime()),
-                                new java.sql.Date(date.parse(jsonObject.getString("repeat_end_date")).getTime()),
-                                jsonObject.getString("repeat_date"),
-                                jsonObject.getString("repeat_cycle"));
-                    }catch (ParseException e){
-                        e.printStackTrace();
-                        currentSchedule = new Schedule(Integer.parseInt(jsonObject.getString("num")),
-                                jsonObject.getString("context"),
-                                jsonObject.getString("complete_datetime_text"),
-                                datetime.parse(jsonObject.getString("complete_datetime_numeric")),
-                                jsonObject.getString("repeat_period"),
-                                null,
-                                null,
-                                jsonObject.getString("repeat_date"),
-                                jsonObject.getString("repeat_cycle"));
-                    }
-                    calendarListDate_pre.add(currentSchedule);
-                    Date completeDate = date.parse(jsonObject.getString("complete_datetime_numeric"));
-                    calendarListData.put(completeDate, calendarListDate_pre);
-                    calendarListAdapter = new CalendarListAdapter(calendarListData.get(completeDate));
-                    schedulePreview.setAdapter(calendarListAdapter);
-
-                }
-            }catch (NullPointerException e){
-                e.printStackTrace();
-                calendarListDate_pre.add(new Schedule(0,"일정이 없습니다.", null,null,null, null,null,null,null));
-                calendarListAdapter = new CalendarListAdapter(calendarListDate_pre);
-                schedulePreview.setAdapter(calendarListAdapter);
-            }catch (JSONException e){
-                e.printStackTrace();
-                GrayToast(getApplicationContext(),"서버에 접속을 실패하였습니다.");
-            }catch (ParseException e){
-                e.printStackTrace();
-            }
-
-            new FavoriteLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, id);
-        }
-    }
 
     class FavoriteLoadTask extends AsyncTask<String, Void, String> {
 
@@ -1279,236 +1184,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    class NickNameLoadTask extends AsyncTask<String,Void,String> {
-
-        @Override
-        protected String doInBackground(String... strings) {
-
-            String ID = (String) strings[0];
-            String postParameters = "id=" + ID;
-
-            try {
-                URL url = new URL("https://server.allofgist.com/nicknameload.php");
-                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
-
-                httpsURLConnection.setReadTimeout(5000);
-                httpsURLConnection.setConnectTimeout(5000);
-                httpsURLConnection.setRequestMethod("POST");
-                httpsURLConnection.connect();
-
-                OutputStream outputStream = httpsURLConnection.getOutputStream();
-                outputStream.write(postParameters.getBytes("UTF-8"));
-                outputStream.flush();
-                outputStream.close();
-
-                int responseStatusCode = httpsURLConnection.getResponseCode();
-                Log.d("nicknametest", "POST response code - " + responseStatusCode);
-
-                InputStream inputStream;
-                if (responseStatusCode == httpsURLConnection.HTTP_OK)
-                    inputStream = httpsURLConnection.getInputStream();
-                else
-                    inputStream = httpsURLConnection.getErrorStream();
-
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-                StringBuilder sb = new StringBuilder();
-                String line = null;
-
-                while ((line = bufferedReader.readLine()) != null) {
-                    sb.append(line);
-                }
-
-                bufferedReader.close();
-
-                return sb.toString();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return new String("Error: " + e.getMessage());
-            }
-        }
-
-
-        @Override
-        protected void onPostExecute(String nickname) {
-            View headerView = navigationView.getHeaderView(0);
-            TextView nickname_nav = (TextView)headerView.findViewById(R.id.nickname_nav);
-            nickname_nav.setText(nickname+"님");
-        }
-    }
-
-
-
-    class NickNameEditTask extends AsyncTask<String,Void,String> {
-
-        @Override
-        protected String doInBackground(String... strings) {
-
-            String ID = (String) strings[0];
-            String NICKNAME = (String) strings[1];
-            String postParameters = "id=" + ID + "&nickname=" + NICKNAME;
-
-            try {
-                URL url = new URL("https://server.allofgist.com/nickname_edit.php");
-                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
-
-                httpsURLConnection.setReadTimeout(5000);
-                httpsURLConnection.setConnectTimeout(5000);
-                httpsURLConnection.setRequestMethod("POST");
-                httpsURLConnection.connect();
-
-                OutputStream outputStream = httpsURLConnection.getOutputStream();
-                outputStream.write(postParameters.getBytes("UTF-8"));
-                outputStream.flush();
-                outputStream.close();
-
-                int responseStatusCode = httpsURLConnection.getResponseCode();
-                Log.d("nicknametest", "POST response code - " + responseStatusCode);
-
-                InputStream inputStream;
-                if (responseStatusCode == httpsURLConnection.HTTP_OK)
-                    inputStream = httpsURLConnection.getInputStream();
-                else
-                    inputStream = httpsURLConnection.getErrorStream();
-
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-                StringBuilder sb = new StringBuilder();
-                String line = null;
-
-                while ((line = bufferedReader.readLine()) != null) {
-                    sb.append(line);
-                }
-
-                bufferedReader.close();
-
-                return sb.toString();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return new String("Error: " + e.getMessage());
-            }
-        }
-
-
-        @Override
-        protected void onPostExecute(String result) {
-            if(result.equals("OK")){
-                nicknamePopupWindow.dismiss();
-                new NickNameLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id);
-            }
-            else
-                GrayToast(getApplicationContext(),"서버 연결에 실패하였습니다.");
-        }
-    }
-
-
-    class UserDeleteTask extends AsyncTask<String,Void,String> {
-
-        @Override
-        protected String doInBackground(String... strings) {
-
-            String ID = (String) strings[0];
-            String postParameters = "id=" + ID;
-
-            try {
-                URL url = new URL("https://server.allofgist.com/user_delete.php");
-                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
-
-                httpsURLConnection.setReadTimeout(5000);
-                httpsURLConnection.setConnectTimeout(5000);
-                httpsURLConnection.setRequestMethod("POST");
-                httpsURLConnection.connect();
-
-                OutputStream outputStream = httpsURLConnection.getOutputStream();
-                outputStream.write(postParameters.getBytes("UTF-8"));
-                outputStream.flush();
-                outputStream.close();
-
-                int responseStatusCode = httpsURLConnection.getResponseCode();
-                Log.d("nicknametest", "POST response code - " + responseStatusCode);
-
-                InputStream inputStream;
-                if (responseStatusCode == httpsURLConnection.HTTP_OK)
-                    inputStream = httpsURLConnection.getInputStream();
-                else
-                    inputStream = httpsURLConnection.getErrorStream();
-
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-                StringBuilder sb = new StringBuilder();
-                String line = null;
-
-                while ((line = bufferedReader.readLine()) != null) {
-                    sb.append(line);
-                }
-
-                bufferedReader.close();
-
-                return sb.toString();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return new String("Error: " + e.getMessage());
-            }
-        }
-
-
-        @Override
-        protected void onPostExecute(String result) {
-            if(result.equals("OK")){
-                auto_login = getSharedPreferences("AUTO_LOGIN", Activity.MODE_PRIVATE);
-                saveUser = auto_login.edit();
-                saveUser.remove("USER_ID");
-                saveUser.apply();
-                finish();
-            }
-            else
-                GrayToast(getApplicationContext(),"서버 연결을 실패하였습니다.");
-        }
-    }
-
-    public class CalendarListAdapter extends BaseAdapter {
-
-        private ArrayList<Schedule> calendarAdapterData;
-
-        public CalendarListAdapter(ArrayList<Schedule> calendarAdapterData){
-            this.calendarAdapterData = calendarAdapterData;
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return 0;
-        }
-
-        @Override
-        public int getCount() {
-            return calendarAdapterData.size();
-        }
-
-        @Override
-        public Schedule getItem(int position) {
-            return calendarAdapterData.get(position);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if(convertView == null){
-                LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.calendar_list_preview_item, parent, false);
-            }
-
-            TextView contextTextView = (TextView)convertView.findViewById(R.id.preview_diary_context_textview);
-
-            contextTextView.setText(calendarAdapterData.get(position).getContext());
-            return convertView;
-        }
-    }
-
 
     //Bitmap resizing
     private int setSimpleSize(BitmapFactory.Options options, int requestWidth, int requestHeight){
@@ -1533,38 +1208,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //사용자 환경설정
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_main);
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-
-        titleMain = (TextView)findViewById(R.id.title_main);
-
-        //nickname popup menu
-        nicknamePopupView = getLayoutInflater().inflate(R.layout.notice_edittext_plus_cancel_popup_window,null);
-        nicknamePopupWindow = new PopupWindow(nicknamePopupView, RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT,true);
-
-        nicknameText = (TextView)nicknamePopupView.findViewById(R.id.notice_edittext_text);
-        nicknameEditText = (EditText)nicknamePopupView.findViewById(R.id.notice_edittext_nickname);
-        nicknameOk = (TextView)nicknamePopupView.findViewById(R.id.notice_edittext_ok_textview);
-        nicknameCancel = (TextView)nicknamePopupView.findViewById(R.id.notice_edittext_cancel_textview);
-        nicknamePopupWindow.setBackgroundDrawable(new ColorDrawable(Color.argb(80,0,0,0)));
+        //navigationView = (NavigationView) findViewById(R.id.nav_view);
 
 
-        //logout popup menu
-        popupView = getLayoutInflater().inflate(R.layout.notice_plus_cancel_popup_window,null);
-        noticePopupWindow = new PopupWindow(popupView, RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT,true);
 
-        noticeText = (TextView)popupView.findViewById(R.id.notice_plus_text);
-        noticeOk = (TextView)popupView.findViewById(R.id.notice_plus_ok_textview);
-        noticeCancel = (TextView)popupView.findViewById(R.id.notice_plus_cancel_textview);
-        noticePopupWindow.setBackgroundDrawable(new ColorDrawable(Color.argb(80,0,0,0)));
 
         //advertisementList = (AutoScrollViewPager)findViewById(R.id.advertisement_preview);
 
         favoriteNotice = (TextView)findViewById(R.id.favorite_notice_main);
-        scheduleText = (TextView)findViewById(R.id.schedule_text);
-        schedulePreview = (ListView)findViewById(R.id.schedule_preview);
 
        // fullscreen = (RelativeLayout) findViewById(R.id.fullscreen);
         //popupView = getLayoutInflater().inflate(R.layout.food_diary_popup_window, null);
@@ -1572,23 +1225,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //final Button ringControl = (Button) findViewById(R.id.ring_button_control);
 
-        //학식 버튼
-        //firstFloor = (Button) popupView.findViewById(R.id.first_floor);
-        //secondFloor = (Button) popupView.findViewById(R.id.second_floor);
-        //secondRestaurant = (Button) popupView.findViewById(R.id.second_restaurant);
-
 
         //즐겨찾기 관련 코드
         //reloadFavorite = (ImageButton) findViewById(R.id.reload_favorite);
         recyclerView = (RecyclerView) findViewById(R.id.favorite_layout);
 
         //하단 카테고리 버튼들
-        calendarCategory = (RelativeLayout)findViewById(R.id.category_calendar);
-        allsiteCategory = (RelativeLayout)findViewById(R.id.category_allsite);
-        foodDiaryCategory = (RelativeLayout)findViewById(R.id.category_food_diary);
-        favoriteSettingCategory = (RelativeLayout)findViewById(R.id.category_favorite_setting);
-        anonymousForumCategory = (RelativeLayout)findViewById(R.id.category_anonymous_forum);
-        calculatorCategory = (RelativeLayout)findViewById(R.id.category_calculator);
+        calendarCategory = (LinearLayout)findViewById(R.id.category_calendar);
+        allsiteCategory = (LinearLayout) findViewById(R.id.category_allsite);
+        foodDiaryCategory = (LinearLayout) findViewById(R.id.category_food_diary);
+        favoriteSettingCategory = (ImageButton)findViewById(R.id.category_favorite_setting);
+        anonymousForumCategory = (LinearLayout)findViewById(R.id.category_anonymous_forum);
+        calculatorCategory = (LinearLayout)findViewById(R.id.category_calculator);
+        academicCalendarCategory = (LinearLayout)findViewById(R.id.academic_calendar);
+        myButton = (LinearLayout)findViewById(R.id.my_button_home);
+        taxiCategory = (LinearLayout)findViewById(R.id.taxi);
+        schoolMapCategory = (LinearLayout)findViewById(R.id.school_map);
+        notificationCategory = (LinearLayout)findViewById(R.id.notification);
+
+       // taxi = (ImageButton)findViewById(R.id.taxi_button);
 
     }
 
@@ -1673,7 +1328,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             asyncTask.execute(params);
     }*/
 
-    public static void MultipleColorInOneText(String text, TextView textView) {
+    /*public static void MultipleColorInOneText(String text, TextView textView) {
 
         //String text = "This is <font color='red'>red</font>. This is <font color='blue'>blue</font>.";
 
@@ -1682,7 +1337,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             textView.setText(Html.fromHtml(text), TextView.BufferType.SPANNABLE);
         }
-    }
+    }*/
 
 
 
@@ -1695,6 +1350,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    /*public void setMultiplyImages(Bitmap img1, Bitmap img2){
+
+        // Create result image
+        Bitmap result = BitmapFactory.decodeResource(getResources(), R.drawable.home_background_ui);
+        Canvas canvas = new Canvas();
+        canvas.setBitmap(result);
+
+        // Get proper display reference
+        BitmapDrawable drawable = new BitmapDrawable(getResources(), result);
+        ImageButton taxi = (ImageButton)findViewById(R.id.taxi_button);
+        taxi.setBackground(drawable);
+
+
+        // Apply -------------------------------
+
+        // Draw base
+        canvas.drawBitmap(img1, 0, 0, null);
+
+        // Draw overlay
+        Paint paint = new Paint();
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY));
+        paint.setShader(new BitmapShader(img2, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
+
+        canvas.drawRect(0, 0, img2.getWidth(), img2.getHeight(), paint);
+    }*/
+
+    private static Drawable Result(Bitmap bottomImage, Bitmap topImage){
+
+
+        int sizex = bottomImage.getWidth();
+        int sizey = bottomImage.getHeight();
+
+        Paint paint = new Paint();
+        Bitmap imageBitmap = Bitmap.createBitmap(sizex, sizey , Bitmap.Config.ARGB_8888);
+        Canvas comboImage = new Canvas(imageBitmap);
+        comboImage.drawBitmap(bottomImage, 0f, 0f, paint);;
+        PorterDuff.Mode mode = PorterDuff.Mode.MULTIPLY;//Porterduff MODE
+        paint.setXfermode(new PorterDuffXfermode(mode));
+
+        Bitmap ScaledtopImage = Bitmap.createScaledBitmap(topImage, sizex, sizey, false);
+        comboImage.drawBitmap(ScaledtopImage, 0f, 0f, paint);
+
+        return new BitmapDrawable(imageBitmap);
+
+    }
 }
 
 

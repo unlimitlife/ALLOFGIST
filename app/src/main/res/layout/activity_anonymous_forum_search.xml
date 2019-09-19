@@ -10,61 +10,70 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/gist_red">
+        android:layout_height="70dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/shadow">
 
         <ImageButton
             android:id="@+id/search_back_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="42.5dp"
+            android:layout_height="42.5dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_marginStart="8dp"
-            android:background="@color/gist_red"
-            android:src="@drawable/left_arrow_white" />
+            android:layout_marginStart="12.5dp"
+            android:background="@color/white"
+            android:src="@drawable/clear_back_blue" />
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:fontFamily="@font/noto_sans"
-            android:includeFontPadding="false"
-            android:text="검색"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp" />
+            android:background="@color/white"
+            android:layout_toRightOf="@id/search_back_button"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="@string/menu_button_search"
+                android:textSize="17.5sp"
+                android:gravity="center"
+                android:fontFamily="@font/nanumsquare_b"
+                android:textColor="@color/warm_grey"
+                android:background="@color/white"/>
+        </LinearLayout>
     </RelativeLayout>
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFFFFF">
+        android:background="@color/blank">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#FFFFFF"
+            android:background="@color/blank"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FFFFFF"
+                android:background="@color/blank"
+                android:layout_marginTop="20dp"
                 android:orientation="vertical">
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#FFFFFF"
+                    android:background="@color/blank"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="4dp">
+                    android:layout_marginBottom="4dp"
+                    android:orientation="horizontal">
 
                     <RelativeLayout
                         android:id="@+id/anonymous_forum_search_classification_layout"
-                        android:layout_width="180dp"
+                        android:layout_width="135dp"
                         android:layout_height="40dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="29dp"
+                        android:layout_marginEnd="16dp"
                         android:background="@drawable/category_box_unselected_design">
 
                         <TextView
@@ -74,81 +83,93 @@
                             android:layout_alignParentStart="true"
                             android:layout_centerVertical="true"
                             android:layout_marginStart="16dp"
+                            android:fontFamily="@font/nanumsquare_r"
                             android:background="#FFFFFF"
-                            android:textColor="#000000"
+                            android:textColor="@color/warm_grey"
                             android:textSize="15sp"
                             tools:text="전체" />
 
                         <ImageButton
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
+                            android:layout_width="13.3dp"
+                            android:layout_height="6.1dp"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
                             android:layout_marginEnd="16dp"
-                            android:src="@drawable/down_arrow_red" />
+                            android:src="@drawable/under_arrow_blue" />
                     </RelativeLayout>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="10dp"
+                        android:background="@color/blank"
+                        android:layout_weight="1"/>
 
                     <RelativeLayout
-                        android:layout_width="wrap_content"
+                        android:id="@+id/only_best_layout"
+                        android:layout_width="150dp"
                         android:layout_height="40dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="16dp"
-                        android:layout_toEndOf="@id/anonymous_forum_search_classification_layout"
+                        android:layout_marginEnd="29dp"
                         android:background="#FFFFFF">
-
-                        <CheckBox
-                            android:id="@+id/anonymous_forum_search_only_best_checkbox"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_toStartOf="@id/anonymous_forum_search_only_best_text"
-                            android:buttonTint="#b9b9b9"/>
 
                         <TextView
                             android:id="@+id/anonymous_forum_search_only_best_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
                             android:text="@string/only_best_search"
-                            android:textColor="#000000"
+                            android:fontFamily="@font/nanumsquare_r"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="13.5dp"
+                            android:layout_toStartOf="@id/anonymous_forum_search_only_best_checkbox"
+                            android:textColor="#a2a2a2"
                             android:textSize="15sp" />
+                        <Switch
+                            android:id="@+id/anonymous_forum_search_only_best_checkbox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:shadowColor="@color/gist_blue"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"/>
                     </RelativeLayout>
-                </RelativeLayout>
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#FFFFFF"
+                    android:layout_height="46.5dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingTop="4dp"
-                    android:paddingBottom="8dp">
+                    android:paddingBottom="8dp"
+                    android:layout_marginStart="29dp"
+                    android:layout_marginTop="21dp"
+                    android:layout_marginBottom="34.5dp"
+                    android:layout_marginEnd="29dp"
+                    android:background="@drawable/category_box_unselected_design"
+                    android:layout_gravity="center">
 
                     <FrameLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
                         android:layout_weight="1"
-                        android:background="#FFFFFF">
+                        android:background="@color/blank">
 
                         <EditText
                             android:id="@+id/anonymous_forum_search_text"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
-                            android:background="@drawable/category_box_unselected_design"
+                            android:background="@color/blank"
                             android:paddingStart="16dp"
                             android:paddingEnd="16dp"
                             android:layout_gravity="center_vertical"
                             android:inputType="text"
                             android:textSize="15sp"
-                            tools:text="검색 내용"/>
+                            android:hint="검색어를 입력해주세요."
+                            android:textColorHint="#bababa"/>
 
                         <RelativeLayout
                             android:id="@+id/anonymous_forum_search_text_erase_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical">
+                            android:layout_gravity="center_vertical"
+                            android:background="@color/blank">
 
                             <ImageView
                                 android:id="@+id/anonymous_forum_search_text_erase_button"
@@ -167,9 +188,8 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="16dp"
-                        android:background="@color/gist_red"
-                        android:src="@drawable/search_white" />
+                        android:background="@color/blank"
+                        android:src="@drawable/search_blue" />
                 </LinearLayout>
             </LinearLayout>
 

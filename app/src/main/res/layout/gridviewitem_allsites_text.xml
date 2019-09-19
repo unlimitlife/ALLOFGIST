@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/clickicon"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/blue_box_selector"
+    >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/name"
+        tools:text="Gistsite"
+        android:fontFamily="@font/nanumsquare_r"
+        android:gravity="start"
+        android:textColor="@drawable/gpa_calculator_add_text_color_selector"
+        android:textSize="14sp"
+        android:paddingStart="13.5dp"
+        android:paddingTop="13dp"
+        android:paddingBottom="13dp"
+        />
+    <!--<TextView
+        android:id="@+id/extraRow"
+        android:layout_width="60dp"
+        android:layout_height="10dp"
+        android:background="#FFFFFF"/>  "나중에 이것도 밑단 잘리면 넣자"-->
+</LinearLayout>

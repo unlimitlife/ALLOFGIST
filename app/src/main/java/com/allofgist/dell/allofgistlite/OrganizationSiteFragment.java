@@ -112,7 +112,7 @@ public class OrganizationSiteFragment extends Fragment {
             View view = convertView;
 
             if(view==null){
-                view = LayoutInflater.from(getContext()).inflate(R.layout.gridviewitem_allsites, parent, false);
+                view = LayoutInflater.from(getContext()).inflate(R.layout.gridviewitem_allsites_w_img, parent, false);
 
                 siteHolder = new SiteHolder(view);
                 view.setTag(siteHolder);
@@ -247,4 +247,5 @@ public class OrganizationSiteFragment extends Fragment {
         itemList.add(new Site("GIST 신문","http://gistnews.co.kr/", "https://www.facebook.com/GistSinmoon/", R.drawable.gistnews));
         itemList.add(new Site("GIST 홍보대사", "http://blog.naver.com/PostList.nhn?blogId=gist1993&from=postList&categoryNo=28", R.drawable.gionnare));
     }
+
 }

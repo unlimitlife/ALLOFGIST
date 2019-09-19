@@ -5,58 +5,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="#50000000">
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="290dp"
+        android:layout_height="160dp"
         android:orientation="vertical"
         android:layout_centerInParent="true"
-        android:background="#FFFFFF"
+        android:background="@drawable/corner_round_box_design"
         android:layout_margin="16dp">
         <TextView
             android:id="@+id/notice_plus_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
             android:background="#FFFFFF"
-            tools:text="삭제하시겠습니까?"
-            android:layout_marginTop="12dp"
+            tools:text="정말로 아이디를 삭제하시겠습니까?"
+            android:layout_marginTop="40dp"
             android:textColor="@color/gist_dark_gray"
-            android:textSize="16sp"
-            android:fontFamily="@font/noto_sans"
-            android:includeFontPadding="false"
-            android:layout_marginLeft="24dp"/>
+            android:layout_gravity="center_horizontal"
+            android:lineSpacingExtra="4sp"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:fontFamily="@font/nanumsquare_r"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="#FFFFFF"
-            android:layout_marginTop="32dp">
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:background="#FFFFFF"
-                android:layout_weight="1"/>
+            android:background="@color/blank"
+            android:layout_marginTop="32dp"
+            android:gravity="center_horizontal">
+
             <TextView
                 android:id="@+id/notice_plus_cancel_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="98dp"
+                android:layout_height="33dp"
                 android:text="@string/cancel"
-                android:textColor="@color/gist_red"
-                android:background="#FFFFFF"
-                android:textSize="16sp"
-                android:fontFamily="@font/noto_sans"
-                android:includeFontPadding="false"
-                android:layout_marginRight="32dp"
+                android:textColor="@color/gist_blue"
+                android:background="@drawable/blue_corner_round_box"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:fontFamily="@font/nanumsquare_r"
+                android:layout_marginRight="20dp"
                 android:layout_marginBottom="20dp"/>
             <TextView
                 android:id="@+id/notice_plus_ok_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="98dp"
+                android:layout_height="33dp"
                 android:text="@string/ok"
-                android:textColor="@color/gist_red"
-                android:background="#FFFFFF"
-                android:textSize="16sp"
-                android:fontFamily="@font/noto_sans"
-                android:includeFontPadding="false"
-                android:layout_marginRight="32dp"
+                android:textColor="@color/white"
+                android:background="@drawable/ok_button_blue_grad"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:fontFamily="@font/nanumsquare_r"
                 android:layout_marginBottom="20dp"/>
         </LinearLayout>
     </LinearLayout>

@@ -80,9 +80,10 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
     TextView nickname;
     TextView upload_datetime;
     SimpleDateFormat datetimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm",Locale.KOREA);
+    SimpleDateFormat datetimeFormatDot = new SimpleDateFormat("yyyy.MM.dd. HH:mm",Locale.KOREA);
     SimpleDateFormat datetimeSecFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
     SimpleDateFormat datetime_SecFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss", Locale.KOREA);
-    TextView viewsAndComments;
+    TextView comments;
     ImageButton zoomOut;
     ImageButton zoomIn;
 
@@ -92,11 +93,11 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
 
     LinearLayout likeButton;
     ImageView likeIcon;
-    TextView likeText;
+    //TextView likeText;
     int likeClick=0;
     LinearLayout unlikeButton;
     ImageView unlikeIcon;
-    TextView unlikeText;
+    //TextView unlikeText;
     int unlikeClick=0;
     LinearLayout commentButton;
 
@@ -105,7 +106,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
     TextView likeState;
     ImageView unlikeStateIcon;
     TextView unlikeState;
-    TextView nonelikeState;
+    //TextView nonelikeState;
 
 
     RecyclerView commentList;
@@ -131,6 +132,17 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
     View nextCommentLayoutBorderLine;
 
 
+    CommentDeleteTask commentDeleteTask;
+    CommentEditTask commentEditTask;
+    CommentInsertTask commentInsertTask;
+    CommentLoadTask commentLoadTask;
+
+    ForumReloadTask forumReloadTask;
+    ForumDeleteTask forumDeleteTask;
+
+    LikeUploadTask likeUploadTask;
+    UnlikeUploadTask unLikeUploadTask;
+
     @Override
     public void onBackPressed() {
         if(editmode)
@@ -146,11 +158,46 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         }
     }
 
+    /*@Override
+    public void onPause() {
+        int count = commentList.getChildCount();
+        for (int i =0; i<count; i++){
+            try {
+                ViewGroup viewGroup = (ViewGroup) commentList.getChildAt(i);
+                int childSize = viewGroup.getChildCount();
+                for (int j = 0; j < childSize; j++) {
+                    if (viewGroup.getChildAt(j) instanceof ImageView) {
+                        ((ImageView) viewGroup.getChildAt(j)).setImageBitmap(null);
+                    }
+                    else if (viewGroup.getChildAt(j) instanceof TextView) {
+                        ((TextView) viewGroup.getChildAt(j)).setText(null);
+                    }
+                }
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }
+        }
+        commentDeleteTask.cancel(false);
+        commentEditTask.cancel(false);
+        commentInsertTask.cancel(false);
+        commentLoadTask.cancel(false);
+
+        forumDeleteTask.cancel(false);
+        forumReloadTask.cancel(false);
+
+        likeUploadTask.cancel(false);
+        unLikeUploadTask.cancel(false);
+
+        forumCommentList = null;
+        super.onPause();
+    }*/
+
     @Override
     protected void onResume() {
         super.onResume();
         forumCommentList = new ArrayList<Comment>();
-        new CommentLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentForum.getNum()+"");
+        commentLoadTask = new CommentLoadTask();
+        commentLoadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentForum.getNum()+"");
     }
 
     @Override
@@ -173,7 +220,6 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         for (int i=0;i<likeSelectSplit.length;i++){
             if(likeSelectSplit[i].equals(id)){
                 likeIcon.setSelected(true);
-                likeText.setTextColor(Color.parseColor("#DC2314"));
                 likeClick++;
                 break;
             }
@@ -182,7 +228,6 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         for (int i=0;i<unlikeSelectSplit.length;i++){
             if(unlikeSelectSplit[i].equals(id)){
                 unlikeIcon.setSelected(true);
-                unlikeText.setTextColor(Color.parseColor("#DC2314"));
                 unlikeClick++;
                 break;
             }
@@ -195,7 +240,8 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 forumCommentList = new ArrayList<Comment>();
-                new ForumReloadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentForum.getNum()+"");
+                forumReloadTask = new ForumReloadTask();
+                forumReloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentForum.getNum()+"");
             }
         });
 
@@ -241,7 +287,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                                         noticeOk.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                new ForumDeleteTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, currentForum.getNum() + "");
+                                                forumDeleteTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, currentForum.getNum() + "");
                                                 noticePopupWindow.dismiss();
                                             }
                                         });
@@ -328,10 +374,10 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     int spValue = pixtosp(getApplicationContext(), content.getTextSize());
                     if (spValue > 15) {
                         content.setTextSize(TypedValue.COMPLEX_UNIT_SP, spValue - 3);
-                        zoomOut.setImageDrawable(getDrawable(R.drawable.zoom_out_red));
-                        zoomIn.setImageDrawable(getDrawable(R.drawable.zoom_in_red));
+                        zoomOut.setImageDrawable(getDrawable(R.drawable.zoom_out_grey));
+                        zoomIn.setImageDrawable(getDrawable(R.drawable.zoom_in_grey));
                         if (spValue == 18)
-                            zoomOut.setImageDrawable(getDrawable(R.drawable.zoom_out_red));
+                            zoomOut.setImageDrawable(getDrawable(R.drawable.zoom_out_grey));
                     }
                 }
 
@@ -347,17 +393,17 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     int spValue = pixtosp(getApplicationContext(), content.getTextSize());
                     if (spValue < 24) {
                         content.setTextSize(TypedValue.COMPLEX_UNIT_SP, spValue + 3);
-                        zoomIn.setImageDrawable(getDrawable(R.drawable.zoom_in_red));
-                        zoomOut.setImageDrawable(getDrawable(R.drawable.zoom_out_red));
+                        zoomIn.setImageDrawable(getDrawable(R.drawable.zoom_in_grey));
+                        zoomOut.setImageDrawable(getDrawable(R.drawable.zoom_out_grey));
                         if (spValue == 21)
-                            zoomIn.setImageDrawable(getDrawable(R.drawable.zoom_in_red));
+                            zoomIn.setImageDrawable(getDrawable(R.drawable.zoom_in_grey));
                     }
                 }
 
             }
         });
 
-        nicknameSearch.setOnClickListener(new View.OnClickListener() {
+        /*nicknameSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(editmode)
@@ -370,7 +416,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     startActivity(searchActivity);
                 }
             }
-        });
+        });*/
 
         likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -379,7 +425,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     ShowCancelEditMode();
                 else {
                     if (unlikeClick % 2 == 0)
-                        new LikeUploadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (currentForum.getNum() + ""), id, ((likeClick % 2) + ""));
+                        likeUploadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (currentForum.getNum() + ""), id, ((likeClick % 2) + ""));
                 }
 
             }
@@ -392,7 +438,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     ShowCancelEditMode();
                 else {
                     if (likeClick % 2 == 0)
-                        new UnlikeUploadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (currentForum.getNum() + ""), id, ((unlikeClick % 2) + ""));
+                        unLikeUploadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (currentForum.getNum() + ""), id, ((unlikeClick % 2) + ""));
                 }
 
             }
@@ -422,7 +468,7 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     GrayToast(getApplicationContext(),"댓글을 입력해주세요.");
                 else{
                     if(editmode){
-                        new CommentEditTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentComment.getNum_primary()+"",commentInput.getText().toString());
+                        commentEditTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentComment.getNum_primary()+"",commentInput.getText().toString());
                     }
                     else {
                         String num = currentForum.getNum() + "";
@@ -432,13 +478,15 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                         if (nextCommentLayout.getVisibility() == View.GONE) {
                             String depth_input = "0";
                             String num_group_input = "0";
-                            new CommentInsertTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, num, depth_input, num_group_input,
+                            commentInsertTask = new CommentInsertTask();
+                            commentInsertTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, num, depth_input, num_group_input,
                                     id_input, content_input, upload_datetime_input);
                         } else if (comment != null) {
                             comment.setContent(commentInput.getText().toString());
                             comment.setUpload_datetime(upload_datetime_input);
 
-                            new CommentInsertTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, comment.getNum() + "",
+                            commentInsertTask = new CommentInsertTask();
+                            commentInsertTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, comment.getNum() + "",
                                     comment.getDepth() + "", comment.getNum_group() + "", comment.getId(),
                                     comment.getContent(), comment.getUpload_datetime());
                         }
@@ -485,19 +533,19 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     public void DataBinding(Forum forum) {
-        topTitle.setText(forum.getTitle());
+        //topTitle.setText(forum.getTitle());
 
         title.setText(forum.getTitle());
-        nickname.setText(forum.getNickname());
-        upload_datetime.setText(datetimeFormat.format(forum.getUpload_datetime()));
-        viewsAndComments.setText(("조회 " + forum.getViews() + " 댓글 " + forum.getComments()));
+        nickname.setText("작성자 | "+forum.getNickname());
+
+        upload_datetime.setText(datetimeFormatDot.format(forum.getUpload_datetime())+" 작성");
+        comments.setText((""+forum.getComments()));
 
         content.setText(forum.getContent());
-        nicknameBottom.setText((forum.getNickname() + " 님의"));
+        //nicknameBottom.setText((forum.getNickname() + " 님의"));
 
         nextCommentIcon.setVisibility(View.GONE);
         nextCommentLayout.setVisibility(View.GONE);
@@ -507,29 +555,10 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         commentInput.setText("");
         editmode = false;
 
-        if(forum.getUnlikes()==0&&forum.getLikes()==0){
-            stateLayout.setVisibility(View.GONE);
-            nonelikeState.setVisibility(View.VISIBLE);
-        }else {
-            stateLayout.setVisibility(View.VISIBLE);
-            nonelikeState.setVisibility(View.GONE);
-            if (forum.getLikes() > 0) {
-                likeStateIcon.setVisibility(View.VISIBLE);
-                likeState.setVisibility(View.VISIBLE);
-                likeState.setText((forum.getLikes() + "개"));
-            } else {
-                likeStateIcon.setVisibility(View.GONE);
-                likeState.setVisibility(View.GONE);
-            }
-            if (forum.getUnlikes() > 0) {
-                unlikeStateIcon.setVisibility(View.VISIBLE);
-                unlikeState.setVisibility(View.VISIBLE);
-                unlikeState.setText((forum.getUnlikes() + "개"));
-            } else {
-                unlikeStateIcon.setVisibility(View.GONE);
-                unlikeState.setVisibility(View.GONE);
-            }
-        }
+
+        likeState.setText(forum.getLikes()+"");
+        unlikeState.setText(forum.getUnlikes()+"");
+
 
     }
 
@@ -576,10 +605,10 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                 commentHolder.commentNickname.setText(currentComment.getNickname());
                 commentHolder.commentContent.setText(currentComment.getContent());
                 try {
-                    commentHolder.commentUploadDatetime.setText(datetimeFormat.format(datetimeSecFormat.parse(currentComment.getUpload_datetime())));
+                    commentHolder.commentUploadDatetime.setText(datetimeFormat.format(datetimeSecFormat.parse(currentComment.getUpload_datetime()))+" 작성");
                 }catch (ParseException e){
                     e.printStackTrace();
-                    commentHolder.commentUploadDatetime.setText(currentComment.getUpload_datetime());
+                    commentHolder.commentUploadDatetime.setText(currentComment.getUpload_datetime()+" 작성");
                 }
             }
             //답글에 대한 답글일 경우 (depth = 1)
@@ -589,10 +618,10 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                 commentHolder.nextCommentNickname.setText(currentComment.getNickname());
                 commentHolder.nextCommentContent.setText(currentComment.getContent());
                 try {
-                    commentHolder.nextCommentUploadDatetime.setText(datetimeFormat.format(datetimeSecFormat.parse(currentComment.getUpload_datetime())));
+                    commentHolder.nextCommentUploadDatetime.setText(datetimeFormat.format(datetimeSecFormat.parse(currentComment.getUpload_datetime()))+" 작성");
                 }catch (ParseException e){
                     e.printStackTrace();
-                    commentHolder.nextCommentUploadDatetime.setText(currentComment.getUpload_datetime());
+                    commentHolder.nextCommentUploadDatetime.setText(currentComment.getUpload_datetime()+" 작성");
                 }
             }
 
@@ -635,7 +664,8 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                                             noticeOk.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    new CommentDeleteTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, currentComment.getNum_primary() + "", currentComment.getNum() + "", currentComment.getDepth() + "", currentComment.getNum_group() + "");
+                                                    commentDeleteTask = new CommentDeleteTask();
+                                                    commentDeleteTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, currentComment.getNum_primary() + "", currentComment.getNum() + "", currentComment.getDepth() + "", currentComment.getNum_group() + "");
                                                     noticePopupWindow.dismiss();
                                                 }
                                             });
@@ -757,7 +787,8 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                                             noticeOk.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    new CommentDeleteTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, currentComment.getNum_primary() + "", currentComment.getNum() + "", currentComment.getDepth() + "", currentComment.getNum_group() + "");
+                                                    commentDeleteTask = new CommentDeleteTask();
+                                                    commentDeleteTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, currentComment.getNum_primary() + "", currentComment.getNum() + "", currentComment.getDepth() + "", currentComment.getNum_group() + "");
                                                     noticePopupWindow.dismiss();
                                                 }
                                             });
@@ -901,14 +932,14 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                 commentNickname = (TextView)view.findViewById(R.id.anonymous_forum_comment_nickname);
                 commentMoreButton = (ImageButton)view.findViewById(R.id.anonymous_forum_comment_more_button);
                 commentContent = (TextView)view.findViewById(R.id.anonymous_forum_comment_content);
-                commentUploadDatetime = (TextView)view.findViewById(R.id.anonymous_forum_comment_uplaod_datetime);
+                commentUploadDatetime = (TextView)view.findViewById(R.id.anonymous_forum_comment_upload_datetime);
 
 
                 nextCommentLayout = (LinearLayout)view.findViewById(R.id.next_comment_layout);
                 nextCommentNickname = (TextView)view.findViewById(R.id.anonymous_forum_next_comment_nickname);
                 nextCommentMoreButton = (ImageButton)view.findViewById(R.id.anonymous_forum_next_comment_more_button);
                 nextCommentContent = (TextView)view.findViewById(R.id.anonymous_forum_next_comment_content);
-                nextCommentUploadDatetime = (TextView)view.findViewById(R.id.anonymous_forum_next_comment_uplaod_datetime);
+                nextCommentUploadDatetime = (TextView)view.findViewById(R.id.anonymous_forum_next_comment_upload_datetime);
             }
 
             @Override
@@ -960,9 +991,11 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                 String line = null;
 
                 StringBuffer stringBuffer = new StringBuffer();
-                while ((line=bufferedReader.readLine())!=null)
+                while ((line=bufferedReader.readLine())!=null) {
+                    if(isCancelled())
+                        return data;
                     stringBuffer.append(line);
-
+                }
                 data = stringBuffer.toString().trim();
                 return data;
 
@@ -981,11 +1014,9 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     currentForum.setLikes(Integer.parseInt(splitString[1]));
                     if (likeClick % 2 == 0) {
                         likeIcon.setSelected(true);
-                        likeText.setTextColor(Color.parseColor("#DC2314"));
                         likeClick++;
                     } else {
                         likeIcon.setSelected(false);
-                        likeText.setTextColor(Color.parseColor("#585858"));
                         likeClick++;
                     }
                     DataBinding(currentForum);
@@ -1040,8 +1071,12 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                 String line = null;
 
                 StringBuffer stringBuffer = new StringBuffer();
-                while ((line=bufferedReader.readLine())!=null)
+                while ((line=bufferedReader.readLine())!=null) {
+
+                    if(isCancelled())
+                        return data;
                     stringBuffer.append(line);
+                }
 
                 data = stringBuffer.toString().trim();
                 return data;
@@ -1061,12 +1096,10 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     currentForum.setUnlikes(Integer.parseInt(splitString[1]));
                     if(unlikeClick%2==0) {
                         unlikeIcon.setSelected(true);
-                        unlikeText.setTextColor(Color.parseColor("#DC2314"));
                         unlikeClick++;
                     }
                     else{
                         unlikeIcon.setSelected(false);
-                        unlikeText.setTextColor(Color.parseColor("#585858"));
                         unlikeClick++;
                     }
                     DataBinding(currentForum);
@@ -1126,6 +1159,9 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                 String line =  null;
                 StringBuffer stringBuffer = new StringBuffer();
                 while((line=bufferedReader.readLine())!=null){
+
+                    if(isCancelled())
+                        return data;
                     stringBuffer.append(line);
                 }
                 data = stringBuffer.toString().trim();
@@ -1146,7 +1182,8 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                 InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 manager.hideSoftInputFromWindow(commentInput.getWindowToken(), 0);
                 commentInput.setText("");
-                new CommentLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentForum.getNum()+"");
+                commentLoadTask = new CommentLoadTask();
+                commentLoadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentForum.getNum()+"");
 
             }
             else
@@ -1193,8 +1230,11 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
 
                 String line = null;
                 StringBuffer stringBuffer = new StringBuffer();
-                while((line =  bufferedReader.readLine())!=null)
-                    stringBuffer.append(line+"\n");
+                while((line =  bufferedReader.readLine())!=null) {
+                    if (isCancelled())
+                        return jArray;
+                    stringBuffer.append(line + "\n");
+                }
 
                 data = stringBuffer.toString();
                 bufferedReader.close(); //
@@ -1281,6 +1321,8 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                 StringBuffer stringBuffer = new StringBuffer();
 
                 while((line = bufferedReader.readLine())!=null){
+                    if(isCancelled())
+                        return data;
                     stringBuffer.append(line);
                 }
 
@@ -1342,6 +1384,8 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                 String line = null;
                 StringBuffer stringBuffer = new StringBuffer();
                 while ((line = bufferedReader.readLine()) != null) {
+                    if(isCancelled())
+                        return jsonArray;
                     stringBuffer.append(line+"\n");
                 }
 
@@ -1381,8 +1425,10 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
 
                     currentForum = forum;
                 }
-                if(swipeRefreshLayout.isRefreshing())
-                    new CommentLoadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentForum.getNum()+"");
+                if(swipeRefreshLayout.isRefreshing()) {
+                    commentLoadTask = new CommentLoadTask();
+                    commentLoadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, currentForum.getNum() + "");
+                }
 
             }catch (Exception e){
                 e.printStackTrace();
@@ -1431,6 +1477,8 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                 StringBuffer stringBuffer = new StringBuffer();
 
                 while((line = bufferedReader.readLine())!=null){
+                    if(isCancelled())
+                        return data;
                     stringBuffer.append(line);
                 }
 
@@ -1451,7 +1499,8 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     public void run() {
                         swipeRefreshLayout.setRefreshing(true);
                         forumCommentList = new ArrayList<Comment>();
-                        new ForumReloadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentForum.getNum()+"");
+                        forumReloadTask = new ForumReloadTask();
+                        forumReloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentForum.getNum()+"");
                     }
                 });
             }
@@ -1498,6 +1547,8 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                 StringBuffer stringBuffer = new StringBuffer();
 
                 while((line = bufferedReader.readLine())!=null){
+                    if(isCancelled())
+                        return data;
                     stringBuffer.append(line);
                 }
 
@@ -1526,7 +1577,8 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
                     public void run() {
                         swipeRefreshLayout.setRefreshing(true);
                         forumCommentList = new ArrayList<Comment>();
-                        new ForumReloadTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentForum.getNum()+"");
+                        forumReloadTask = new ForumReloadTask();
+                        forumReloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,currentForum.getNum()+"");
                     }
                 });
             }
@@ -1539,33 +1591,31 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
     public void InitialSetting(){
         backButton = (ImageButton)findViewById(R.id.anonymous_forum_view_back_button);
         moreButton = (ImageButton)findViewById(R.id.anonymous_forum_view_more_button);
-        topTitle = (TextView)findViewById(R.id.anonymous_forum_view_title_top);
+        //topTitle = (TextView)findViewById(R.id.anonymous_forum_view_title_top);
 
         title = (TextView)findViewById(R.id.anonymous_forum_view_title);
         nickname = (TextView)findViewById(R.id.anonymous_forum_view_nickname);
         upload_datetime = (TextView)findViewById(R.id.anonymous_forum_view_upload_datetime);
-        viewsAndComments = (TextView)findViewById(R.id.anonymous_forum_view_views_comments);
+        comments = (TextView)findViewById(R.id.anonymous_forum_view_views_comments);
         zoomOut = (ImageButton)findViewById(R.id.anonymous_forum_view_zoom_out);
         zoomIn = (ImageButton)findViewById(R.id.anonymous_forum_view_zoom_in);
 
         content = (TextView)findViewById(R.id.anonymous_forum_view_content);
-        nicknameBottom = (TextView)findViewById(R.id.anonymous_forum_view_nickname_bottom);
-        nicknameSearch = (TextView)findViewById(R.id.anonymous_forum_view_nickname_search);
+        /*nicknameBottom = (TextView)findViewById(R.id.anonymous_forum_view_nickname_bottom);
+        nicknameSearch = (TextView)findViewById(R.id.anonymous_forum_view_nickname_search);*/
 
         likeButton = (LinearLayout)findViewById(R.id.anonymous_forum_view_like);
         likeIcon = (ImageView)findViewById(R.id.anonymous_forum_view_like_icon);
-        likeText = (TextView)findViewById(R.id.anonymous_forum_view_like_text);
+        //likeText = (TextView)findViewById(R.id.anonymous_forum_view_like_text);
         unlikeButton = (LinearLayout)findViewById(R.id.anonymous_forum_view_unlike);
         unlikeIcon = (ImageView) findViewById(R.id.anonymous_forum_view_unlike_icon);
-        unlikeText = (TextView)findViewById(R.id.anonymous_forum_view_unlike_text);
+        //unlikeText = (TextView)findViewById(R.id.anonymous_forum_view_unlike_text);
         commentButton = (LinearLayout)findViewById(R.id.anonymous_forum_view_comment);
 
-        likeStateIcon = (ImageView)findViewById(R.id.anonymous_forum_view_likes_state_image);
         likeState = (TextView)findViewById(R.id.anonymous_forum_view_likes_state);
-        unlikeStateIcon = (ImageView)findViewById(R.id.anonymous_forum_view_unlikes_state_image);
         unlikeState = (TextView)findViewById(R.id.anonymous_forum_view_unlikes_state);
         stateLayout = (LinearLayout)findViewById(R.id.anonymous_forum_view_state_layout);
-        nonelikeState = (TextView)findViewById(R.id.anonymous_forum_view_none_state_textview);
+        //nonelikeState = (TextView)findViewById(R.id.anonymous_forum_view_none_state_textview);
 
         commentList = (RecyclerView)findViewById(R.id.anonymous_forum_view_comment_list);
 
@@ -1591,6 +1641,18 @@ public class AnonymousForumActivity_View extends AppCompatActivity {
         noticeOk = (TextView)popupView.findViewById(R.id.notice_plus_ok_textview);
         noticeCancel = (TextView)popupView.findViewById(R.id.notice_plus_cancel_textview);
         noticePopupWindow.setBackgroundDrawable(new ColorDrawable(Color.argb(80,0,0,0)));
+
+
+        commentDeleteTask = new CommentDeleteTask();
+        commentEditTask = new CommentEditTask();
+        commentInsertTask = new CommentInsertTask();
+        commentLoadTask = new CommentLoadTask();
+
+        forumReloadTask = new ForumReloadTask();
+        forumDeleteTask = new ForumDeleteTask();
+
+        likeUploadTask = new LikeUploadTask();
+        unLikeUploadTask = new UnlikeUploadTask();
     }
 
     public static int pixtosp(Context context, float pixel){

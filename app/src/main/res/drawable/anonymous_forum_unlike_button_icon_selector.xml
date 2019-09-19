@@ -3,8 +3,8 @@
 
     <item
         android:state_selected="true"
-        android:drawable="@drawable/unlike_red"/>
+        android:drawable="@drawable/unlike_blue_filed"/>
     <item
         android:state_selected="false"
-        android:drawable="@drawable/unlike_gray"/>
+        android:drawable="@drawable/unlike_blue"/>
 </selector>
